@@ -1,0 +1,4 @@
+SECURE_JSON = False
+SECURE_JSON_PREFIX = "tuuzgoweb"
+
+HEADER_AUTH_MODE = True

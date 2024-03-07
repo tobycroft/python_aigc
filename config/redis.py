@@ -1,0 +1,14 @@
+Redicon_address = "10.0.0.171"
+Redicon_port = "6379"
+Redicon_proto = "tcp"
+Redicon_username = ""
+Redicon_password = ""
+Redicon_poolsize = 20
+Redicon_MinIdleConn = 10
+Redicon_on = False
+Recicon_panic_on_link_error = True
+Recion_timeout_dial = 5
+Recion_timeout_read = 5
+Recion_timeout_write = 5
+Recion_timeout_pool = 5
+Recion_db = 0
