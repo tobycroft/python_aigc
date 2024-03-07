@@ -5,7 +5,7 @@ import tuuz.database.db
 from router.router import MainRoute
 
 config.app.init()
-tuuz.database.db.init()
+tuuz.Database.db.init()
 tuuz.Redis.pyredis.init()
 
 app = MainRoute()

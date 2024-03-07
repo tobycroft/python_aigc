@@ -1,0 +1,24 @@
+from flask import Blueprint
+
+import tuuz.Input
+import tuuz.Ret
+
+gemini = Blueprint("gemini", __name__)
+
+
+@gemini.route('/')
+def slash():
+    return "/"
+
+
+@gemini.before_app_request
+def before():
+    token = tuuz.Input.Get.String("token")
+    print(tuuz.Database.Db().table("ai_project").where("token", token).find())
+    pass
+
+
+@gemini.route('/index')
+def index():
+    print(tuuz.Input.Post.String("a"))
+    return tuuz.Ret.fail(400, data)
