@@ -330,17 +330,17 @@ class Db(object):
         column = self.__getField()
         sql = self.__comQuerySql()
         if self.__build:
-            return sql,self.__bind
+            return sql, self.__bind
         if sql is None:
             return None
         result = None
         try:
             self.__connect()
-            self.cursor.execute(sql,self.__bind)
+            self.cursor.execute(sql, self.__bind)
             result = self.cursor.fetchone()
             self.__close()
         except Exception as e:
-            print(sql,self.__bind)
+            print(sql, self.__bind)
             print(e)
             exit(-1)
         if result is None:
@@ -358,17 +358,17 @@ class Db(object):
 
         sql = self.__comQuerySql()
         if self.__build:
-            return sql,self.__bind
+            return sql, self.__bind
         if sql is None:
             return None
         result = None
         try:
             self.__connect()
-            self.cursor.execute(sql,self.__bind)
+            self.cursor.execute(sql, self.__bind)
             result = self.cursor.fetchall()
             self.__close()
         except Exception as e:
-            print(sql,self.__bind)
+            print(sql, self.__bind)
             print(e)
             exit(-1)
         if result is None:
@@ -448,7 +448,8 @@ class Db(object):
                     values = 'null'
                     for column in all_column:
                         if column['field'] == item.get('key'):
-                            values = format_field(item.get('val'), column['type'])
+                            # values = format_field(item.get('val'), column['type'])
+                            values = item.get('val')
                             break
                     sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
         else:
