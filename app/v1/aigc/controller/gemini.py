@@ -24,7 +24,7 @@ def before():
 @gemini.route('/text')
 def text():
     token = tuuz.Input.Get.String("token")
-    print(tuuz.Database.Db().table("ai_project").whereRow('token', token).buildSql().update({"name": "gobotqs"}))
+    print(tuuz.Database.Db().table("ai_project").whereRow('token', token).insert({"name": "gobotqs"}))
     # data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
     # gemini = tuuz.Database.Db().table("ai_gemini").whereRow('project_name', data["name"]).find()
     # if gemini is None:

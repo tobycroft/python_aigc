@@ -434,7 +434,7 @@ class Db(object):
             return 0
         sql = str(" insert into " + self.__name + " ( " + fields + ") values ( " + values + " ) ")
 
-        return self.__edit(sql)
+        return self.__add(sql)
 
     def update(self, data):
         if typeof(data) != 'dict':
@@ -566,11 +566,26 @@ class Db(object):
 
     def __edit(self, sql):
         if self.__build:
-            return sql, self.__bindData.append(self.__bindWhere)
+            return sql, self.__bindData + self.__bindWhere
         count = 0
         try:
             self.__connect()
-            count = self.cursor.execute(sql, self.__bindData.extend(self.__bindWhere))
+            count = self.cursor.execute(sql, self.__bindData + self.__bindWhere)
+            self.__conn.commit()
+            self.__close()
+        except Exception as e:
+            self.__conn.rollback()
+            print('Error:  ', sql)
+            print(e)
+        return count
+
+    def __add(self, sql):
+        if self.__build:
+            return sql, self.__bindData
+        count = 0
+        try:
+            self.__connect()
+            count = self.cursor.execute(sql, self.__bindData)
             self.__conn.commit()
             self.__close()
         except Exception as e:
