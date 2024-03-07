@@ -176,7 +176,7 @@ class Db(object):
 
     def __connect(self):
         self.__conn = pymysql.connect(host=self.host, port=self.port, user=self.username, password=self.password,
-                                      db=self.db, charset=self.charset,init_command="SET SESSION time_zone='+08:00'")
+                                      db=self.db, charset=self.charset, init_command="SET SESSION time_zone='+08:00'")
         self.cursor = self.__conn.cursor()
 
     def __close(self):

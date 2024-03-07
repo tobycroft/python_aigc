@@ -14,9 +14,9 @@ class Post:
             if need_xss:
                 # TODO: 需要完成xss过滤这里
                 out = (in_data)
-                return out, True
+                return out
             else:
-                return in_data, True
+                return in_data
 
 
 class Get:
@@ -29,9 +29,9 @@ class Get:
             if need_xss:
                 # TODO: 需要完成xss过滤这里
                 out = (in_data)
-                return out, True
+                return out
             else:
-                return in_data, True
+                return in_data
 
 
 class Combi:
@@ -46,6 +46,6 @@ class Combi:
             if need_xss:
                 # TODO: 需要完成xss过滤这里
                 out = (in_data)
-                return out, True
+                return out
             else:
-                return in_data, True
+                return in_data
