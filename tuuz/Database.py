@@ -145,7 +145,8 @@ def typeof(variate):
 class Db(object):
     __conn = None
     __map = []
-    __bind = []
+    __bindWhere = []
+    __bindData = []
     __name = ''
     __column = '*'
     __alias = ''
@@ -199,7 +200,7 @@ class Db(object):
             return self
         if typeof(where) == 'dict':
             self.__map.append({'key': where.get('key'), 'val': "%s", 'type': where.get('type')})
-            self.__bind.append(where.get("val"))
+            self.__bindWhere.append(where.get("val"))
 
         if typeof(where) == 'list':
             for item in where:
@@ -330,17 +331,17 @@ class Db(object):
         column = self.__getField()
         sql = self.__comQuerySql()
         if self.__build:
-            return sql, self.__bind
+            return sql, self.__bindWhere
         if sql is None:
             return None
         result = None
         try:
             self.__connect()
-            self.cursor.execute(sql, self.__bind)
+            self.cursor.execute(sql, self.__bindWhere)
             result = self.cursor.fetchone()
             self.__close()
         except Exception as e:
-            print(sql, self.__bind)
+            print(sql, self.__bindWhere)
             print(e)
             exit(-1)
         if result is None:
@@ -358,17 +359,17 @@ class Db(object):
 
         sql = self.__comQuerySql()
         if self.__build:
-            return sql, self.__bind
+            return sql, self.__bindWhere
         if sql is None:
             return None
         result = None
         try:
             self.__connect()
-            self.cursor.execute(sql, self.__bind)
+            self.cursor.execute(sql, self.__bindWhere)
             result = self.cursor.fetchall()
             self.__close()
         except Exception as e:
-            print(sql, self.__bind)
+            print(sql, self.__bindWhere)
             print(e)
             exit(-1)
         if result is None:
@@ -421,10 +422,13 @@ class Db(object):
                 if column['field'] == key:
                     if i == 0:
                         fields = key
-                        values = format_field(data[key], column['type'])
+                        # values = format_field(data[key], column['type'])
+                        values = '%s'
                     else:
                         fields += ',' + key
-                        values += ',' + format_field(data[key], column['type'])
+                        # values += ',' + format_field(data[key], column['type'])
+                        values += ', %s '
+                    self.__bindData.append(data[key])
                     i += 1
         if fields == '' or values == '':
             return 0
@@ -451,16 +455,20 @@ class Db(object):
                             # values = format_field(item.get('val'), column['type'])
                             values = item.get('val')
                             break
-                    sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
+                    # sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
+                    sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' %s ) '
         else:
             print('禁止不使用 where 更新数据')
         for key in data:
             for column in all_column:
                 if column['field'] == key:
                     if i == 0:
-                        fields = key + '=' + format_field(data[key], column['type'])
+                        # fields = key + '=' + format_field(data[key], column['type'])
+                        fields = key + '=%s'
                     else:
-                        fields += str(',' + key + '=' + format_field(data[key], column['type']))
+                        # fields += str(',' + key + '=' + format_field(data[key], column['type']))
+                        fields += str(',' + key + '=%s')
+                    self.__bindData.append(data[key])
                     i += 1
         if fields == '':
             return 0
@@ -558,11 +566,11 @@ class Db(object):
 
     def __edit(self, sql):
         if self.__build:
-            return sql
+            return sql, self.__bindData.append(self.__bindWhere)
         count = 0
         try:
             self.__connect()
-            count = self.cursor.execute(sql)
+            count = self.cursor.execute(sql, self.__bindData.extend(self.__bindWhere))
             self.__conn.commit()
             self.__close()
         except Exception as e:
@@ -573,7 +581,8 @@ class Db(object):
 
     def clear(self):
         self.__map = []
-        self.__bind = []
+        self.__bindWhere = []
+        self.__bindData = []
         self.__name = ''
         self.__column = '*'
         self.__alias = ''
