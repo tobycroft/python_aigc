@@ -1,4 +1,5 @@
 from flask import Blueprint
+from gemini_webapi import GeminiClient
 
 import tuuz.Database
 import tuuz.Input
@@ -22,12 +23,16 @@ def before():
 
 
 @gemini.route('/text')
-def text():
+async def text():
     token = tuuz.Input.Get.String("token")
-    print(tuuz.Database.Db().table("ai_project").whereRow('token', token).insert({"name": "gobotqs"}))
-    # data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
-    # gemini = tuuz.Database.Db().table("ai_gemini").whereRow('project_name', data["name"]).find()
-    # if gemini is None:
-    #     return tuuz.Ret.fail(400, 'gemini未启用')
-    #
-    return tuuz.Ret.fail(400, )
+    data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
+    gemini = tuuz.Database.Db().table("ai_gemini").whereRow('project_name', data["name"]).find()
+    if gemini is None:
+        return tuuz.Ret.fail(400, 'gemini未启用')
+
+    client = GeminiClient(gemini["Secure_1PSID"], gemini["Secure_1PSIDTS"], proxy=None)
+    await client.init(timeout=30, auto_close=False, close_delay=300)
+    chat = client.start_chat()
+    response = await chat.send_message("你好?")
+    print(response)
+    return tuuz.Ret.fail(400, response)
