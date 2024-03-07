@@ -17,6 +17,7 @@ def before():
     token = tuuz.Input.Get.String("token")
 
     print(tuuz.Database.Db().table("ai_project").whereRow('token', token).buildSql().find())
+    print(tuuz.Database.Db().table("ai_project").whereRow('token', token).find())
     pass
 
 
