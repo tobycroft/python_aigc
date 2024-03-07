@@ -1,6 +1,6 @@
 # TuuzPythonWeb
 
-TuuzPythonWeb基于Flask，四层架构，内置数据库
+TuuzPythonWeb基于Flask，四层架构，数据库基于EasyPythonOrm
 
 框架结构参考Thinkphp，极大降低上手难度，TPW的设计理念是简单好理解，为了不写文档，
 
