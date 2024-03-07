@@ -97,8 +97,8 @@ TuuzPythonWeb基于Flask，四层架构，数据库基于EasyPythonOrm
             - model
                 - BalanceModel.py
     - cron
-      - invest.py
-      - timeinvest.py
+        - invest.py
+        - timeinvest.py
 
 ### TPW的其他说明
 
@@ -110,14 +110,11 @@ TuuzPythonWeb基于Flask，四层架构，数据库基于EasyPythonOrm
 ## TPW输出说明
 
 - 你可以使用Gin的默认输出
-- Context:示例中的c为*gin.context
 - Code:错误码可以与前端自定
 - Data:如果传输nil，最终json中的data字段会变成"[]"
 - Echo:这里只能传string
 
 ```
-GinContext，错误码，数据Array，操作指示（成功失败）
-
 RET.Success(c, 0, nil, "验证成功")
 RET.Fail(c, 400, nil, "验证失败")
 ```
