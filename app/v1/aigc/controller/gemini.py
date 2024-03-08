@@ -5,15 +5,15 @@ import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
 
-gemini = Blueprint("gemini", __name__)
+GeminiController = Blueprint("gemini", __name__)
 
 
-@gemini.route('/')
+@GeminiController.route('/')
 def slash():
     return "/"
 
 
-@gemini.before_request
+@GeminiController.before_request
 def before():
     token = tuuz.Input.Get.String("token")
     data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
@@ -26,7 +26,7 @@ client = None
 chat = None
 
 
-@gemini.post('/text')
+@GeminiController.post('/text')
 async def text():
     global client, chat, gemini
     token = tuuz.Input.Get.String("token")

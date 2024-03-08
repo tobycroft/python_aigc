@@ -15,4 +15,4 @@ def index():
 
 import app.v1.aigc.controller.gemini
 
-Route.register_blueprint(app.v1.aigc.controller.gemini.gemini, url_prefix="/gemini")
+Route.register_blueprint(app.v1.aigc.controller.gemini.GeminiController, url_prefix="/gemini")
