@@ -48,4 +48,4 @@ async def text():
     response = await chat.send_message(text)
     tuuz.Database.Db().table("ai_gemini").whereRow('project_name', data["name"]).update({"rcid": chat.rcid, "cid": chat.cid, "rid": chat.rid})
     print(response)
-    return tuuz.Ret.success(0, [response.text, response.images])
+    return tuuz.Ret.success(0, {"test": response.text, "image": response.images})
