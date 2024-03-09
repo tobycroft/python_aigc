@@ -10,4 +10,4 @@ tuuz.Redis.pyredis.init()
 
 app = MainRoute()
 
-app.run(host="0.0.0.0", port=80, debug=True)
+app.run(host="0.0.0.0", port=84, debug=True)
