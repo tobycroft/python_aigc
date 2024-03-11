@@ -62,7 +62,7 @@ async def text():
             bot = None
         return tuuz.Ret.success(0, response, response["text"])
     except Exception as error:
-        raise error
+        return tuuz.Ret.fail(500, error, error)
     finally:
         if bot is not None:
             await bot.close()
