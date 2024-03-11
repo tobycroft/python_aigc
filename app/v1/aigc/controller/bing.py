@@ -24,6 +24,9 @@ def before():
     pass
 
 
+bot = None
+
+
 @BingController.post('/text')
 async def text():
     token = tuuz.Input.Get.String("token")
@@ -32,10 +35,11 @@ async def text():
     bing = tuuz.Database.Db().table("ai_bing").whereRow('project_name', data["name"]).find()
     if bing["cookies"] is None:
         return tuuz.Ret.fail(400, 'bing未启用')
-    bot = None
     try:
-        cookies = json.loads(bing["cookies"])
-        bot = await Chatbot.create(cookies=cookies)
+        global bot
+        if bot is None:
+            cookies = json.loads(bing["cookies"])
+            bot = await Chatbot.create(cookies=cookies)
         try:
             global conversation
             conversation = json.loads(bing["conversation"])
@@ -52,9 +56,10 @@ async def text():
         print(json.dumps(response, indent=2, ensure_ascii=False))
         conversation = await bot.chat_hub.get_conversation()
         print(conversation)
-        conversation = await bot.chat_hub.get_conversation()
-        print(conversation)
         tuuz.Database.Db().table("ai_bing").whereRow('project_name', data["name"]).update({"conversation": json.dumps(conversation)})
+        if response["messages_left"] < 1:
+            await bot.close()
+            bot = None
         return tuuz.Ret.success(0, response, response["text"])
     except Exception as error:
         raise error
