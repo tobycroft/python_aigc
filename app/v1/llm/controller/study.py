@@ -1,33 +1,35 @@
 from flask import Blueprint
-from transformers import DistilBertTokenizer, DistilBertForMaskedLM
+from transformers import pipeline
+
+import tuuz.Ret
 
 StudyController = Blueprint("gemini", __name__)
 
 
-@StudyController.route('/')
+@StudyController.post('/')
 def slash():
     return "/"
 
 
 @StudyController.post('/text')
 async def text():
-    # 加载DistilBERT模型和tokenizer
-    model_name = "distilbert-base-uncased"
-    tokenizer = DistilBertTokenizer.from_pretrained(model_name)
-    model = DistilBertForMaskedLM.from_pretrained(model_name)
+    generate_text = pipeline(
+        model="Stevross/Astrid-LLama-3B-GPU",
+        torch_dtype="auto",
+        trust_remote_code=True,
+        use_fast=False,
+        device_map={"": "cuda:0"},
+    )
 
-    # 定义一个填空句子
-    text = "I like to eat [MASK]."
-
-    # 使用tokenizer对文本进行编码
-    inputs = tokenizer(text, return_tensors="pt")
-
-    # 预测缺失的词语
-    outputs = model(**inputs)
-    predictions = outputs.logits.argmax(dim=-1)
-
-    # 将预测的词语解码成文本
-    predicted_token = tokenizer.decode(predictions[0][3].item())
-
-    print("原句子:", text)
-    print("填空后的句子:", text.replace("[MASK]", predicted_token))
+    res = generate_text(
+        "Why is drinking water so healthy?",
+        min_new_tokens=2,
+        max_new_tokens=256,
+        do_sample=False,
+        num_beams=1,
+        temperature=float(0.3),
+        repetition_penalty=float(1.2),
+        renormalize_logits=True
+    )
+    print(res[0]["generated_text"])
+    return tuuz.Ret.success(0, text)
