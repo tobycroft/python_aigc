@@ -39,7 +39,7 @@ async def text():
         try:
             global conversation
             conversation = json.loads(bing["conversation"])
-            print("设定conversation",conversation)
+            print("设定conversation", conversation)
             await bot.chat_hub.set_conversation(conversation_dict=conversation)
         except:
             conversation = {}
