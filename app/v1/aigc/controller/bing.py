@@ -1,4 +1,5 @@
 import json
+import os
 
 from flask import Blueprint
 from re_edge_gpt import Chatbot, ConversationStyle
@@ -7,7 +8,7 @@ import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
 
-BingController = Blueprint(__file__, __name__)
+BingController = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
 
 @BingController.route('/')

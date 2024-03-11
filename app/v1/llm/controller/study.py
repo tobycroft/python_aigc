@@ -1,9 +1,11 @@
+import os
+
 from flask import Blueprint
 from transformers import BertTokenizer, BertForMaskedLM, BertConfig
 
 import tuuz.Ret
 
-StudyController = Blueprint(__file__, __name__)
+StudyController = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
 
 @StudyController.post('/')

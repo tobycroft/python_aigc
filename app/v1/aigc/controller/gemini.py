@@ -1,3 +1,5 @@
+import os
+
 from flask import Blueprint
 from gemini_webapi import GeminiClient, ChatSession
 
@@ -5,7 +7,7 @@ import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
 
-GeminiController = Blueprint(__file__, __name__)
+GeminiController = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
 
 @GeminiController.route('/')
@@ -20,10 +22,6 @@ def before():
     if data is None:
         return tuuz.Ret.fail(400, 'project未启用')
     pass
-
-
-client = None
-chat = None
 
 
 @GeminiController.post('/text')

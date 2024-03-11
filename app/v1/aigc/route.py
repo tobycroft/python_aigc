@@ -20,3 +20,7 @@ Route.register_blueprint(app.v1.aigc.controller.gemini.GeminiController, url_pre
 import app.v1.aigc.controller.bing
 
 Route.register_blueprint(app.v1.aigc.controller.bing.BingController, url_prefix="/bing")
+
+import app.v1.aigc.controller.chatgpt
+
+Route.register_blueprint(app.v1.aigc.controller.chatgpt.ChatGptController, url_prefix="/chatgpt")
