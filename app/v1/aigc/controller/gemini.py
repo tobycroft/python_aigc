@@ -41,7 +41,7 @@ async def text():
     except Exception as e:
         gemini = tuuz.Database.Db().table("ai_gemini").whereRow('project_name', data["name"]).find()
         client = None
-        return tuuz.Ret.fail(400, e)
+        return tuuz.Ret.fail(500, e, e)
     if gemini["cid"] is None or gemini["rid"] is None or gemini["rcid"] is None:
         chat = client.start_chat()
     chat = ChatSession(client, cid=gemini["cid"], rid=gemini["rid"], rcid=gemini["rcid"])
