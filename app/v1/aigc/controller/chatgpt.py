@@ -7,15 +7,15 @@ import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
 
-BingController = Blueprint(__file__, __name__)
+ChatGptController = Blueprint(__file__, __name__)
 
 
-@BingController.route('/')
+@ChatGptController.route('/')
 def slash():
     return "/"
 
 
-@BingController.before_request
+@ChatGptController.before_request
 def before():
     token = tuuz.Input.Get.String("token")
     data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
@@ -27,7 +27,7 @@ def before():
 bot = None
 
 
-@BingController.post('/text')
+@ChatGptController.post('/text')
 async def text():
     token = tuuz.Input.Get.String("token")
     text = tuuz.Input.Post.String("text")

@@ -5,7 +5,7 @@ import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
 
-GeminiController = Blueprint("gemini", __name__)
+GeminiController = Blueprint(__file__, __name__)
 
 
 @GeminiController.route('/')

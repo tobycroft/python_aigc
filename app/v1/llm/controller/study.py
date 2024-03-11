@@ -1,9 +1,9 @@
 from flask import Blueprint
-from transformers import pipeline
+from transformers import BertTokenizer, BertForMaskedLM, BertConfig
 
 import tuuz.Ret
 
-StudyController = Blueprint("gemini", __name__)
+StudyController = Blueprint(__file__, __name__)
 
 
 @StudyController.post('/')
@@ -13,23 +13,17 @@ def slash():
 
 @StudyController.post('/text')
 async def text():
-    generate_text = pipeline(
-        model="Stevross/Astrid-LLama-3B-GPU",
-        torch_dtype="auto",
-        trust_remote_code=True,
-        use_fast=False,
-        device_map={"": "cuda:0"},
-    )
+    # 加载tokenizer
+    tokenizer = BertTokenizer.from_pretrained("I:/llama2/")
 
-    res = generate_text(
-        "Why is drinking water so healthy?",
-        min_new_tokens=2,
-        max_new_tokens=256,
-        do_sample=False,
-        num_beams=1,
-        temperature=float(0.3),
-        repetition_penalty=float(1.2),
-        renormalize_logits=True
-    )
-    print(res[0]["generated_text"])
+    # 加载配置文件
+    config = BertConfig.from_pretrained("I:/llama2/config.json")
+
+    # 加载模型
+    model = BertForMaskedLM.from_pretrained("I:/llama2/pytorch_model.bin", config=config)
+
+
+    # 初始化对话处理器和生成器
+    processor = ConversationProcessor(tokenizer=tokenizer)
+    generator = ConversationGenerator(model=model, processor=processor)
     return tuuz.Ret.success(0, text)
