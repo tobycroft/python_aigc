@@ -30,14 +30,16 @@ async def text():
     text = tuuz.Input.Post.String("text")
     data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
     bing = tuuz.Database.Db().table("ai_chatgpt").whereRow('project_name', data["name"]).find()
-    if bing["cookies"] is None:
+    if bing["session"] is None:
         return tuuz.Ret.fail(400, 'bing未启用')
     with SyncChatGPT(session_token=bing["session"]) as chatgpt:
         if bing["conversation"] is None:
             conversation = chatgpt.create_new_conversation()
+            print("new_conv", conversation.conversation_id)
         else:
             conversation = chatgpt.get_conversation(bing["conversation"])
+            print("old_conv", conversation.conversation_id)
+    tuuz.Database.Db().table("ai_chatgpt").whereRow('project_name', data["name"]).update({"conversation": conversation.conversation_id})
     msgs = conversation.chat(text)
-    for message in msgs:
-        print(message["content"], flush=True, end="")
+    print(msgs)
     return tuuz.Ret.success(0, msgs)
