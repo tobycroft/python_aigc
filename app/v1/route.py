@@ -14,10 +14,10 @@ def index():
     return folder_name
 
 
-import app.v1.aigc.route
+import app.v1.aigc.route as aigc
 
-Route.register_blueprint(app.v1.aigc.route.Route, url_prefix="/aigc")
+Route.register_blueprint(aigc.Route, url_prefix="/aigc")
 
-import app.v1.aigc.route
+import app.v1.llm.route as llm
 
-Route.register_blueprint(app.v1.aigc.route.Route, url_prefix="/aigc")
+Route.register_blueprint(llm.Route, url_prefix="/llm")
