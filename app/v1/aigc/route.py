@@ -16,3 +16,7 @@ def index():
 import app.v1.aigc.controller.gemini
 
 Route.register_blueprint(app.v1.aigc.controller.gemini.GeminiController, url_prefix="/gemini")
+
+import app.v1.aigc.controller.bing
+
+Route.register_blueprint(app.v1.aigc.controller.bing.BingController, url_prefix="/bing")
