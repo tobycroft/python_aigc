@@ -52,6 +52,7 @@ async def text():
             prompt=text,
             conversation_style=ConversationStyle.precise,
             simplify_response=True,
+            search_result=False,
         )
         # If you are using non ascii char you need set ensure_ascii=False
         print(json.dumps(response, indent=2, ensure_ascii=False))
