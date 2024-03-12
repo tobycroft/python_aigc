@@ -1,7 +1,7 @@
 import os
 
 from flask import Blueprint
-from transformers import BertTokenizer, BertForMaskedLM, BertConfig
+from paddlespeech.cli.tts.infer import TTSExecutor
 
 import tuuz.Ret
 
@@ -16,5 +16,6 @@ def slash():
 @Controller.post('/text')
 async def text():
     # 加载tokenizer
-
+    tts = TTSExecutor()
+    tts(text="今天天气十分不错。", output="output.wav")
     return tuuz.Ret.success(0, )

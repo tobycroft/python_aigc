@@ -7,15 +7,15 @@ import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
 
-ChatGptController = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
+Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
 
-@ChatGptController.route('/')
+@Controller.route('/')
 def slash():
     return "/"
 
 
-@ChatGptController.before_request
+@Controller.before_request
 def before():
     token = tuuz.Input.Get.String("token")
     data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
@@ -24,7 +24,7 @@ def before():
     pass
 
 
-@ChatGptController.post('/text')
+@Controller.post('/text')
 async def text():
     token = tuuz.Input.Get.String("token")
     text = tuuz.Input.Post.String("text")

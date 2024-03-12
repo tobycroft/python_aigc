@@ -13,6 +13,6 @@ def index():
     return folder_name
 
 
-import app.v1.llm.controller.study
+import app.v1.tts.controller.index
 
-Route.register_blueprint(app.v1.llm.controller.study.Controller, url_prefix="/study")
+Route.register_blueprint(app.v1.tts.controller.index.Controller, url_prefix="/study")

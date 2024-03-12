@@ -9,10 +9,10 @@ import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
 
-BingController = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
+Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
 
-@BingController.route('/')
+@Controller.route('/')
 def slash():
     return "/"
 
@@ -25,7 +25,7 @@ def truncate_text(text, max_length):
     return truncated_text
 
 
-@BingController.before_request
+@Controller.before_request
 def before():
     token = tuuz.Input.Get.String("token")
     data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
@@ -37,7 +37,7 @@ def before():
 bot = None
 
 
-@BingController.post('/text')
+@Controller.post('/text')
 async def text():
     token = tuuz.Input.Get.String("token")
     text = tuuz.Input.Post.String("text")

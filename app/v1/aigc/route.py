@@ -15,12 +15,12 @@ def index():
 
 import app.v1.aigc.controller.gemini
 
-Route.register_blueprint(app.v1.aigc.controller.gemini.GeminiController, url_prefix="/gemini")
+Route.register_blueprint(app.v1.aigc.controller.gemini.Controller, url_prefix="/gemini")
 
 import app.v1.aigc.controller.bing
 
-Route.register_blueprint(app.v1.aigc.controller.bing.BingController, url_prefix="/bing")
+Route.register_blueprint(app.v1.aigc.controller.bing.Controller, url_prefix="/bing")
 
 import app.v1.aigc.controller.chatgpt
 
-Route.register_blueprint(app.v1.aigc.controller.chatgpt.ChatGptController, url_prefix="/chatgpt")
+Route.register_blueprint(app.v1.aigc.controller.chatgpt.Controller, url_prefix="/chatgpt")
