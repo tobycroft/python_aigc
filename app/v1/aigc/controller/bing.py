@@ -65,12 +65,13 @@ async def text():
     if response["messages_left"] < 1:
         await bot.close()
         bot = None
-    json_str = re.search(r'{.*}', response["text"], re.DOTALL).group()
+    output_cleaned = re.sub(r'\[\^\d\^\]', '', response["text"])
+    json_str = re.search(r'{.*}', output_cleaned, re.DOTALL).group()
     result = json.loads(json_str)
     final_resp = ""
 
     # 去除原始内容中的JSON部分
-    output_without_json = re.sub(r'{.*}', '', response["text"], flags=re.DOTALL)
+    output_without_json = re.sub(r'{.*}', '', output_cleaned, flags=re.DOTALL)
     final_resp += output_without_json
 
     for item in result['web_search_results']:
