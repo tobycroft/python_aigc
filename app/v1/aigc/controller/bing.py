@@ -46,8 +46,11 @@ async def text():
             conversation = json.loads(bing["conversation"])
             print("设定conversation")
             await bot.chat_hub.set_conversation(conversation_dict=conversation)
-        except:
+
+        except Exception as error:
             conversation = {}
+            return tuuz.Ret.fail(500, error, error)
+
         response = await bot.ask(
             prompt=text,
             conversation_style=ConversationStyle.precise,
