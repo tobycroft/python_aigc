@@ -17,6 +17,14 @@ def slash():
     return "/"
 
 
+def truncate_text(text, max_length):
+    if len(text) > max_length:
+        truncated_text = text[:max_length] + "..."
+    else:
+        truncated_text = text
+    return truncated_text
+
+
 @BingController.before_request
 def before():
     token = tuuz.Input.Get.String("token")
@@ -76,8 +84,13 @@ async def text():
 
     for item in result['web_search_results']:
         title = item['title']
+        max_length = 15
+        title = truncate_text(title, max_length)
         url = item['url']
-        final_resp += f"标题：{title}\nURL：{url}\n"
+
+        final_resp += "\n" + f"标题：{title}\nURL：{url}\n"
         # print(f"标题：{title}\nURL：{url}\n")
     final_resp = re.sub(r'\n', r'\r\n', final_resp)
+    final_resp = final_resp.replace("Generating answers for you...", "")
+    final_resp = re.sub(r'Searching the web for.*', '', final_resp)
     return tuuz.Ret.success(0, response, final_resp)
