@@ -79,5 +79,5 @@ async def text():
         url = item['url']
         final_resp += f"标题：{title}\nURL：{url}\n"
         # print(f"标题：{title}\nURL：{url}\n")
-
+    final_resp = re.sub(r'\n', r'\r\n', final_resp)
     return tuuz.Ret.success(0, response, final_resp)
