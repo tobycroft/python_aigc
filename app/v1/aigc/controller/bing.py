@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 from flask import Blueprint
 from re_edge_gpt import Chatbot, ConversationStyle
@@ -64,4 +65,18 @@ async def text():
     if response["messages_left"] < 1:
         await bot.close()
         bot = None
-    return tuuz.Ret.success(0, response, response["text"])
+    json_str = re.search(r'{.*}', response["text"], re.DOTALL).group()
+    result = json.loads(json_str)
+    final_resp = ""
+
+    # 去除原始内容中的JSON部分
+    output_without_json = re.sub(r'{.*}', '', response["text"], flags=re.DOTALL)
+    final_resp += output_without_json
+
+    for item in result['web_search_results']:
+        title = item['title']
+        url = item['url']
+        final_resp += f"标题：{title}\nURL：{url}\n"
+        # print(f"标题：{title}\nURL：{url}\n")
+
+    return tuuz.Ret.success(0, response, final_resp)
