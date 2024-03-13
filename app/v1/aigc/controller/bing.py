@@ -78,10 +78,9 @@ async def text():
     conversation = await bot.chat_hub.get_conversation()
     # print(conversation)
     tuuz.Database.Db().table("ai_bing").whereRow('project_name', data["name"]).update({"conversation": json.dumps(conversation)})
-    # if response["messages_left"] < 1:
-    #     await bot.close()
-    #     bot = None
-    # try:
+    if response["item"]["throttling"]["numUserMessagesInConversation"] >= response["item"]["throttling"]["maxNumUserMessagesInConversation"]:
+        await bot.close()
+        bot = None
     messages = response["item"]["messages"]
     output_cleaned = re.sub(r'\[\^\d\^]', '', response["item"]["result"]["message"])
     final_resp = output_cleaned.replace("<br>", "\n")
@@ -98,10 +97,6 @@ async def text():
                 final_resp += "\n" + f"{title}:\n{url}\n"
                 print(f"标题：{title}\nURL：{url}\n")
     final_resp = re.sub(r'\n', r'\r\n', final_resp)
-    #     final_resp = final_resp.replace("Generating answers for you...", "")
-    #     final_resp = re.sub(r'Searching the web for.*', '', final_resp)
-    # except Exception as e:
-    #     final_resp = response["text"]
     endtime = time.time()
     print("运行时间", endtime - starttime)
     return tuuz.Ret.success(0, response, final_resp)
