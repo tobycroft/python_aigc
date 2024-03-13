@@ -91,7 +91,7 @@ async def text():
             final_resp += "\n\n\n\n另外查到一些数据供你参考：\n"
             for sourceAttributions in item['sourceAttributions']:
                 title = sourceAttributions['providerDisplayName']
-                max_length = 15
+                max_length = 30
                 title = truncate_text(title, max_length)
                 url = sourceAttributions['seeMoreUrl']
                 final_resp += "\n" + f"{title}:\n{url}\n"
