@@ -73,24 +73,27 @@ async def text():
     if response["messages_left"] < 1:
         await bot.close()
         bot = None
-    output_cleaned = re.sub(r'\[\^\d\^\]', '', response["text"])
-    json_str = re.search(r'{.*}', output_cleaned, re.DOTALL).group()
-    result = json.loads(json_str)
-    final_resp = ""
+    try:
+        output_cleaned = re.sub(r'\[\^\d\^\]', '', response["text"])
+        json_str = re.search(r'{.*}', output_cleaned, re.DOTALL).group()
+        result = json.loads(json_str)
+        final_resp = ""
 
-    # 去除原始内容中的JSON部分
-    output_without_json = re.sub(r'{.*}', '', output_cleaned, flags=re.DOTALL)
-    final_resp += output_without_json
+        # 去除原始内容中的JSON部分
+        output_without_json = re.sub(r'{.*}', '', output_cleaned, flags=re.DOTALL)
+        final_resp += output_without_json
 
-    for item in result['web_search_results']:
-        title = item['title']
-        max_length = 15
-        title = truncate_text(title, max_length)
-        url = item['url']
+        for item in result['web_search_results']:
+            title = item['title']
+            max_length = 15
+            title = truncate_text(title, max_length)
+            url = item['url']
 
-        final_resp += "\n" + f"标题：{title}\nURL：{url}\n"
-        # print(f"标题：{title}\nURL：{url}\n")
-    final_resp = re.sub(r'\n', r'\r\n', final_resp)
-    final_resp = final_resp.replace("Generating answers for you...", "")
-    final_resp = re.sub(r'Searching the web for.*', '', final_resp)
+            final_resp += "\n" + f"标题：{title}\nURL：{url}\n"
+            # print(f"标题：{title}\nURL：{url}\n")
+        final_resp = re.sub(r'\n', r'\r\n', final_resp)
+        final_resp = final_resp.replace("Generating answers for you...", "")
+        final_resp = re.sub(r'Searching the web for.*', '', final_resp)
+    except Exception as e:
+        final_resp = response["text"]
     return tuuz.Ret.success(0, response, final_resp)
