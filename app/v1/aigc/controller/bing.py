@@ -54,6 +54,12 @@ async def text():
         conversation = json.loads(bing["conversation"])
         print("设定conversation")
         await bot.chat_hub.set_conversation(conversation_dict=conversation)
+    except Exception as error:
+        conversation = {}
+        bot = None
+        return tuuz.Ret.fail(500, error, "conversation设定故障")
+
+    try:
         response = await bot.ask(
             prompt=text,
             conversation_style=ConversationStyle.precise,
@@ -61,9 +67,8 @@ async def text():
             search_result=False,
         )
     except Exception as error:
-        conversation = {}
         bot = None
-        return tuuz.Ret.fail(500, error, "conversation设定故障")
+        return tuuz.Ret.fail(500, error, error)
 
     # If you are using non ascii char you need set ensure_ascii=False
     print(json.dumps(response, indent=2, ensure_ascii=False))
