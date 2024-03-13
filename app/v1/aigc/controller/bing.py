@@ -88,7 +88,8 @@ async def text():
 
     for item in messages:
         if "sourceAttributions" in item:
-            final_resp += "\n\n\n\n另外查到一些数据供你参考：\n"
+            if len(item['sourceAttributions']) > 0:
+                final_resp += "\n\n\n\n另外查到一些数据供你参考：\n"
             for sourceAttributions in item['sourceAttributions']:
                 title = sourceAttributions['providerDisplayName']
                 max_length = 20
