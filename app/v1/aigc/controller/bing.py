@@ -74,7 +74,7 @@ async def text():
         return tuuz.Ret.fail(500, error, error)
 
     # If you are using non ascii char you need set ensure_ascii=False
-    # print(json.dumps(response, indent=2, ensure_ascii=False))
+    print(json.dumps(response, indent=2, ensure_ascii=False))
     conversation = await bot.chat_hub.get_conversation()
     # print(conversation)
     tuuz.Database.Db().table("ai_bing").whereRow('project_name', data["name"]).update({"conversation": json.dumps(conversation)})
