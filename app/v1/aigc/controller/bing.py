@@ -62,6 +62,7 @@ async def text():
         )
     except Exception as error:
         conversation = {}
+        bot = None
         return tuuz.Ret.fail(500, error, "conversation设定故障")
 
     # If you are using non ascii char you need set ensure_ascii=False
