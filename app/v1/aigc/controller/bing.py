@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import time
 
 from flask import Blueprint
 from re_edge_gpt import Chatbot, ConversationStyle
@@ -46,6 +47,7 @@ async def text():
     if bing["cookies"] is None:
         return tuuz.Ret.fail(400, 'bing未启用')
     global bot
+    starttime = time.time()
     if bot is None:
         cookies = json.loads(bing["cookies"])
         bot = await Chatbot.create(cookies=cookies)
@@ -103,4 +105,6 @@ async def text():
         final_resp = re.sub(r'Searching the web for.*', '', final_resp)
     except Exception as e:
         final_resp = response["text"]
+    endtime = time.time()
+    print("运行时间", endtime - starttime)
     return tuuz.Ret.success(0, response, final_resp)
