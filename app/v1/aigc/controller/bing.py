@@ -88,12 +88,13 @@ async def text():
 
     for item in messages:
         if "sourceAttributions" in item:
+            final_resp += "\n\n\n\n另外查到一些数据供你参考：\n"
             for sourceAttributions in item['sourceAttributions']:
                 title = sourceAttributions['providerDisplayName']
                 max_length = 15
                 title = truncate_text(title, max_length)
                 url = sourceAttributions['seeMoreUrl']
-                final_resp += "\n" + f"标题：{title}\nURL：{url}\n"
+                final_resp += "\n" + f"{title}:\n{url}\n"
                 print(f"标题：{title}\nURL：{url}\n")
     final_resp = re.sub(r'\n', r'\r\n', final_resp)
     #     final_resp = final_resp.replace("Generating answers for you...", "")
