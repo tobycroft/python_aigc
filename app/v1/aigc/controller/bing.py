@@ -52,7 +52,6 @@ async def text():
         cookies = json.loads(bing["cookies"])
         bot = await Chatbot.create(cookies=cookies)
     try:
-        global conversation
         conversation = json.loads(bing["conversation"])
         print("设定conversation")
         await bot.chat_hub.set_conversation(conversation_dict=conversation)
@@ -61,7 +60,6 @@ async def text():
         bot = None
         print(error)
         return tuuz.Ret.fail(500, error, "conversation设定故障")
-
     try:
         response = await bot.ask(
             prompt=text,
