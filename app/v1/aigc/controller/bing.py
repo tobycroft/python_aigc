@@ -56,7 +56,6 @@ async def text():
         print("设定conversation")
         await bot.chat_hub.set_conversation(conversation_dict=conversation)
     except Exception as error:
-        conversation = {}
         bot = None
         print("error-conversation", error)
         return tuuz.Ret.fail(500, error, "conversation设定故障")
