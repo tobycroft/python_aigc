@@ -71,7 +71,7 @@ async def text():
     except Exception as error:
         bot = None
         print(error)
-        return tuuz.Ret.fail(500, error, error)
+        return tuuz.Ret.fail(500, error, "生成失败，请重新提问")
 
     # If you are using non ascii char you need set ensure_ascii=False
     print(json.dumps(response, indent=2, ensure_ascii=False))
@@ -101,43 +101,3 @@ async def text():
     print("运行时间", endtime - starttime)
     return tuuz.Ret.success(0, response, final_resp)
 
-
-@Controller.post('/stream')
-async def stream():
-    token = tuuz.Input.Get.String("token")
-    text = tuuz.Input.Post.String("text")
-    data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
-    bing = tuuz.Database.Db().table("ai_bing").whereRow('project_name', data["name"]).find()
-    if bing["cookies"] is None:
-        return tuuz.Ret.fail(400, 'bing未启用')
-    global bot
-    starttime = time.time()
-    if bot is None:
-        cookies = json.loads(bing["cookies"])
-        bot = await Chatbot.create(cookies=cookies)
-    try:
-        global conversation
-        conversation = json.loads(bing["conversation"])
-        print("设定conversation")
-        await bot.chat_hub.set_conversation(conversation_dict=conversation)
-    except Exception as error:
-        conversation = {}
-        bot = None
-        print(error)
-        return tuuz.Ret.fail(500, error, "conversation设定故障")
-
-    try:
-        async for final, response in bot.ask_stream(
-                prompt=text,
-                conversation_style=ConversationStyle.precise,
-                search_result=False,
-        ):
-            print(json.dumps(response, indent=2, ensure_ascii=False))
-    except Exception as error:
-        bot = None
-        print(error)
-        return tuuz.Ret.fail(500, error, error)
-
-    endtime = time.time()
-    print("运行时间", endtime - starttime)
-    return tuuz.Ret.success(0, )
