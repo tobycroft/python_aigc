@@ -58,7 +58,7 @@ async def text():
     except Exception as error:
         conversation = {}
         bot = None
-        print(error)
+        print("error-conversation", error)
         return tuuz.Ret.fail(500, error, "conversation设定故障")
     try:
         response = await bot.ask(
