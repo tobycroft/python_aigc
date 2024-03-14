@@ -56,6 +56,8 @@ async def text():
         print("设定conversation")
         await bot.chat_hub.set_conversation(conversation_dict=conversation)
     except Exception as error:
+        if bot is not None:
+            await bot.close()
         bot = None
         print("error-conversation", error)
         return tuuz.Ret.fail(500, error, "conversation设定故障")
@@ -66,6 +68,8 @@ async def text():
             simplify_response=False,
         )
     except Exception as error:
+        if bot is not None:
+            await bot.close()
         bot = None
         print("error-bot-ask", error)
         return tuuz.Ret.fail(500, error, "生成失败，请重新提问")
@@ -76,7 +80,8 @@ async def text():
     # print(conversation)
     tuuz.Database.Db().table("ai_bing").whereRow('project_name', data["name"]).update({"conversation": json.dumps(conversation)})
     if response["item"]["throttling"]["numUserMessagesInConversation"] >= response["item"]["throttling"]["maxNumUserMessagesInConversation"]:
-        await bot.close()
+        if bot is not None:
+            await bot.close()
         bot = None
     messages = response["item"]["messages"]
     output_cleaned = re.sub(r'\[\^\d\^]', '', response["item"]["result"]["message"])
