@@ -1,3 +1,4 @@
+import hashlib
 import os
 from urllib.parse import urlparse
 
@@ -61,8 +62,9 @@ async def qq():
     file = tuuz.Input.Post.String("file")
     response = requests.get(file, verify=False)
     response.raise_for_status()
-    parsed_url = urlparse(file)
-    filename = os.path.basename(parsed_url.path) + ".silk"
+    file_md5 = hashlib.md5()
+    file_md5.update(file)
+    filename = file_md5.hexdigest() + ".silk"
     dest_folder = "."
     file_path = os.path.join(dest_folder, filename)
     with open(file_path, "wb") as file:
