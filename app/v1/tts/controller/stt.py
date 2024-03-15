@@ -63,7 +63,7 @@ async def qq():
     response = requests.get(file, verify=False)
     response.raise_for_status()
     file_md5 = hashlib.md5()
-    file_md5.update(file)
+    file_md5.update(file.encode('utf-8'))
     filename = file_md5.hexdigest() + ".silk"
     dest_folder = "."
     file_path = os.path.join(dest_folder, filename)
