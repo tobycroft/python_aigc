@@ -21,3 +21,7 @@ Route.register_blueprint(aigc.Route, url_prefix="/aigc")
 import app.v1.llm.route as llm
 
 Route.register_blueprint(llm.Route, url_prefix="/llm")
+
+import app.v1.tts.route as tts
+
+Route.register_blueprint(tts.Route, url_prefix="/tts")

@@ -1,20 +1,24 @@
 import logging
+import os
+import sys
 import time
 from os import PathLike
 from pathlib import Path
 from typing import Literal, Optional
-import requests
-import sys
+from urllib.parse import urlparse
+
 import ffmpeg
+import requests
+
 from .orm import (ResourceCompleteRspSchema, ResourceCreateRspSchema,
                   ResultRspSchema, ResultStateEnum, TaskCreateRspSchema)
 
 __version__ = '0.0.2'
 
-API_REQ_UPLOAD    = 'https://member.bilibili.com/x/bcut/rubick-interface/resource/create' # 申请上传
-API_COMMIT_UPLOAD = 'https://member.bilibili.com/x/bcut/rubick-interface/resource/create/complete' # 提交上传
-API_CREATE_TASK   = 'https://member.bilibili.com/x/bcut/rubick-interface/task' # 创建任务
-API_QUERY_RESULT  = 'https://member.bilibili.com/x/bcut/rubick-interface/task/result' # 查询结果
+API_REQ_UPLOAD = 'https://member.bilibili.com/x/bcut/rubick-interface/resource/create'  # 申请上传
+API_COMMIT_UPLOAD = 'https://member.bilibili.com/x/bcut/rubick-interface/resource/create/complete'  # 提交上传
+API_CREATE_TASK = 'https://member.bilibili.com/x/bcut/rubick-interface/task'  # 创建任务
+API_QUERY_RESULT = 'https://member.bilibili.com/x/bcut/rubick-interface/task/result'  # 查询结果
 
 SUPPORT_SOUND_FORMAT = Literal['flac', 'aac', 'm4a', 'mp3', 'wav']
 
@@ -125,14 +129,23 @@ def run_everywhere(argg):
         logging.error(f'接口错误: {err.__str__()}')
         sys.exit(-1)
 
+
 class APIError(Exception):
     '接口调用错误'
+
     def __init__(self, code, msg) -> None:
         self.code = code
         self.msg = msg
         super().__init__()
+
     def __str__(self) -> str:
         return f'{self.code}:{self.msg}'
+
+
+def is_http_url(url):
+    parsed_url = urlparse(url)
+    return parsed_url.scheme in ['http', 'https']
+
 
 class BcutASR:
     '必剪 语音识别接口'
@@ -149,28 +162,37 @@ class BcutASR:
     __etags: list[str]
     __download_url: str
     task_id: str
-    
+
     def __init__(self, file: Optional[str | PathLike] = None) -> None:
         self.session = requests.Session()
         self.task_id = None
         self.__etags = []
         if file:
             self.set_data(file)
-    
+
     def set_data(self,
-        file: Optional[str | PathLike] = None, 
-        raw_data: Optional[bytes] = None,
-        data_fmt: Optional[SUPPORT_SOUND_FORMAT] = None
-    ) -> None:
+                 file: Optional[str | PathLike] = None,
+                 raw_data: Optional[bytes] = None,
+                 data_fmt: Optional[SUPPORT_SOUND_FORMAT] = None
+                 ) -> None:
         '设置欲识别的数据'
         if file:
             if not isinstance(file, (str, PathLike)):
                 raise TypeError('unknow file ptr')
-            # 文件类
-            file = Path(file)
-            self.sound_bin = open(file, 'rb').read()
-            suffix = data_fmt or file.suffix[1:]
-            self.sound_name = file.name
+            if is_http_url(file):
+                response = requests.get(file)
+                response.raise_for_status()
+                parsed_url = urlparse(file)
+                filename = os.path.basename(parsed_url.path)
+                dest_folder = "."
+                file_path = os.path.join(dest_folder, filename)
+                with open(file_path, "wb") as file:
+                    file.write(response.content)
+            else:
+                file = Path(file)
+                self.sound_bin = open(file, 'rb').read()
+                suffix = data_fmt or file.suffix[1:]
+                self.sound_name = file.name
         elif raw_data:
             # bytes类
             self.sound_bin = raw_data
@@ -182,7 +204,7 @@ class BcutASR:
             raise TypeError('format is not support')
         self.sound_fmt = suffix
         logging.info(f'加载文件成功: {self.sound_name}')
-    
+
     def upload(self) -> None:
         '申请上传'
         if not self.sound_bin or not self.sound_fmt:
@@ -209,7 +231,7 @@ class BcutASR:
         logging.info(f'申请上传成功, 总计大小{resp_data.size // 1024}KB, {self.__clips}分片, 分片大小{resp_data.per_size // 1024}KB: {self.__in_boss_key}')
         self.__upload_part()
         self.__commit_upload()
-        
+
     def __upload_part(self) -> None:
         '上传音频数据'
         for clip in range(self.__clips):
@@ -217,13 +239,13 @@ class BcutASR:
             end_range = (clip + 1) * self.__per_size
             logging.info(f'开始上传分片{clip}: {start_range}-{end_range}')
             resp = self.session.put(self.__upload_urls[clip],
-                data=self.sound_bin[start_range:end_range],
-            )
+                                    data=self.sound_bin[start_range:end_range],
+                                    )
             resp.raise_for_status()
             etag = resp.headers.get('Etag')
             self.__etags.append(etag)
             logging.info(f'分片{clip}上传成功: {etag}')
-    
+
     def __commit_upload(self) -> None:
         '提交上传数据'
         resp = self.session.post(API_COMMIT_UPLOAD, data={
@@ -241,7 +263,7 @@ class BcutASR:
         resp_data = ResourceCompleteRspSchema.parse_obj(resp['data'])
         self.__download_url = resp_data.download_url
         logging.info(f'提交成功')
-    
+
     def create_task(self) -> str:
         '开始创建转换任务'
         resp = self.session.post(API_CREATE_TASK, json={
@@ -257,7 +279,7 @@ class BcutASR:
         self.task_id = resp_data.task_id
         logging.info(f'任务已创建: {self.task_id}')
         return self.task_id
-    
+
     def result(self, task_id: Optional[str] = None) -> ResultRspSchema:
         '查询转换结果'
         resp = self.session.get(API_QUERY_RESULT, params={
