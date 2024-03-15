@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 import ffmpeg
 import pysilk
 import requests
-from flask import Blueprint
+from flask import Blueprint, request
 from urllib3.exceptions import InsecureRequestWarning
 
 import tuuz.Input
@@ -60,17 +60,18 @@ async def audio():
 
 @Controller.post('/qq')
 async def qq():
-    file = tuuz.Input.Post.String("url")
+    url = tuuz.Input.Post.String("url")
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    response = requests.get(file, verify=False)
+    response = requests.get(url,verify=False)
     response.raise_for_status()
+    print(response.content)
     file_md5 = hashlib.md5()
-    file_md5.update(file.encode('utf-8'))
+    file_md5.update(url.encode('utf-8'))
     filename = file_md5.hexdigest() + ".silk"
     dest_folder = "."
     file_path = os.path.join(dest_folder, filename)
-    with open(file_path, "wb") as file:
-        file.write(response.content)
+    with open(file_path, "wb") as url:
+        url.write(response.content)
     with open(file_path, "rb") as silk, open(filename + ".pcm", "wb") as pcm:
         pysilk.decode(silk, pcm, 44100)
     input_stream = ffmpeg.input(filename + ".pcm", format='s16le', ar=44100, ac=1)
@@ -95,4 +96,4 @@ async def qq():
     # 判断是否存在字幕
     if subtitle.has_data():
         return tuuz.Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
-    return tuuz.Ret.fail(500, subtitle, '识别失败')
+    return tuuz.Ret.fail(500, None, '识别失败')
