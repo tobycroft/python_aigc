@@ -188,6 +188,11 @@ class BcutASR:
                 file_path = os.path.join(dest_folder, filename)
                 with open(file_path, "wb") as file:
                     file.write(response.content)
+                file = Path(file_path)
+                self.sound_bin = open(file, 'rb').read()
+                suffix = data_fmt or file.suffix[1:]
+                self.sound_name = file.name
+                os.remove(file_path)
             else:
                 file = Path(file)
                 self.sound_bin = open(file, 'rb').read()
