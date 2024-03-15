@@ -31,15 +31,16 @@ async def audio():
         file.write(response.content)
     with open(file_path, "rb") as silk, open(filename + ".pcm", "wb") as pcm:
         pysilk.decode(silk, pcm, 44100)
-    input_stream = ffmpeg.input(filename + ".pcm", format='s16le',  ar=44100, ac=1)
+    input_stream = ffmpeg.input(filename + ".pcm", format='s16le', ar=44100, ac=1)
     output_stream = ffmpeg.output(input_stream, filename + ".mp3")
-    await ffmpeg.run(output_stream)
+    ffmpeg.run(output_stream)
     asr = BcutASR(filename + ".mp3")
     # asr = BcutASR('bb.wav')
     asr.upload()  # 上传文件
     asr.create_task()  # 创建任务
     os.remove(file_path)
-    # os.remove("output.pcm")
+    os.remove(file_path + ".pcm")
+    os.remove(file_path + ".mp3")
     # 轮询检查结果
     while True:
         result = asr.result()
