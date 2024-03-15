@@ -35,4 +35,4 @@ async def audio():
     if subtitle.has_data():
         return tuuz.Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
     else:
-        return tuuz.Ret.fail(0, subtitle, '识别失败')
+        return tuuz.Ret.fail(500, subtitle, '识别失败')
