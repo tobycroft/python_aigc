@@ -5,7 +5,6 @@ import ffmpeg
 import pysilk
 import requests
 from flask import Blueprint
-from urllib3.exceptions import InsecureRequestWarning
 
 import tuuz.Input
 import tuuz.Ret
@@ -60,7 +59,6 @@ async def audio():
 @Controller.post('/qq')
 async def qq():
     file = tuuz.Input.Post.String("file")
-    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     response = requests.get(file, verify=False)
     response.raise_for_status()
     parsed_url = urlparse(file)
