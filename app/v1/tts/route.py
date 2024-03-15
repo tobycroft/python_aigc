@@ -15,4 +15,8 @@ def index():
 
 import app.v1.tts.controller.index
 
-Route.register_blueprint(app.v1.tts.controller.index.Controller, url_prefix="/study")
+Route.register_blueprint(app.v1.tts.controller.index.Controller, url_prefix="/tts")
+
+import app.v1.tts.controller.stt
+
+Route.register_blueprint(app.v1.tts.controller.stt.Controller, url_prefix="/stt")
