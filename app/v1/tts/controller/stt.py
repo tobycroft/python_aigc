@@ -2,6 +2,7 @@ import os
 
 from flask import Blueprint
 
+import tuuz.Input
 import tuuz.Ret
 from extend.bcut_asr import BcutASR, ResultStateEnum
 
@@ -15,7 +16,8 @@ def slash():
 
 @Controller.post('/audio')
 async def audio():
-    asr = BcutASR('http://image.tuuz.cc:81/gobotq/20240315/dd3d0790cf1ff7fc7e7adf878433c335.wav')
+    file = tuuz.Input.Post.String("file")
+    asr = BcutASR(file)
     # asr = BcutASR('bb.wav')
     asr.upload()  # 上传文件
     asr.create_task()  # 创建任务
