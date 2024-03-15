@@ -87,7 +87,7 @@ async def text():
     messages = response["item"]["messages"]
     output_cleaned = re.sub(r'\[\^\d\^]', '', response["item"]["result"]["message"])
     final_resp = output_cleaned.replace("<br>", "\n")
-
+    normal_text = final_resp
     for item in messages:
         if "sourceAttributions" in item:
             if len(item['sourceAttributions']) > 0:
@@ -102,4 +102,4 @@ async def text():
     final_resp = re.sub(r'\n', r'\r\n', final_resp)
     endtime = time.time()
     print("运行时间", endtime - starttime)
-    return tuuz.Ret.success(0, response, final_resp)
+    return tuuz.Ret.success(0, normal_text, final_resp)
