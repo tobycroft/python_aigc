@@ -179,25 +179,10 @@ class BcutASR:
         if file:
             if not isinstance(file, (str, PathLike)):
                 raise TypeError('unknow file ptr')
-            if is_http_url(file):
-                response = requests.get(file)
-                response.raise_for_status()
-                parsed_url = urlparse(file)
-                filename = os.path.basename(parsed_url.path)
-                dest_folder = "."
-                file_path = os.path.join(dest_folder, filename)
-                with open(file_path, "wb") as file:
-                    file.write(response.content)
-                file = Path(file_path)
-                self.sound_bin = open(file, 'rb').read()
-                suffix = data_fmt or file.suffix[1:]
-                self.sound_name = file.name
-                os.remove(file_path)
-            else:
-                file = Path(file)
-                self.sound_bin = open(file, 'rb').read()
-                suffix = data_fmt or file.suffix[1:]
-                self.sound_name = file.name
+            file = Path(file)
+            self.sound_bin = open(file, 'rb').read()
+            suffix = data_fmt or file.suffix[1:]
+            self.sound_name = file.name
         elif raw_data:
             # bytes类
             self.sound_bin = raw_data
