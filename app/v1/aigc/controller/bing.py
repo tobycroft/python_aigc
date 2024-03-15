@@ -54,8 +54,8 @@ async def text():
     try:
         if bing["conversation"] is not None or "":
             conversation = json.loads(bing["conversation"])
-        print("设定conversation")
-        await bot.chat_hub.set_conversation(conversation_dict=conversation)
+            await bot.chat_hub.set_conversation(conversation_dict=conversation)
+            print("设定conversation")
     except Exception as error:
         if bot is not None:
             await bot.close()
