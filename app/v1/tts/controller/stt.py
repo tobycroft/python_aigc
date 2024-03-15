@@ -21,7 +21,7 @@ def slash():
 @Controller.post('/audio')
 async def audio():
     file = tuuz.Input.Post.String("file")
-    response = requests.get(file)
+    response = requests.get(file,verify=False)
     response.raise_for_status()
     parsed_url = urlparse(file)
     filename = os.path.basename(parsed_url.path)
