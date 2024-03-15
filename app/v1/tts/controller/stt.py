@@ -33,6 +33,6 @@ async def audio():
     subtitle = result.parse()
     # 判断是否存在字幕
     if subtitle.has_data():
-        return tuuz.Ret.success(0, subtitle, subtitle.to_txt())
+        return tuuz.Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
     else:
-        return tuuz.Ret.fail(0, subtitle, '识别失败')
+        return tuuz.Ret.fail(0, subtitle.to_srt(), '识别失败')
