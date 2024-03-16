@@ -24,3 +24,7 @@ Route.register_blueprint(app.v1.aigc.controller.bing.Controller, url_prefix="/bi
 import app.v1.aigc.controller.chatgpt
 
 Route.register_blueprint(app.v1.aigc.controller.chatgpt.Controller, url_prefix="/chatgpt")
+
+import app.v1.aigc.controller.groq
+
+Route.register_blueprint(app.v1.aigc.controller.groq.Controller, url_prefix="/groq")
