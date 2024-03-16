@@ -5,7 +5,6 @@ from flask import Blueprint
 import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
-
 from extend.groqccoli import Client
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
@@ -27,7 +26,7 @@ def before():
 
 @Controller.post('/text')
 async def text():
-
-groq_client = Client()
-chat = groq_client.create_chat("What is the meaning of life?")
-print(chat.content)
+    groq_client = Client()
+    chat = groq_client.create_chat("人生的意义是什么?")
+    print(chat.content)
+    return tuuz.Ret.success(0, chat, chat.content)
