@@ -37,6 +37,8 @@ def before():
 
 bot = None
 
+cont = 0
+
 
 @Controller.post('/text')
 async def text():
@@ -73,7 +75,13 @@ async def text():
             await bot.close()
         bot = None
         print("error-bot-ask", error)
-        return tuuz.Ret.fail(500, error, "生成失败，请重新提问")
+        global cont
+        cont += 1
+        if cont > 1:
+            cont = 0
+            return tuuz.Ret.fail(500, error, "生成失败，请重新提问")
+        else:
+            return text()
 
     # If you are using non ascii char you need set ensure_ascii=False
     print("response:", json.dumps(response, indent=2, ensure_ascii=False))
