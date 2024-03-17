@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import os
 from urllib.parse import urlparse
@@ -5,7 +6,7 @@ from urllib.parse import urlparse
 import ffmpeg
 import pysilk
 import requests
-from flask import Blueprint, request
+from flask import Blueprint
 from urllib3.exceptions import InsecureRequestWarning
 
 import tuuz.Input
@@ -62,7 +63,7 @@ async def audio():
 async def qq():
     url = tuuz.Input.Post.String("url")
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    response = requests.get(url,verify=False)
+    response = requests.get(url, verify=False)
     response.raise_for_status()
     print(response.content)
     file_md5 = hashlib.md5()
@@ -83,6 +84,38 @@ async def qq():
     asr.create_task()  # 创建任务
     os.remove(file_path)
     os.remove(file_path + ".pcm")
+    os.remove(file_path + ".mp3")
+    # 轮询检查结果
+    while True:
+        result = asr.result()
+        # 判断识别成功
+        if result.state == ResultStateEnum.COMPLETE:
+            break
+
+    # 解析字幕内容
+    subtitle = result.parse()
+    # 判断是否存在字幕
+    if subtitle.has_data():
+        return tuuz.Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
+    return tuuz.Ret.fail(500, None, '识别失败')
+
+
+@Controller.post('/b64')
+async def b64():
+    b64 = tuuz.Input.Post.String("base64")
+    base64_decode = base64.decodestring(b64)
+    dest_folder = "."
+    hashlib.md5()
+    file_md5 = hashlib.md5()
+    file_md5.update(b64.encode('utf-8'))
+    filename = file_md5.hexdigest() + ".mp3"
+    file_path = os.path.join(dest_folder, filename)
+    with open(file_path, "wb") as fb:
+        fb.write(base64_decode)
+    asr = BcutASR(filename + ".mp3")
+    # asr = BcutASR('bb.wav')
+    asr.upload()  # 上传文件
+    asr.create_task()  # 创建任务
     os.remove(file_path + ".mp3")
     # 轮询检查结果
     while True:
