@@ -103,7 +103,7 @@ async def qq():
 @Controller.post('/b64')
 async def b64():
     b64 = tuuz.Input.Post.String("base64")
-    base64_decode = base64.decodestring(b64)
+    base64_decode = base64.b64decode(b64)
     dest_folder = "."
     hashlib.md5()
     file_md5 = hashlib.md5()
@@ -112,11 +112,11 @@ async def b64():
     file_path = os.path.join(dest_folder, filename)
     with open(file_path, "wb") as fb:
         fb.write(base64_decode)
-    asr = BcutASR(filename + ".mp3")
+    asr = BcutASR(filename)
     # asr = BcutASR('bb.wav')
     asr.upload()  # 上传文件
     asr.create_task()  # 创建任务
-    os.remove(file_path + ".mp3")
+    os.remove(file_path)
     # 轮询检查结果
     while True:
         result = asr.result()
