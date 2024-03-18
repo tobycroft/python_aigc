@@ -113,7 +113,7 @@ async def text():
     endtime = time.time()
     print("运行时间", endtime - starttime)
     try:
-        tuuz.Database.Db().table("log").insert({"project": data["name"], "text": json.dumps(response, indent=2, ensure_ascii=False)})
+        tuuz.Database.Db().table("log").insert({"project": data["name"], "ask": text, "reply": json.dumps(response, indent=2, ensure_ascii=False)})
     except Exception as error:
         print("db-log", error)
     return tuuz.Ret.success(0, normal_text, final_resp)
