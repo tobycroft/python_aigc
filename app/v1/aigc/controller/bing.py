@@ -96,14 +96,14 @@ async def text():
     output_cleaned = re.sub(r'\[\^\d\^]', '', response["item"]["result"]["message"])
     final_resp = output_cleaned.replace("<br>", "\n")
     normal_text = final_resp
-    normal_text_length=len(normal_text)
+    normal_text_length = len(normal_text)
     for item in messages:
         if "sourceAttributions" in item:
             if len(item['sourceAttributions']) > 0:
                 final_resp += "\n\n另外查到一些数据供你参考：\n"
             for sourceAttributions in item['sourceAttributions']:
                 title = sourceAttributions['providerDisplayName']
-                if normal_text_length<100:
+                if normal_text_length < 100:
                     normal_text += ";" + truncate_text(title, 100)
                 title = truncate_text(title, 20)
                 url = sourceAttributions['seeMoreUrl']
@@ -112,4 +112,5 @@ async def text():
     final_resp = re.sub(r'\n', r'\r\n', final_resp)
     endtime = time.time()
     print("运行时间", endtime - starttime)
+    tuuz.Database.Db().table("log").insert({"project": data["name"], "text": json.dumps(response, indent=2, ensure_ascii=False)})
     return tuuz.Ret.success(0, normal_text, final_resp)
