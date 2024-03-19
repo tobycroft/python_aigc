@@ -101,15 +101,15 @@ async def text():
         if "sourceAttributions" in item:
             if len(item['sourceAttributions']) > 0:
                 final_resp += "\n\n另外查到一些数据供你参考：\n"
-            for sourceAttributions in item['sourceAttributions']:
-                if "providerDisplayName" in sourceAttributions and "seeMoreUrl" in sourceAttributions:
-                    title = sourceAttributions['providerDisplayName']
-                    if normal_text_length < 100:
-                        normal_text += ";" + truncate_text(title, 100)
-                    title = truncate_text(title, 20)
-                    url = sourceAttributions['seeMoreUrl']
-                    final_resp += "\n" + f"{title}:\n{url}\n"
-                    print(f"标题：{title}\nURL：{url}\n")
+                for sourceAttributions in item['sourceAttributions']:
+                    if "providerDisplayName" in sourceAttributions and "seeMoreUrl" in sourceAttributions:
+                        title = sourceAttributions['providerDisplayName']
+                        if normal_text_length < 100:
+                            normal_text += ";" + truncate_text(title, 100)
+                        title = truncate_text(title, 20)
+                        url = sourceAttributions['seeMoreUrl']
+                        final_resp += "\n" + f"{title}:\n{url}\n"
+                        print(f"标题：{title}\nURL：{url}\n")
     final_resp = re.sub(r'\n', r'\r\n', final_resp)
     endtime = time.time()
     print("运行时间", endtime - starttime)
