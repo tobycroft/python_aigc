@@ -34,4 +34,4 @@ async def text():
     if resp.status_code != 200:
         return tuuz.Ret.fail(500, resp, "TTS生成失败")
     json=resp.json()
-    return tuuz.Ret.success(0, json, resp.text)
+    return tuuz.Ret.success(0, json, json["audio_url"])
