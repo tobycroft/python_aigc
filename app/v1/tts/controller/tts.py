@@ -30,4 +30,8 @@ async def text():
         'Content-type': data.content_type
     }
     resp = requests.post("http://tts.aerofsx.com/request_tts.php", data=data, headers=headers)
-    return tuuz.Ret.success(0, resp, resp.text)
+    resp.raise_for_status()
+    if resp.status_code != 200:
+        return tuuz.Ret.fail(500, resp, "TTS生成失败")
+    json=resp.json()
+    return tuuz.Ret.success(0, json, resp.text)
