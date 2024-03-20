@@ -48,3 +48,11 @@ async def text():
     tuuz.Database.Db().table("log").insert({"type": "gemini", "project": data["name"], "ask": text, "reply": response.text})
     print(response)
     return tuuz.Ret.success(0, {"text": response.text, "image": response.images}, response.text)
+
+
+@Controller.post('/test')
+async def test():
+    data = tuuz.Database.Db().table("log").where({"type": "gemini"}).find()
+    if data is None:
+        tuuz.Ret.fail(404)
+    return tuuz.Ret.success(0, data, data)
