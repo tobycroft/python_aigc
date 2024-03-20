@@ -52,7 +52,7 @@ async def text():
 
 @Controller.post('/test')
 async def test():
-    data = tuuz.Database.Db().table("log").whereRow("type"， "gemini").find()
+    data = tuuz.Database.Db().table("log").whereRow("type", "gemini").find()
     if data is None:
         tuuz.Ret.fail(404)
     return tuuz.Ret.success(0, data, data["reply"])
