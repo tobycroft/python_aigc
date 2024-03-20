@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Blueprint
@@ -45,5 +46,6 @@ async def text():
     chat = ChatSession(client, cid=gemini["cid"], rid=gemini["rid"], rcid=gemini["rcid"])
     response = await chat.send_message(text)
     tuuz.Database.Db().table("ai_gemini").whereRow('project_name', data["name"]).update({"rcid": chat.rcid, "cid": chat.cid, "rid": chat.rid})
+    tuuz.Database.Db().table("log").insert({"type": "gemini", "project": data["name"], "ask": text, "reply": json.dumps(response, indent=2, ensure_ascii=False)})
     print(response)
     return tuuz.Ret.success(0, {"text": response.text, "image": response.images}, response.text)
