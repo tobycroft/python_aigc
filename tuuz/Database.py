@@ -266,8 +266,8 @@ class Db(object):
         sql = "select "
         if self.__distinct:
             sql += ' distinct '
-
-        sql += str(column) + " from " + str(self.__name)
+        quoted_elements = ['`' + element + '`' for element in column.split(',')]
+        sql += str(",".join(quoted_elements)) + " from " + str(self.__name)
 
         if self.__alias != '':
             sql += ' ' + self.__alias
@@ -289,7 +289,7 @@ class Db(object):
                 elif typeof(item) == 'dict':
                     values = 'null'
                     for column in all_column:
-                        if column['field'] == item.get('key'):
+                        if column['field'] == '`' + item.get('key') + '`':
                             # values = format_field(item.get('val'), column['type'])
                             values = item.get('val')
                             break
@@ -554,7 +554,6 @@ class Db(object):
                 return ','.join(list([item[0] for item in list_data]))
         except Exception as e:
             print(e)
-
         return list([{'field': item[0], 'type': item[1], 'key': item[4]} for item in list_data])
 
     def __getPk(self):
