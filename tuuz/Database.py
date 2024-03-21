@@ -267,7 +267,7 @@ class Db(object):
         if self.__distinct:
             sql += ' distinct '
         quoted_elements = ['`' + element + '`' for element in column.split(',')]
-        sql += str(",".join(quoted_elements)) + " from " + str(self.__name)
+        sql += str(",".join(quoted_elements)) + " from `" + str(self.__name)+"`"
 
         if self.__alias != '':
             sql += ' ' + self.__alias
