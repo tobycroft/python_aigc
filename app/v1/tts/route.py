@@ -13,10 +13,10 @@ def index():
     return folder_name
 
 
-import app.v1.tts.controller.stt
+import app.v1.tts.controller.stt as stt
 
-Route.register_blueprint(app.v1.tts.controller.stt.Controller, url_prefix="/stt")
+Route.register_blueprint(stt.Controller, url_prefix=stt.Controller.name)
 
-import app.v1.tts.controller.tts
+import app.v1.tts.controller.tts as tts
 
-Route.register_blueprint(app.v1.tts.controller.tts.Controller, url_prefix="/tts")
+Route.register_blueprint(tts.Controller, url_prefix=tts.Controller.name)

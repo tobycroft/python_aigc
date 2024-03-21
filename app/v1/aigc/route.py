@@ -13,18 +13,18 @@ def index():
     return folder_name
 
 
-import app.v1.aigc.controller.gemini
+import app.v1.aigc.controller.gemini as gemini
 
-Route.register_blueprint(app.v1.aigc.controller.gemini.Controller, url_prefix="/gemini")
+Route.register_blueprint(gemini.Controller, url_prefix=gemini.Controller.name)
 
-import app.v1.aigc.controller.bing
+import app.v1.aigc.controller.bing as bing
 
-Route.register_blueprint(app.v1.aigc.controller.bing.Controller, url_prefix="/bing")
+Route.register_blueprint(bing.Controller, url_prefix=bing.Controller.name)
 
-import app.v1.aigc.controller.chatgpt
+import app.v1.aigc.controller.chatgpt as chatgpt
 
-Route.register_blueprint(app.v1.aigc.controller.chatgpt.Controller, url_prefix="/chatgpt")
+Route.register_blueprint(chatgpt.Controller, url_prefix=chatgpt.Controller.name)
 
-import app.v1.aigc.controller.groq
+import app.v1.aigc.controller.groq as groq
 
-Route.register_blueprint(app.v1.aigc.controller.groq.Controller, url_prefix="/groq")
+Route.register_blueprint(groq.Controller, url_prefix=groq.Controller.name)

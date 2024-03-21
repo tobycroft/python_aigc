@@ -16,4 +16,4 @@ def index():
 
 import app.v1.langchain.controller.learn as learn
 
-Route.register_blueprint(learn.Controller, url_prefix="/learn")
+Route.register_blueprint(learn.Controller, url_prefix=learn.Controller.name)

@@ -15,4 +15,4 @@ def index():
 
 import app.v1.sim.controller.openai as openai
 
-Route.register_blueprint(openai.Controller, url_prefix="/openai")
+Route.register_blueprint(openai.Controller, url_prefix=openai.Controller.name)

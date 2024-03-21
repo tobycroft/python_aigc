@@ -13,6 +13,6 @@ def index():
     return folder_name
 
 
-import app.v1.llm.controller.study as Study
+import app.v1.llm.controller.study as study
 
-Route.register_blueprint(Study.Controller, url_prefix="/study")
+Route.register_blueprint(study.Controller, url_prefix=study.Controller.name)
