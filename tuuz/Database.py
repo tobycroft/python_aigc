@@ -289,7 +289,7 @@ class Db(object):
                 elif typeof(item) == 'dict':
                     values = 'null'
                     for column in all_column:
-                        if column['field'] == '`' + item.get('key') + '`':
+                        if column['field'] == item.get('key'):
                             # values = format_field(item.get('val'), column['type'])
                             values = item.get('val')
                             break
