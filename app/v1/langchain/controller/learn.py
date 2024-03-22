@@ -4,7 +4,6 @@ from http import HTTPStatus
 import dashscope
 from flask import Blueprint
 
-import Input
 import tuuz
 from app.v1.langchain.model import QianwenModel
 
