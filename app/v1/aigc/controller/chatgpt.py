@@ -26,7 +26,7 @@ def before():
 
 @Controller.post('/text')
 async def text():
-    token = tuuz.Input.Get.String("token")
+    token = tuuz.Input.Header.String("token")
     text = tuuz.Input.Post.String("text")
     data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
     bing = tuuz.Database.Db().table("ai_chatgpt").whereRow('project_name', data["name"]).find()

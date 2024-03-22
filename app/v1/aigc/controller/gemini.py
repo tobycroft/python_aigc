@@ -27,7 +27,7 @@ def before():
 @Controller.post('/text')
 async def text():
     global client, chat, gemini
-    token = tuuz.Input.Get.String("token")
+    token = tuuz.Input.Header.String("token")
     text = tuuz.Input.Post.String("text")
     data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
     gemini = tuuz.Database.Db().table("ai_gemini").whereRow('project_name', data["name"]).find()
