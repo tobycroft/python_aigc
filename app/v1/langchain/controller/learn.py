@@ -4,9 +4,9 @@ from http import HTTPStatus
 import dashscope
 from flask import Blueprint
 
-import tuuz
-import Input
-import Ret
+import tuuz.Input
+import tuuz.Ret
+import tuuz.Database
 
 from app.v1.langchain.model import QianwenModel
 
