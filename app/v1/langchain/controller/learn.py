@@ -31,8 +31,6 @@ def before():
 async def text():
     token = Input.Combi.String("token")
     qianwen = QianwenModel.Api_find_byProjectName(token)
-    Ret.success(0)
-    return
     if qianwen is None:
         return tuuz.Ret.fail(404, "没有找到对应的项目")
     messages = [{'role': 'system', 'content': 'You are a helpful assistant.'},
