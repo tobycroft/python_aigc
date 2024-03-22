@@ -1,7 +1,8 @@
 import config.app
 import config.db
-import tuuz.Redis.pyredis
-import tuuz.database.db
+import tuuz
+import Redis.pyredis
+import database.db
 from router.router import MainRoute
 
 config.app.init()

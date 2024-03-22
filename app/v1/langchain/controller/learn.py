@@ -5,6 +5,9 @@ import dashscope
 from flask import Blueprint
 
 import tuuz
+import Input
+import Ret
+
 from app.v1.langchain.model import QianwenModel
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
@@ -28,6 +31,8 @@ def before():
 async def text():
     token = Input.Combi.String("token")
     qianwen = QianwenModel.Api_find_byProjectName(token)
+    Ret.success(0)
+    return
     if qianwen is None:
         return tuuz.Ret.fail(404, "没有找到对应的项目")
     messages = [{'role': 'system', 'content': 'You are a helpful assistant.'},
