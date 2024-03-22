@@ -29,7 +29,7 @@ def before():
 
 @Controller.post('/text')
 async def text():
-    token = Input.Combi.String("token")
+    token = tuuz.Input.Combi.String("token")
     qianwen = QianwenModel.Api_find_byProjectName(token)
     if qianwen is None:
         return tuuz.Ret.fail(404, "没有找到对应的项目")
