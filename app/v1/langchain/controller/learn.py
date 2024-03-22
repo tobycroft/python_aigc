@@ -2,11 +2,9 @@ import os
 from http import HTTPStatus
 
 import dashscope
-import requests
-from flask import Blueprint, request
+from flask import Blueprint
 
 import Input
-import tuuz
 import tuuz
 from app.v1.langchain.model import QianwenModel
 
@@ -54,4 +52,4 @@ async def text():
             response.request_id, response.status_code,
             response.code, response.message
         ))
-    return tuuz.Ret.success(0, )
+    return tuuz.Ret.success(0, response, response.message)
