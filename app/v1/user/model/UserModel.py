@@ -7,6 +7,10 @@ def Api_find_byUsername(username):
     return Database.Db().table(Table).where('username', username).find()
 
 
+def Api_find_byUsernameAndPassword(username, password):
+    return Database.Db().table(Table).where('username', username).where('password', password).find()
+
+
 def Api_insert(username, password):
     return Database.Db().table(Table).insert({
         'username': username,

@@ -1,7 +1,6 @@
 import os
 
 from flask import Blueprint
-from langchain.vectorstores import milvus
 
 import tuuz.Database
 import tuuz.Input
