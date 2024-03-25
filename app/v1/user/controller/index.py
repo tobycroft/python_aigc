@@ -50,6 +50,11 @@ async def login():
         return Ret.fail(500, None, '登录失败')
 
 
+@Controller.post('/phone')
+async def phone():
+    return Ret.success(0)
+
+
 @Controller.post('/register')
 async def register():
     username = Input.Post.String('username')
