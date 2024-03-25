@@ -6,25 +6,25 @@ class Stream:
     def __init__(self, stream_channel_name):
         self.stream_channel_name = app_conf.Project + ":" + stream_channel_name
 
-    def publish(self, value):
+    def Publish(self, value):
         return RedisPy.xadd(self.stream_channel_name, value)
 
-    def xlength(self):
+    def XLength(self):
         return RedisPy.xlen(self.stream_channel_name)
 
-    def xrange(self):
+    def XRange(self):
         return RedisPy.xrange(self.stream_channel_name, "-", "+")
 
-    def xrevrange(self):
+    def XRevrange(self):
         return RedisPy.xrevrange(self.stream_channel_name, "-", "+")
 
-    def xread(self):
+    def XRead(self):
         return RedisPy.xread({self.stream_channel_name: "0"})
 
-    def xgroup_create_consumer(self, group, consumer):
+    def XGroup_create_consumer(self, group, consumer):
         return RedisPy.xgroup_create(self.stream_channel_name, group, consumer, mkstream=True)
 
-    def xreadgroup(self, group, consumer):
+    def XReadgroup(self, group, consumer):
         return RedisPy.xreadgroup(group, consumer, {self.stream_channel_name: ">"}, count=1)
 
     @classmethod
