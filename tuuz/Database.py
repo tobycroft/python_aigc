@@ -142,6 +142,9 @@ def typeof(variate):
     return mold
 
 
+OP = {'=': '=', '>': '>', '<': '<', '>=': '>=', '<=': '<=', '<>': '<>', 'like': 'like', 'in': 'in', 'not in': '<>', 'is null': 'is null', 'is not null': 'is not null'}
+
+
 class Db(object):
     __conn = None
     __map = []
@@ -195,19 +198,26 @@ class Db(object):
         self.__name = self.prefix + table
         return self
 
-    def where(self, where=None):
-        if where is None:
-            return self
-        if typeof(where) == 'dict':
-            self.__map.append({'key': where.get('key'), 'val': "%s", 'type': where.get('type')})
-            self.__bindWhere.append(where.get("val"))
+    def where(self, where, val_mark=None, val2=None):
+        if where is not None and val_mark is not None and val2 is not None:
+            return self.where({'key': where, 'val': val2, 'type': val_mark})
+        elif where is not None and val_mark is not None:
+            return self.where({'key': where, 'val': val_mark, 'type': '='})
+        elif where is not None:
+            if typeof(where) == 'dict':
+                self.__map.append({'key': where.get('key'), 'val': "%s", 'type': where.get('type')})
+                self.__bindWhere.append(where.get("val"))
 
-        if typeof(where) == 'list':
-            for item in where:
-                self.where(item)
-        if typeof(where) == 'str':
-            self.__map.append(where)
-        return self
+            if typeof(where) == 'list':
+                for item in where:
+                    self.where(item)
+
+            if typeof(where) == 'str':
+                self.__map.append(where)
+            return self
+        else:
+            print('禁止不使用 where 条件')
+            return self
 
     def whereRow(self, key, val, mark='='):
         return self.where({'key': key, 'val': val, 'type': mark})
@@ -262,11 +272,10 @@ class Db(object):
         column = self.__column
         column = ['`' + element + '`' if element != '*' else element for element in column.split(',')]
         # if column == '*':
-            # column = ['`' + element + '`' for element in column.split(',')]
-            # for element in column.split(','):
-            #     if element!='*':
-            #         column = element
-
+        # column = ['`' + element + '`' for element in column.split(',')]
+        # for element in column.split(','):
+        #     if element!='*':
+        #         column = element
 
         sql = "select "
         if self.__distinct:
@@ -484,7 +493,7 @@ class Db(object):
         if fields == '' or values == '':
             return 0
         sql = str(" INSERT INTO " + self.__name + " ( " + fields + " ) values ( " + values + " ) ")
-        print(sql,self.__bindData)
+        print(sql, self.__bindData)
         pk = 0
         try:
             self.__connect()
