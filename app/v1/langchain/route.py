@@ -17,3 +17,7 @@ def index():
 import app.v1.langchain.controller.learn as learn
 
 Route.register_blueprint(learn.Controller, url_prefix=learn.Controller.name)
+
+import app.v1.langchain.controller.milvus as milvus
+
+Route.register_blueprint(milvus.Controller, url_prefix=milvus.Controller.name)
