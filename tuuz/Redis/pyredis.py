@@ -1,6 +1,10 @@
 import configparser
 
+import redis
+
 import config.redis
+
+RedisPy = redis.Redis()
 
 
 def init():
@@ -32,3 +36,10 @@ def init():
 
         if config.redis.Redicon_address and config.redis.Redicon_port:
             config.redis.Redicon_on = True
+    if config.redis.Redicon_on:
+        global RedisPy
+        RedisPy = redis.Redis(host=config.redis.Redicon_address,
+                              port=config.redis.Redicon_port,
+                              username=config.redis.Redicon_username,
+                              password=config.redis.Redicon_password,
+                              db=config.redis.Recion_db)
