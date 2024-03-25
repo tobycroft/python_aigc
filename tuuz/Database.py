@@ -467,7 +467,6 @@ class Db(object):
     def insertGetId(self, data):
         if typeof(data) != 'dict':
             return None
-        # all_column = self.__showColumn()
         fields = ''
         values = ''
         i = 0
@@ -475,23 +474,28 @@ class Db(object):
             if i == 0:
                 fields = key
                 # values = format_field(data[key], column['type'])
-                values = data[key]
+                values = "%s"
             else:
                 fields += ',' + key
                 # values += ',' + format_field(data[key], column['type'])
-                values = ',' + data[key]
+                values += ', %s'
+            self.__bindData.append(data[key])
             i += 1
         if fields == '' or values == '':
             return 0
-        sql = str(" insert into " + self.__name + " ( " + fields + ") values ( " + values + " ) ")
+        sql = str(" INSERT INTO " + self.__name + " ( " + fields + " ) values ( " + values + " ) ")
+        print(sql,self.__bindData)
         pk = 0
         try:
             self.__connect()
-            self.cursor.execute(sql)
+            self.cursor.execute(sql, self.__bindData)
             pk = self.__conn.insert_id()
+            self.__conn.commit()
             self.__close()
         except Exception as e:
             self.__conn.rollback()
+            print(e)
+            return None
         return pk
 
     def setOption(self, key, val):
