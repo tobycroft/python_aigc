@@ -3,7 +3,7 @@ import configparser
 import config
 
 
-def init():
+async def init():
     cfg = configparser.ConfigParser()
     cfg.read("conf.ini")
     if "database" not in cfg:
@@ -19,7 +19,7 @@ def init():
         with open("conf.ini", "w") as configfile:
             cfg.write(configfile)
         print("database_ready")
-        init()
+        await init()
     else:
         section = cfg["database"]
         config.db.need = section.get("need", "")

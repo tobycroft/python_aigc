@@ -39,8 +39,7 @@ else:
                               db=RedisConfig.Recion_db)
 
 
-
-def init():
+async def init():
     if RedisConfig.Redicon_on:
         print("Redis连接情况：", RedisPy.ping())
     else:
