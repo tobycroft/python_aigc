@@ -13,6 +13,6 @@ def index():
     return folder_name
 
 
-import app.v1.user.controller.index as Index
+import app.v1.user.controller.auth as Index
 
 Route.register_blueprint(Index.Controller, url_prefix=Index.Controller.name)

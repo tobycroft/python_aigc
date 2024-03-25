@@ -1,6 +1,6 @@
 import Database
 
-Table = 'ai_token'
+Table = 'token'
 
 
 def Api_insert(uid, token, ip, type=None):

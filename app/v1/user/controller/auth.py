@@ -2,7 +2,8 @@ import os
 
 from flask import Blueprint, request
 
-from app.v1.user.model import UserModel, TokenModel
+from app.v1.user.model import UserModel
+from common.model import TokenModel
 from tuuz import Input, Ret
 from tuuz.Calc import Encrypt, Token
 
@@ -52,9 +53,9 @@ async def login():
 
 @Controller.post('/phone')
 async def phone():
-    #todo: 发送验证码
-    phone=Input.Post.String('phone')
-    code=Input.Post.String('code')
+    # todo: 发送验证码
+    phone = Input.Post.String('phone')
+    code = Input.Post.String('code')
     if len(phone) < 1:
         return Ret.fail(400, None, '手机号不能为空')
     if len(code) < 1:
