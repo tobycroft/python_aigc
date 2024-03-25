@@ -53,6 +53,12 @@ async def login():
 @Controller.post('/phone')
 async def phone():
     #todo: 发送验证码
+    phone=Input.Post.String('phone')
+    code=Input.Post.String('code')
+    if len(phone) < 1:
+        return Ret.fail(400, None, '手机号不能为空')
+    if len(code) < 1:
+        return Ret.fail(400, None, '验证码不能为空')
     return Ret.success(0)
 
 
