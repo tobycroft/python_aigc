@@ -260,14 +260,18 @@ class Db(object):
             return None
 
         column = self.__column
-        if column == '*':
-            column = self.__showColumn(True)
+        column = ['`' + element + '`' if element != '*' else element for element in column.split(',')]
+        # if column == '*':
+            # column = ['`' + element + '`' for element in column.split(',')]
+            # for element in column.split(','):
+            #     if element!='*':
+            #         column = element
+
 
         sql = "select "
         if self.__distinct:
             sql += ' distinct '
-        quoted_elements = ['`' + element + '`' for element in column.split(',')]
-        sql += str(",".join(quoted_elements)) + " from `" + str(self.__name)+"`"
+        sql += str(",".join(column)) + " from `" + str(self.__name) + "`"
 
         if self.__alias != '':
             sql += ' ' + self.__alias
@@ -276,23 +280,19 @@ class Db(object):
             if '*' in column:
                 print('使用 join 必须指定字段名')
                 exit(-1)
-                return None
+                # return None
             for item in self.__join:
                 sql += item['mold'] + ' join ' + item['table'] + ' on ' + item['where'] + ' '
 
         if len(self.__map) > 0:
-            all_column = self.__showColumn()
             sql += ' where 1=1 '
             for item in self.__map:
                 if typeof(item) == 'str':
                     sql += ' and ( ' + item + ' ) '
                 elif typeof(item) == 'dict':
                     values = 'null'
-                    for column in all_column:
-                        if column['field'] == item.get('key'):
-                            # values = format_field(item.get('val'), column['type'])
-                            values = item.get('val')
-                            break
+                    # values = format_field(item.get('val'), column['type'])
+                    values = item.get('val')
                     sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
 
         if self.__option.get('group'):
@@ -310,24 +310,23 @@ class Db(object):
         return sql
 
     def buildSql(self, build=True):
-        column = self.__column
+        # column = self.__column
 
-        if column == '*':
-            column = self.__showColumn(True)
+        # if column == '*':
+        #     column = self.__showColumn(True)
         self.__build = build
         return self
 
     def __getField(self, table=None):
         column = self.__column
-        if '*' in column:
-            column = self.__showColumn(True, table=table)
+        # if '*' in column:
+        #     column = self.__showColumn(True, table=table)
 
         return column
 
     # 接下来是数据库操作
 
     def find(self):
-
         column = self.__getField()
         sql = self.__comQuerySql()
         if self.__build:
@@ -339,6 +338,7 @@ class Db(object):
             self.__connect()
             self.cursor.execute(sql, self.__bindWhere)
             result = self.cursor.fetchone()
+            columns = [desc[0] for desc in self.cursor.description]
             self.__close()
         except Exception as e:
             print(sql, self.__bindWhere)
@@ -347,8 +347,8 @@ class Db(object):
         if result is None:
             return None
         data = {}
-        for index, k in enumerate(column.split(',')):
-            data[k] = result[index]
+        for i, value in enumerate(result):
+            data[columns[i]] = value
         return data
 
     def select(self):
@@ -367,6 +367,7 @@ class Db(object):
             self.__connect()
             self.cursor.execute(sql, self.__bindWhere)
             result = self.cursor.fetchall()
+            columns = [desc[0] for desc in self.cursor.description]
             self.__close()
         except Exception as e:
             print(sql, self.__bindWhere)
@@ -375,12 +376,11 @@ class Db(object):
         if result is None:
             return None
         data = []
-        sp = column.split(',')
-        for index, item in enumerate(result):
-            dicts = {}
-            for index2, k in enumerate(sp):
-                dicts[k] = result[index][index2]
-            data.append(dicts)
+        for row in result:
+            row_data = {}
+            for i, value in enumerate(row):
+                row_data[columns[i]] = value
+            data.append(row_data)
         return data
 
     def get(self, vid):
@@ -413,33 +413,28 @@ class Db(object):
         return self.value('count(*)')
 
     def insert(self, data):
-        all_column = self.__showColumn()
         fields = ''
         values = ''
         i = 0
         for key in data:
-            for column in all_column:
-                if column['field'] == key:
-                    if i == 0:
-                        fields = key
-                        # values = format_field(data[key], column['type'])
-                        values = '%s'
-                    else:
-                        fields += ',' + key
-                        # values += ',' + format_field(data[key], column['type'])
-                        values += ', %s '
-                    self.__bindData.append(data[key])
-                    i += 1
+            if i == 0:
+                fields = key
+                # values = format_field(data[key], column['type'])
+                values = '%s'
+            else:
+                fields += ',' + key
+                # values += ',' + format_field(data[key], column['type'])
+                values += ', %s '
+            self.__bindData.append(data[key])
+            i += 1
         if fields == '' or values == '':
             return 0
         sql = str(" insert into " + self.__name + " ( " + fields + ") values ( " + values + " ) ")
-
         return self.__add(sql)
 
     def update(self, data):
         if typeof(data) != 'dict':
             return None
-        all_column = self.__showColumn()
         fields = ''
         i = 0
         sql = ''
@@ -449,27 +444,21 @@ class Db(object):
                 if typeof(item) == 'str':
                     sql += ' and ( ' + item + ' ) '
                 elif typeof(item) == 'dict':
-                    values = 'null'
-                    for column in all_column:
-                        if column['field'] == item.get('key'):
-                            # values = format_field(item.get('val'), column['type'])
-                            values = item.get('val')
-                            break
+                    # values = format_field(item.get('val'), column['type'])
+                    values = item.get('val')
                     # sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
                     sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' %s ) '
         else:
             print('禁止不使用 where 更新数据')
         for key in data:
-            for column in all_column:
-                if column['field'] == key:
-                    if i == 0:
-                        # fields = key + '=' + format_field(data[key], column['type'])
-                        fields = key + '=%s'
-                    else:
-                        # fields += str(',' + key + '=' + format_field(data[key], column['type']))
-                        fields += str(',' + key + '=%s')
-                    self.__bindData.append(data[key])
-                    i += 1
+            if i == 0:
+                # fields = key + '=' + format_field(data[key], column['type'])
+                fields = key + '=%s'
+            else:
+                # fields += str(',' + key + '=' + format_field(data[key], column['type']))
+                fields += str(',' + key + '=%s')
+            self.__bindData.append(data[key])
+            i += 1
         if fields == '':
             return 0
         sql = str("update " + self.__name + " set " + fields + ' ' + sql)
@@ -478,20 +467,20 @@ class Db(object):
     def insertGetId(self, data):
         if typeof(data) != 'dict':
             return None
-        all_column = self.__showColumn()
+        # all_column = self.__showColumn()
         fields = ''
         values = ''
         i = 0
         for key in data:
-            for column in all_column:
-                if column['field'] == key:
-                    if i == 0:
-                        fields = key
-                        values = format_field(data[key], column['type'])
-                    else:
-                        fields += ',' + key
-                        values += ',' + format_field(data[key], column['type'])
-                    i += 1
+            if i == 0:
+                fields = key
+                # values = format_field(data[key], column['type'])
+                values = data[key]
+            else:
+                fields += ',' + key
+                # values += ',' + format_field(data[key], column['type'])
+                values = ',' + data[key]
+            i += 1
         if fields == '' or values == '':
             return 0
         sql = str(" insert into " + self.__name + " ( " + fields + ") values ( " + values + " ) ")
@@ -540,27 +529,27 @@ class Db(object):
     def query(self, sql):
         return self.__edit(sql)
 
-    def __showColumn(self, is_str=False, table=None):
-        if table is None:
-            table = self.__name
-        list_data = None
-        sql = "SHOW FULL COLUMNS FROM " + table
-        try:
-            self.__connect()
-            self.cursor.execute(sql)
-            list_data = self.cursor.fetchall()
-            self.__close()
-            if is_str:
-                return ','.join(list([item[0] for item in list_data]))
-        except Exception as e:
-            print(e)
-        return list([{'field': item[0], 'type': item[1], 'key': item[4]} for item in list_data])
+    # def __showColumn(self, is_str=False, table=None):
+    #     if table is None:
+    #         table = self.__name
+    #     list_data = None
+    #     sql = "SHOW FULL COLUMNS FROM " + table
+    #     try:
+    #         self.__connect()
+    #         self.cursor.execute(sql)
+    #         list_data = self.cursor.fetchall()
+    #         self.__close()
+    #         if is_str:
+    #             return ','.join(list([item[0] for item in list_data]))
+    #     except Exception as e:
+    #         print(e)
+    #     return list([{'field': item[0], 'type': item[1], 'key': item[4]} for item in list_data])
 
     def __getPk(self):
-        fields = self.__showColumn()
-        for field in fields:
-            if field['key'] == 'PRI':
-                return field['field']
+        # fields = self.__showColumn()
+        # for field in fields:
+        #     if field['key'] == 'PRI':
+        #         return field['field']
         return None
 
     def __edit(self, sql):

@@ -26,5 +26,4 @@ def before():
 
 @Controller.post('/text')
 async def text():
-    milvus
     return tuuz.Ret.success(0, )

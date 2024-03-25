@@ -29,3 +29,7 @@ Route.register_blueprint(tts.Route, url_prefix=tts.folder_name)
 import app.v1.langchain.route as langchain
 
 Route.register_blueprint(langchain.Route, url_prefix=langchain.folder_name)
+
+import app.v1.user.route as user
+
+Route.register_blueprint(user.Route, url_prefix=user.folder_name)
