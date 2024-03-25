@@ -11,4 +11,4 @@ tuuz.Redis.pyredis.init()
 app = MainRoute()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=84, debug=True)
+    app.run(host="0.0.0.0", port=84, debug=False)

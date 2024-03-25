@@ -16,3 +16,7 @@ def index():
 import app.v1.user.controller.auth as Index
 
 Route.register_blueprint(Index.Controller, url_prefix=Index.Controller.name)
+
+import app.v1.user.controller.info as info
+
+Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)

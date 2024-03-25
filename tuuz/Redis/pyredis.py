@@ -2,44 +2,46 @@ import configparser
 
 import redis
 
-import config.redis
+import config.redis as RedisConfig
 
-RedisPy = redis.Redis()
+cfg = configparser.ConfigParser()
+try:
+    cfg.read("conf.ini")
+except configparser.Error as e:
+    print(e)
+
+if "redis" not in cfg:
+    cfg["redis"] = {
+        "address": "",
+        "port": RedisConfig.Redicon_port,
+        "username": RedisConfig.Redicon_username,
+        "password": RedisConfig.Redicon_password,
+        "db": "0"
+    }
+    with open("conf.ini", "w") as configfile:
+        cfg.write(configfile)
+    print("redis_ready")
+else:
+    section = cfg["redis"]
+    RedisConfig.Redicon_address = section.get("address", "")
+    RedisConfig.Redicon_port = section.get("port", RedisConfig.Redicon_port)
+    RedisConfig.Redicon_username = section.get("username", RedisConfig.Redicon_username)
+    RedisConfig.Redicon_password = section.get("password", RedisConfig.Redicon_password)
+    RedisConfig.Recion_db = int(section.get("db", "0"))
+
+    if RedisConfig.Redicon_address and RedisConfig.Redicon_port:
+        RedisConfig.Redicon_on = True
+        print("Redis启用并开始链接……")
+        RedisPy = redis.Redis(host=RedisConfig.Redicon_address,
+                              port=RedisConfig.Redicon_port,
+                              username=RedisConfig.Redicon_username,
+                              password=RedisConfig.Redicon_password,
+                              db=RedisConfig.Recion_db)
+
 
 
 def init():
-    cfg = configparser.ConfigParser()
-    try:
-        cfg.read("conf.ini")
-    except configparser.Error as e:
-        print(e)
-        return
-
-    if "redis" not in cfg:
-        cfg["redis"] = {
-            "address": "",
-            "port": config.redis.Redicon_port,
-            "username": config.redis.Redicon_username,
-            "password": config.redis.Redicon_password,
-            "db": "0"
-        }
-        with open("conf.ini", "w") as configfile:
-            cfg.write(configfile)
-        print("redis_ready")
+    if RedisConfig.Redicon_on:
+        print("Redis连接情况：", RedisPy.ping())
     else:
-        section = cfg["redis"]
-        config.redis.Redicon_address = section.get("address", "")
-        config.redis.Redicon_port = section.get("port", config.redis.Redicon_port)
-        config.redis.Redicon_username = section.get("username", config.redis.Redicon_username)
-        config.redis.Redicon_password = section.get("password", config.redis.Redicon_password)
-        config.redis.Recion_db = int(section.get("db", "0"))
-
-        if config.redis.Redicon_address and config.redis.Redicon_port:
-            config.redis.Redicon_on = True
-    if config.redis.Redicon_on:
-        global RedisPy
-        RedisPy = redis.Redis(host=config.redis.Redicon_address,
-                              port=config.redis.Redicon_port,
-                              username=config.redis.Redicon_username,
-                              password=config.redis.Redicon_password,
-                              db=config.redis.Recion_db)
+        print("Redis未启用,Due to", RedisConfig.Redicon_address, RedisConfig.Redicon_port)

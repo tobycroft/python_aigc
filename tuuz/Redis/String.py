@@ -6,7 +6,7 @@ def string_set(key, value, exp=None):
     if exp:
         RedisPy.setex(app_conf.Project + ":" + key, int(exp.total_seconds()), value)
     else:
-        RedisPy.set(app_conf.Project + ":" + key, value)
+        RedisPy.set(name=app_conf.Project + ":" + key, value=value)
 
 
 def string_get(key):
