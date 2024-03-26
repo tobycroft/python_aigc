@@ -2,7 +2,7 @@ import os
 
 from flask import Blueprint
 
-import Ret
+from tuuz import Ret
 from Redis import String
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
