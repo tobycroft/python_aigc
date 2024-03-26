@@ -145,6 +145,32 @@ def typeof(variate):
 
 OP = {'=': '=', '>': '>', '<': '<', '>=': '>=', '<=': '<=', '<>': '<>', 'like': 'like', 'in': 'in', 'not in': '<>', 'is null': 'is null', 'is not null': 'is not null'}
 
+conf = configparser.ConfigParser()
+try:
+    conf.read("conf.ini", encoding="utf-8")
+    try:
+        config.db.dbhost = conf.get("database", "dbhost")
+    except Exception as e:
+        print("数据库：读取dbhost错误:", e)
+    try:
+        config.db.dbuser = conf.get("database", "dbuser")
+    except Exception as e:
+        print("数据库：读取dbuser错误:", e)
+    try:
+        config.db.dbpass = conf.get("database", "dbpass")
+    except Exception as e:
+        print("数据库：读取dbpass错误:", e)
+    try:
+        config.db.dbname = conf.get("database", "dbname")
+    except Exception as e:
+        print("数据库：读取dbname错误:", e)
+    try:
+        config.db.dbport = int(conf.get("database", "dbport"))
+    except Exception as e:
+        print("数据库：读取dbport错误:", e)
+except Exception as e:
+    print("数据库：读取conf配置文件错误:", e)
+
 
 class Db(object):
     __conn: Connection = None
@@ -163,32 +189,11 @@ class Db(object):
     __prefix = ''
     __debug = False
 
-    def __init__(self, conn: Connection = None):
+    def __init__(self, conn: Connection = None, debug=False):
         if conn is not None:
             self.__autocommit = False
             self.__conn = conn
-        else:
-            try:
-                self.conf = configparser.ConfigParser()
-                self.conf.read("conf.ini", encoding="utf-8")
-                self.host = self.conf.get("database", "dbhost")
-                self.username = self.conf.get("database", "dbuser")
-                self.password = self.conf.get("database", "dbpass")
-                self.db = self.conf.get("database", "dbname")
-                self.charset = "utf8mb4"
-                self.port = int(self.conf.get("database", "dbport"))
-                self.__debug = bool(self.conf.get("database", "debug"))
-                # self.__prefix = self.conf.get("mysql", "PREFIX")
-            except Exception as e:
-                self.host = config.db.dbhost
-                self.username = config.db.dbuser
-                self.password = config.db.dbpass
-                self.db = config.db.dbname
-                self.charset = "utf8mb4"
-                self.port = int(config.db.dbport)
-                self.__debug = True
-                print("数据库配置文件错误:", e)
-                # self.__prefix = ""
+        self.__debug = debug
         self.__connect()
 
     def __connect(self):
