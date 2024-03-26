@@ -32,7 +32,7 @@ def json_encode(data: Any) -> str:
     return json.dumps(data)
 
 
-def success(code: int, data: Any = None, echo: Any = None):
+def success(code: int = 0, data: Any = None, echo: Any = None):
     if echo is None:
         echo_map = {
             0: "成功",

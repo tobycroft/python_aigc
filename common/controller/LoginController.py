@@ -18,11 +18,12 @@ def LoginedController():
     if HEADER_AUTH_MODE:
         uid = Input.Header.String('uid')
         token = Input.Header.String('token')
-        debug = Input.Header.String('debug')
+        debug = request.headers.get("debug")
     else:
         uid = Input.Post.String('uid')
         token = Input.Post.String('token')
-        debug = Input.Post.String('debug')
+        debug = request.form.get("debug")
+
     if TestMode:
         if debug == Debug:
             pass
