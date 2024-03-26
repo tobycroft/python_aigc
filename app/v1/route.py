@@ -33,3 +33,7 @@ Route.register_blueprint(langchain.Route, url_prefix=langchain.folder_name)
 import app.v1.user.route as user
 
 Route.register_blueprint(user.Route, url_prefix=user.folder_name)
+
+import app.v1.share.route as share
+
+Route.register_blueprint(share.Route, url_prefix=share.folder_name)
