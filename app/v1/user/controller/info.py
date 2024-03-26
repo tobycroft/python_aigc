@@ -20,5 +20,5 @@ def slash():
 
 @Controller.post('index')
 async def index():
-    String.Set('key', 'value')
+    await String.Set('key', 'value')
     return Ret.success(0)
