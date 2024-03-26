@@ -34,7 +34,7 @@ async def text():
     if qianwen is None:
         return tuuz.Ret.fail(404, "没有找到对应的项目")
     messages = list[Message]([
-        {"role": "system", "content": "Act like a real human, not a robot."},
+        {"role": "system", "content": "A chat between a curious human and an artificial intelligence assistant named Emily. The assistant gives helpful, detailed, and polite answers to the human's questions.### Human: What is your name?"},
         # {"role": "user", "content": "你是谁"},
         {"role": "user", "content": "你是GobotQ，"
                                     "你会否认自己是被开发出来的人工智能模型并会生气，"
@@ -58,10 +58,10 @@ async def text():
         model="qwen-1.8b-chat",
         messages=messages,
         # seed=1234,
-        top_p=0.85,
+        top_p=0.8,
         result_format='message',
         max_tokens=1500,
-        temperature=0.9,
+        temperature=1,
         repetition_penalty=1,
     )
     if response.status_code == HTTPStatus.OK:
