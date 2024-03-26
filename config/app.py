@@ -46,3 +46,5 @@ async def init():
     print("系统环境加载完毕")
     if TestMode:
         print("系统正处于测试模式，测试密钥：", Debug)
+    else:
+        print("系统正处于生产模式", AppMode, TestMode)
