@@ -1,10 +1,7 @@
 import os
 
-import httpx
+import langchain_openai
 from flask import Blueprint
-from langchain.chains.llm import LLMChain
-from langchain_core.prompts import PromptTemplate
-from langchain_openai import OpenAI
 
 from app.v1.langchain.model import OpenAiModel
 from common.controller.LoginController import LoginedController
@@ -27,15 +24,25 @@ def before_request():
 def text():
     uid = Input.Header.Int("uid")
     ai = OpenAiModel.Api_find(1)
-    template = """Question: {question}
+    # template = """Question: {question}
+    #
+    # Answer: Let's think step by step."""
 
-    Answer: Let's think step by step."""
-
-    prompt = PromptTemplate.from_template(template)
-    openai = OpenAI(openai_api_key=ai["key"], model_name="gpt-3.5-turbo-instruct", http_client=httpx.Client(proxies="https://fastgpt.ai.yaoyuankj.top"))
-    # llm = OpenAI(openai_api_key=ai["key"])
-    llm_chain = LLMChain(prompt=prompt, llm=openai)
-    question = "What NFL team won the Super Bowl in the year Justin Beiber was born?"
-
-    llm_chain.run(question)
+    # prompt = PromptTemplate.from_template(template)
+    print(ai["key"])
+    a = langchain_openai.ChatOpenAI(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
+    ret = a.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
+    print(ret)
+    # openai = OpenAIChat(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
+    # openai.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
+    # openai = OpenAI(openai_api_key=ai["key"])
+    # llm_chain = LLMChain(prompt=prompt, llm=openai)
+    # question = "What NFL team won the Super Bowl in the year Justin Beiber was born?"
+    #
+    # llm_chain.invoke({"question": question})
+    # embeddings = OpenAIEmbeddings(model="text-embedding-3-large", openai_api_key=ai["key"], openai_api_base="https://fastgpt.ai.yaoyuankj.top/api/v1")
+    #
+    # text = "This is a test document."
+    # query_result = embeddings.embed_query(text)
+    # print(query_result)
     Ret.success(0, 'success')
