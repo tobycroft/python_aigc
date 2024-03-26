@@ -519,11 +519,11 @@ class Db(object):
             self.cursor.execute(sql, self.__bindData)
             pk = self.__conn.insert_id()
             if self.__autocommit:
-                self.__conn.commit()
+                self.commit()
             self.__close()
         except Exception as e:
             if self.__autocommit:
-                self.__conn.rollback()
+                self.rollback()
             print(e)
             return None
         return pk
@@ -594,11 +594,11 @@ class Db(object):
             self.__connect()
             count = self.cursor.execute(sql, self.__bindData + self.__bindWhere)
             if self.__autocommit:
-                self.__conn.commit()
+                self.commit()
             self.__close()
         except Exception as e:
             if self.__autocommit:
-                self.__conn.rollback()
+                self.rollback()
             print('Error:  ', sql)
             print(e)
         return count
@@ -610,11 +610,11 @@ class Db(object):
         try:
             count = self.cursor.execute(sql, self.__bindData)
             if self.__autocommit:
-                self.__conn.commit()
+                self.commit()
             self.__close()
         except Exception as e:
             if self.__autocommit:
-                self.__conn.rollback()
+                self.rollback()
             print('Error:  ', sql)
             print(e)
         return count
