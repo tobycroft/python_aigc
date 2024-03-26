@@ -8,7 +8,6 @@ folder_name = os.path.basename(folder_path)
 Route = Blueprint(folder_name, __name__)
 
 
-
 @Route.route("/")
 def index():
     return folder_name

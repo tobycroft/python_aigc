@@ -9,10 +9,11 @@ import requests
 from flask import Blueprint
 from urllib3.exceptions import InsecureRequestWarning
 
-from tuuz import Ret,Input,Database
+from tuuz import Ret, Input, Database
 from extend.bcut_asr import BcutASR, ResultStateEnum
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
+
 
 @Controller.before_request
 def before():
@@ -21,6 +22,7 @@ def before():
     if data is None:
         return Ret.fail(400, 'project未启用')
     pass
+
 
 @Controller.post('/')
 def slash():

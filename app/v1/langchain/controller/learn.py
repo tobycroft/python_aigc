@@ -29,7 +29,6 @@ def before():
 
 @Controller.post('/text')
 async def text():
-
     token = tuuz.Input.Combi.String("token")
     qianwen = QianwenModel.Api_find_byProjectName(token)
     if qianwen is None:
