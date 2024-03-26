@@ -1,6 +1,7 @@
 import configparser
 
 import pymysql
+from pymysql import Connection
 
 import config.db
 
@@ -146,7 +147,7 @@ OP = {'=': '=', '>': '>', '<': '<', '>=': '>=', '<=': '<=', '<>': '<>', 'like': 
 
 
 class Db(object):
-    __conn = None
+    __conn: Connection = None
     __map = []
     __bindWhere = []
     __bindData = []
@@ -162,8 +163,9 @@ class Db(object):
     __prefix = ''
     __debug = False
 
-    def __init__(self, conn=None):
+    def __init__(self, conn: Connection = None):
         if conn is not None:
+            self.__autocommit = False
             self.__conn = conn
         else:
             try:
@@ -187,7 +189,7 @@ class Db(object):
                 self.__debug = True
                 print("数据库配置文件错误:", e)
                 # self.__prefix = ""
-        self.__connect()
+            self.__connect()
 
     def __connect(self):
         if self.__conn is None:
@@ -212,10 +214,14 @@ class Db(object):
         return self
 
     def commit(self):
+        if self.__debug:
+            print("数据库:commit", )
         self.__conn.commit()
         return self
 
     def rollback(self):
+        if self.__debug:
+            print("数据库:rollback", )
         self.__conn.rollback()
         return self
 
@@ -484,23 +490,24 @@ class Db(object):
         if typeof(data) != 'dict':
             return None
         fields = ''
-        i = 0
         sql = ''
         if len(self.__map) > 0:
             sql += ' where'
+            i = 0
             for item in self.__map:
                 if i > 0:
                     sql += ' and'
                 i += 1
                 if typeof(item) == 'str':
-                    sql += ' ( ' + item + ' ) '
+                    sql += ' ( `' + item + '` ) '
                 elif typeof(item) == 'dict':
                     # values = format_field(item.get('val'), column['type'])
                     values = item.get('val')
                     # sql += ' ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
-                    sql += ' ( ' + item.get('key') + ' ' + item.get('type') + ' %s ) '
+                    sql += ' ( `' + item.get('key') + '` ' + item.get('type') + ' %s ) '
         else:
             print('禁止不使用 where 更新数据')
+        i = 0
         for key in data:
             if i == 0:
                 # fields = key + '=' + format_field(data[key], column['type'])
@@ -613,6 +620,8 @@ class Db(object):
     #     return None
 
     def __edit(self, sql):
+        if self.__debug:
+            print("执行语句：", sql, self.__bindData + self.__bindWhere)
         if self.__build:
             return sql, self.__bindData + self.__bindWhere
         count = 0
