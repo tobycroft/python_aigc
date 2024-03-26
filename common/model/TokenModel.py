@@ -1,4 +1,4 @@
-import Database
+from tuuz import Database
 
 Table = 'token'
 
