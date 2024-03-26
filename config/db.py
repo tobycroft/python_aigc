@@ -4,4 +4,4 @@ dbname = ""
 dbuser = ""
 dbpass = ""
 dbhost = ""
-dbport = ""
+dbport: int = 3306
