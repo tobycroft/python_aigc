@@ -189,7 +189,7 @@ class Db(object):
                 self.__debug = True
                 print("数据库配置文件错误:", e)
                 # self.__prefix = ""
-            self.__connect()
+        self.__connect()
 
     def __connect(self):
         if self.__conn is None:
@@ -389,11 +389,11 @@ class Db(object):
             return None
         result = None
         try:
-            self.__connect()
             self.cursor.execute(sql, self.__bindWhere)
             result = self.cursor.fetchone()
             columns = [desc[0] for desc in self.cursor.description]
-            self.__close()
+            if self.__autocommit:
+                self.__close()
         except Exception as e:
             print(sql, self.__bindWhere)
             print(e)
@@ -418,11 +418,11 @@ class Db(object):
             return None
         result = None
         try:
-            self.__connect()
             self.cursor.execute(sql, self.__bindWhere)
             result = self.cursor.fetchall()
             columns = [desc[0] for desc in self.cursor.description]
-            self.__close()
+            if self.__autocommit:
+                self.__close()
         except Exception as e:
             print(sql, self.__bindWhere)
             print(e)
@@ -437,12 +437,6 @@ class Db(object):
             data.append(row_data)
         return data
 
-    def get(self, vid):
-        pk = self.__getPk()
-        if pk is not None:
-            self.whereRow(pk, vid)
-        return self.find()
-
     def value(self, field):
         self.__column = field
         sql = self.__comQuerySql()
@@ -450,10 +444,10 @@ class Db(object):
             return sql
         result = None
         try:
-            self.__connect()
             self.cursor.execute(sql)
             result = self.cursor.fetchone()
-            self.__close()
+            if self.__autocommit:
+                self.__close()
         except Exception as e:
             print(sql)
             print(e)
@@ -542,19 +536,19 @@ class Db(object):
         if fields == '' or values == '':
             return 0
         sql = str(" INSERT INTO " + self.__name + " ( " + fields + " ) values ( " + values + " ) ")
-        print(sql, self.__bindData)
+        if self.__debug:
+            print(sql, self.__bindData)
         pk = 0
         try:
-            self.__connect()
             self.cursor.execute(sql, self.__bindData)
             pk = self.__conn.insert_id()
             if self.__autocommit:
                 self.commit()
-            self.__close()
+                self.__close()
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
-            print(e)
+            print("insertGetId:", e)
             return None
         return pk
 
@@ -626,16 +620,15 @@ class Db(object):
             return sql, self.__bindData + self.__bindWhere
         count = 0
         try:
-            self.__connect()
             count = self.cursor.execute(sql, self.__bindData + self.__bindWhere)
             if self.__autocommit:
                 self.commit()
-            self.__close()
+                self.__close()
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
-            print('Error:  ', sql)
-            print(e)
+            print('Database-Error:  ', sql, self.__bindData + self.__bindWhere)
+            print("__edit:", e)
         return count
 
     def __add(self, sql):
@@ -646,7 +639,7 @@ class Db(object):
             count = self.cursor.execute(sql, self.__bindData)
             if self.__autocommit:
                 self.commit()
-            self.__close()
+                self.__close()
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
