@@ -20,6 +20,6 @@ def slash():
 
 @Controller.post('index')
 async def index():
-    conn=Database.Db().get_connection()
-    print(Database.Db(conn).table("system_param").where("key","aaaa").find())
+    conn = Database.Db().get_connection()
+    print(Database.Db(conn).table("system_param").where("key", "aaaa").update({"value": "cccc"}))
     return Ret.success(0)

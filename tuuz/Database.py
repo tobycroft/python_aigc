@@ -160,6 +160,7 @@ class Db(object):
     __build = False
     __autocommit = True
     __prefix = ''
+    __debug = False
 
     def __init__(self, conn=None):
         if conn is not None:
@@ -167,13 +168,14 @@ class Db(object):
         else:
             try:
                 self.conf = configparser.ConfigParser()
-                self.conf.read("config.ini", encoding="utf-8")
+                self.conf.read("conf.ini", encoding="utf-8")
                 self.host = self.conf.get("database", "dbhost")
                 self.username = self.conf.get("database", "dbuser")
                 self.password = self.conf.get("database", "dbpass")
                 self.db = self.conf.get("database", "dbname")
                 self.charset = "utf8mb4"
                 self.port = int(self.conf.get("database", "dbport"))
+                self.__debug = bool(self.conf.get("database", "debug"))
                 # self.__prefix = self.conf.get("mysql", "PREFIX")
             except Exception as e:
                 self.host = config.db.dbhost
@@ -182,11 +184,15 @@ class Db(object):
                 self.db = config.db.dbname
                 self.charset = "utf8mb4"
                 self.port = int(config.db.dbport)
+                self.__debug = True
+                print("数据库配置文件错误:", e)
                 # self.__prefix = ""
         self.__connect()
 
     def __connect(self):
         if self.__conn is None:
+            if self.__debug:
+                print("数据库连接至MySQL……")
             self.__conn = pymysql.connect(host=self.host,
                                           port=self.port,
                                           user=self.username,
@@ -323,15 +329,19 @@ class Db(object):
                 sql += item['mold'] + ' join ' + item['table'] + ' on ' + item['where'] + ' '
 
         if len(self.__map) > 0:
-            sql += ' where 1=1 '
+            sql += ' where'
+            i = 0
             for item in self.__map:
+                if i > 0:
+                    sql += ' and'
+                i += 1
                 if typeof(item) == 'str':
-                    sql += ' and ( ' + item + ' ) '
+                    sql += ' ( `' + item + '` ) '
                 elif typeof(item) == 'dict':
                     values = 'null'
                     # values = format_field(item.get('val'), column['type'])
                     values = item.get('val')
-                    sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
+                    sql += ' ( `' + item.get('key') + '` ' + item.get('type') + ' ' + values + ' ) '
 
         if self.__option.get('group'):
             sql += ' group by ' + self.__option['group'] + ' '
@@ -477,15 +487,18 @@ class Db(object):
         i = 0
         sql = ''
         if len(self.__map) > 0:
-            sql += ' where 1=1 '
+            sql += ' where'
             for item in self.__map:
+                if i > 0:
+                    sql += ' and'
+                i += 1
                 if typeof(item) == 'str':
-                    sql += ' and ( ' + item + ' ) '
+                    sql += ' ( ' + item + ' ) '
                 elif typeof(item) == 'dict':
                     # values = format_field(item.get('val'), column['type'])
                     values = item.get('val')
-                    # sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
-                    sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' %s ) '
+                    # sql += ' ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
+                    sql += ' ( ' + item.get('key') + ' ' + item.get('type') + ' %s ) '
         else:
             print('禁止不使用 where 更新数据')
         for key in data:
@@ -553,12 +566,15 @@ class Db(object):
         i = 0
         sql = ''
         if len(self.__map) > 0:
-            sql += ' where 1=1 '
+            sql += ' where'
             for item in self.__map:
+                if i > 0:
+                    sql += ' and'
+                i += 1
                 if typeof(item) == 'str':
-                    sql += ' and ( ' + item + ' ) '
+                    sql += ' ( ' + item + ' ) '
                 elif typeof(item) == 'dict':
-                    sql += ' and ( ' + item.get('key') + ' ' + item.get('type') + ' ' + str(item.get('val')) + ' ) '
+                    sql += ' ( ' + item.get('key') + ' ' + item.get('type') + ' ' + str(item.get('val')) + ' ) '
         else:
             print('禁止不使用 where 删除数据')
         sql = str("delete from " + self.__name + sql)
