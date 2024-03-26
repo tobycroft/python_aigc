@@ -187,8 +187,7 @@ class Db(object):
         self.cursor = self.__conn.cursor()
 
     def __get_connection(self):
-        self.__connect()
-        return self
+        return self.__conn
 
     def begin(self):
         self.__autocommit = False
