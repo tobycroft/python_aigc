@@ -5,7 +5,7 @@ Table = 'token'
 
 def Api_insert(uid, token, ip, type=None):
     if Database.Db().table(Table).insert({
-        'uid': uid,
+        "uid": uid,
         'token': token,
         'ip': ip,
         'type': type
@@ -19,4 +19,4 @@ def Api_find_byToken(token):
 
 
 def Api_find_byUidAndToken(uid, token):
-    return Database.Db().table(Table).whereRow('uid', uid).whereRow('token', token).find()
+    return Database.Db().table(Table).whereRow("uid", uid).whereRow('token', token).find()

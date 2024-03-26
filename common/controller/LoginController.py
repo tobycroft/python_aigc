@@ -16,18 +16,18 @@ def LoginedController():
         return flask.abort(204)
 
     if HEADER_AUTH_MODE:
-        uid = Input.Header.Int('uid')
+        uid = Input.Header.Int("uid")
         token = Input.Header.String('token')
         debug = request.headers.get("debug")
     else:
-        uid = Input.Post.Int('uid')
+        uid = Input.Post.Int("uid")
         token = Input.Post.String('token')
         debug = request.form.get("debug")
 
     if TestMode:
         if debug == Debug:
-            pass
+            return True
     if TokenModel.Api_find_byUidAndToken(uid, token):
-        pass
+        return True
     else:
         return Ret.fail(-1, 'Auth_fail', '未登录')
