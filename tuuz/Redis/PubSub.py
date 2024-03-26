@@ -1,7 +1,7 @@
 import json
 
 import config.app as app_conf
-from Redis.pyredis import RedisPy
+from tuuz.Redis.pyredis import RedisPy
 
 
 class PubSub:
