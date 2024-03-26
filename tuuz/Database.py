@@ -158,6 +158,7 @@ class Db(object):
     __distinct = False
     __option = {}
     __build = False
+    __autocommit = True
 
     def __init__(self):
         try:
@@ -178,11 +179,29 @@ class Db(object):
             self.charset = "utf8mb4"
             self.port = int(config.db.dbport)
             self.prefix = ""
+        self.__connect()
 
     def __connect(self):
         self.__conn = pymysql.connect(host=self.host, port=self.port, user=self.username, password=self.password,
-                                      db=self.db, charset=self.charset, init_command="SET SESSION time_zone='+08:00'")
+                                      db=self.db, charset=self.charset, init_command="SET SESSION time_zone='+08:00'", autocommit=False)
         self.cursor = self.__conn.cursor()
+
+    def __get_connection(self):
+        self.__connect()
+        return self
+
+    def begin(self):
+        self.__autocommit = False
+        self.__conn.begin()
+        return self
+
+    def commit(self):
+        self.__conn.commit()
+        return self
+
+    def rollback(self):
+        self.__conn.rollback()
+        return self
 
     def __close(self):
         self.cursor.close()
@@ -499,16 +518,18 @@ class Db(object):
             self.__connect()
             self.cursor.execute(sql, self.__bindData)
             pk = self.__conn.insert_id()
-            self.__conn.commit()
+            if self.__autocommit:
+                self.__conn.commit()
             self.__close()
         except Exception as e:
-            self.__conn.rollback()
+            if self.__autocommit:
+                self.__conn.rollback()
             print(e)
             return None
         return pk
 
-    def setOption(self, key, val):
-        return self.update({key: val})
+    # def setOption(self, key, val):
+    #     return self.update({key: val})
 
     def insertAll(self, datas):
         if typeof(datas) != 'list':
@@ -558,12 +579,12 @@ class Db(object):
     #         print(e)
     #     return list([{'field': item[0], 'type': item[1], 'key': item[4]} for item in list_data])
 
-    def __getPk(self):
-        # fields = self.__showColumn()
-        # for field in fields:
-        #     if field['key'] == 'PRI':
-        #         return field['field']
-        return None
+    # def __getPk(self):
+    #     # fields = self.__showColumn()
+    #     # for field in fields:
+    #     #     if field['key'] == 'PRI':
+    #     #         return field['field']
+    #     return None
 
     def __edit(self, sql):
         if self.__build:
@@ -572,10 +593,12 @@ class Db(object):
         try:
             self.__connect()
             count = self.cursor.execute(sql, self.__bindData + self.__bindWhere)
-            self.__conn.commit()
+            if self.__autocommit:
+                self.__conn.commit()
             self.__close()
         except Exception as e:
-            self.__conn.rollback()
+            if self.__autocommit:
+                self.__conn.rollback()
             print('Error:  ', sql)
             print(e)
         return count
@@ -585,12 +608,13 @@ class Db(object):
             return sql, self.__bindData
         count = 0
         try:
-            self.__connect()
             count = self.cursor.execute(sql, self.__bindData)
-            self.__conn.commit()
+            if self.__autocommit:
+                self.__conn.commit()
             self.__close()
         except Exception as e:
-            self.__conn.rollback()
+            if self.__autocommit:
+                self.__conn.rollback()
             print('Error:  ', sql)
             print(e)
         return count
