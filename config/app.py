@@ -43,3 +43,4 @@ async def init():
             TestMode = cfg.getboolean("app", "TestMode")
             AppMode = cfg.get("app", "AppMode")
             WebsocketKey = cfg.get("app", "WebsocketKey")
+    print("系统环境加载完毕")

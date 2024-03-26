@@ -1,6 +1,7 @@
 import configparser
 
-import redis
+# from redis import ConnectionPool
+from redis.asyncio import Redis, ConnectionPool
 
 import config.redis as RedisConfig
 
@@ -31,16 +32,22 @@ else:
 
     if RedisConfig.Redicon_address and RedisConfig.Redicon_port:
         RedisConfig.Redicon_on = True
-        print("Redis启用并开始链接……")
-        RedisPy = redis.Redis(host=RedisConfig.Redicon_address,
-                              port=RedisConfig.Redicon_port,
-                              username=RedisConfig.Redicon_username,
-                              password=RedisConfig.Redicon_password,
-                              db=RedisConfig.Recion_db)
+        print("Redis启用并创建连接池……")
+        RedisPy = ConnectionPool(host=RedisConfig.Redicon_address,
+                                 port=RedisConfig.Redicon_port,
+                                 username=RedisConfig.Redicon_username,
+                                 password=RedisConfig.Redicon_password,
+                                 db=RedisConfig.Recion_db)
+        # RedisPy = redis.Redis(host=RedisConfig.Redicon_address,
+        #                       port=RedisConfig.Redicon_port,
+        #                       username=RedisConfig.Redicon_username,
+        #                       password=RedisConfig.Redicon_password,
+        #                       db=RedisConfig.Recion_db)
 
 
 async def init():
     if RedisConfig.Redicon_on:
-        print("Redis连接情况：", RedisPy.ping())
+        rd = Redis(connection_pool=RedisPy)
+        print("Redis连接情况：", await rd.ping())
     else:
         print("Redis未启用,Due to", RedisConfig.Redicon_address, RedisConfig.Redicon_port)

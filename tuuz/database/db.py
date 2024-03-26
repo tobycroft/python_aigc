@@ -29,3 +29,4 @@ async def init():
         config.db.dbpass = section.get("dbpass", "")
         config.db.dbhost = section.get("dbhost", "")
         config.db.dbport = section.get("dbport", "")
+    print("database:ready")

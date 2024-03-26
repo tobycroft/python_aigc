@@ -1,8 +1,8 @@
 import hashlib
 import random
 import time
+from asyncio import sleep
 from datetime import datetime
-from threading import Timer
 
 base_num = 0
 
@@ -21,15 +21,13 @@ def generate_order_id():
     return datetime.now().strftime("%-D%Y%m%dT%H%M%SU") + string + "R" + str(base_num)
 
 
-def refresh_base_num():
+async def refresh_base_num():
+    print("订单indexpts刷新启用")
     global base_num
-    base_num = 0
-    Timer(1, refresh_base_num).start()
+    while True:
+        base_num = 0
+        await sleep(1)
 
 
 def md5(string):
     return hashlib.md5(string.encode()).hexdigest()
-
-
-# Start refreshing the base number
-refresh_base_num()

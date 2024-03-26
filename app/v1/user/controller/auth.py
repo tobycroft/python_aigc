@@ -1,11 +1,11 @@
 import os
 
-from flask import Blueprint, request
+from flask import Blueprint
 
 from app.v1.user.model import UserModel
 from common.model import TokenModel
 from tuuz import Input, Ret
-from tuuz.Calc import Encrypt, Token
+from tuuz.Calc import Token
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
@@ -20,23 +20,6 @@ def slash():
     return "/"
 
 
-@Controller.post('/test')
-async def test():
-    username = Input.Post.String('username')
-    password = Input.Post.String("password")
-    if len(username) < 1:
-        return Ret.fail(400, None, '用户名不能为空')
-    # print(Database.Db().table('ai_user').insert({
-    #     'username': username,
-    #     'password': password,
-    # }))
-    # print(Database.Db().table('ai_user').whereRow('username', username).update({
-    #     'password': password,
-    # }))
-    # print(Database.Db().table('ai_user').whereRow('username', username).select())
-    return Ret.success(0, UserModel.Api_find_byUsername(username))
-
-
 @Controller.post('/login')
 async def login():
     username = Input.Post.String('username')
@@ -45,7 +28,7 @@ async def login():
     if user is None:
         return Ret.fail(404, None, '用户名或密码错误')
     token = Token.generate_token()
-    if TokenModel.Api_insert(user["id"], token, request.remote_addr):
+    if TokenModel.Api_insert(user["id"], token, ""):
         return Ret.success(0, {"uid": user["id"], "token": token, 'username': user['username']})
     else:
         return Ret.fail(500, None, '登录失败')

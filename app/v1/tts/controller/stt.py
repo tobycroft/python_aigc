@@ -9,18 +9,17 @@ import requests
 from flask import Blueprint
 from urllib3.exceptions import InsecureRequestWarning
 
-import tuuz.Input
-import tuuz.Ret
+from tuuz import Ret,Input,Database
 from extend.bcut_asr import BcutASR, ResultStateEnum
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
 @Controller.before_request
 def before():
-    token = tuuz.Input.Header.String("token")
-    data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
+    token = Input.Header.String("token")
+    data = Database.Db().table("ai_project").whereRow('token', token).find()
     if data is None:
-        return tuuz.Ret.fail(400, 'project未启用')
+        return Ret.fail(400, 'project未启用')
     pass
 
 @Controller.post('/')
@@ -30,7 +29,7 @@ def slash():
 
 @Controller.post('/audio')
 async def audio():
-    file = tuuz.Input.Post.String("file")
+    file = Input.Post.String("file")
     response = requests.get(file, verify=False)
     response.raise_for_status()
     parsed_url = urlparse(file)
@@ -62,13 +61,13 @@ async def audio():
     subtitle = result.parse()
     # 判断是否存在字幕
     if subtitle.has_data():
-        return tuuz.Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
-    return tuuz.Ret.fail(500, subtitle, '识别失败')
+        return Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
+    return Ret.fail(500, subtitle, '识别失败')
 
 
 @Controller.post('/qq')
 async def qq():
-    url = tuuz.Input.Post.String("url")
+    url = Input.Post.String("url")
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     response = requests.get(url, verify=False)
     response.raise_for_status()
@@ -103,13 +102,13 @@ async def qq():
     subtitle = result.parse()
     # 判断是否存在字幕
     if subtitle.has_data():
-        return tuuz.Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
-    return tuuz.Ret.fail(500, None, '识别失败')
+        return Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
+    return Ret.fail(500, None, '识别失败')
 
 
 @Controller.post('/b64')
 async def b64():
-    b64 = tuuz.Input.Post.String("base64")
+    b64 = Input.Post.String("base64")
     base64_decode = base64.b64decode(b64)
     dest_folder = "."
     hashlib.md5()
@@ -135,5 +134,5 @@ async def b64():
     subtitle = result.parse()
     # 判断是否存在字幕
     if subtitle.has_data():
-        return tuuz.Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
-    return tuuz.Ret.fail(500, None, '识别失败')
+        return Ret.success(0, subtitle.to_srt(), subtitle.to_txt())
+    return Ret.fail(500, None, '识别失败')
