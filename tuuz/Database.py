@@ -159,34 +159,45 @@ class Db(object):
     __option = {}
     __build = False
     __autocommit = True
+    __prefix = ''
 
-    def __init__(self):
-        try:
-            self.conf = configparser.ConfigParser()
-            self.conf.read("config.ini", encoding="utf-8")
-            self.host = self.conf.get("database", "dbhost")
-            self.username = self.conf.get("database", "dbuser")
-            self.password = self.conf.get("database", "dbpass")
-            self.db = self.conf.get("database", "dbname")
-            self.charset = "utf8mb4"
-            self.port = int(self.conf.get("database", "dbport"))
-            # self.prefix = self.conf.get("mysql", "PREFIX")
-        except Exception as e:
-            self.host = config.db.dbhost
-            self.username = config.db.dbuser
-            self.password = config.db.dbpass
-            self.db = config.db.dbname
-            self.charset = "utf8mb4"
-            self.port = int(config.db.dbport)
-            self.prefix = ""
+    def __init__(self, conn=None):
+        if conn is not None:
+            self.__conn = conn
+        else:
+            try:
+                self.conf = configparser.ConfigParser()
+                self.conf.read("config.ini", encoding="utf-8")
+                self.host = self.conf.get("database", "dbhost")
+                self.username = self.conf.get("database", "dbuser")
+                self.password = self.conf.get("database", "dbpass")
+                self.db = self.conf.get("database", "dbname")
+                self.charset = "utf8mb4"
+                self.port = int(self.conf.get("database", "dbport"))
+                # self.__prefix = self.conf.get("mysql", "PREFIX")
+            except Exception as e:
+                self.host = config.db.dbhost
+                self.username = config.db.dbuser
+                self.password = config.db.dbpass
+                self.db = config.db.dbname
+                self.charset = "utf8mb4"
+                self.port = int(config.db.dbport)
+                # self.__prefix = ""
         self.__connect()
 
     def __connect(self):
-        self.__conn = pymysql.connect(host=self.host, port=self.port, user=self.username, password=self.password,
-                                      db=self.db, charset=self.charset, init_command="SET SESSION time_zone='+08:00'", autocommit=False)
+        if self.__conn is None:
+            self.__conn = pymysql.connect(host=self.host,
+                                          port=self.port,
+                                          user=self.username,
+                                          password=self.password,
+                                          db=self.db,
+                                          charset=self.charset,
+                                          init_command="SET SESSION time_zone='+08:00'",
+                                          autocommit=False)
         self.cursor = self.__conn.cursor()
 
-    def __get_connection(self):
+    def get_connection(self):
         return self.__conn
 
     def begin(self):
@@ -208,12 +219,12 @@ class Db(object):
 
     def table(self, table):
         self.clear()
-        self.__name = self.prefix + table
+        self.__name = self.__prefix + table
         return self
 
     def name(self, table):
         self.clear()
-        self.__name = self.prefix + table
+        self.__name = self.__prefix + table
         return self
 
     def where(self, where, val_mark=None, val2=None):
@@ -254,7 +265,7 @@ class Db(object):
 
     #   字段没处理明白，暂时禁用
     # def join(self, table, where, mold='inner'):
-    # table = self.prefix + table
+    # table = self.__prefix + table
     # self.__join.append({'table': table, 'where': where, 'mold': mold})
     # return self
     #
