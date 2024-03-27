@@ -10,3 +10,4 @@ bleach
 PyMySQL
 pytz
 pydantic
+langchain_openai
