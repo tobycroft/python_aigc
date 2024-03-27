@@ -26,9 +26,17 @@ import app.v1.fastgpt.route as fastgpt
 
 Route.register_blueprint(fastgpt.Route, url_prefix=fastgpt.folder_name)
 
+import app.v1.knowledge.route as knowledge
+
+Route.register_blueprint(knowledge.Route, url_prefix=knowledge.folder_name)
+
 import app.v1.langchain.route as langchain
 
 Route.register_blueprint(langchain.Route, url_prefix=langchain.folder_name)
+
+import app.v1.notification.route as notification
+
+Route.register_blueprint(notification.Route, url_prefix=notification.folder_name)
 
 import app.v1.pack.route as pack
 
