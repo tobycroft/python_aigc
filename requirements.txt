@@ -1,0 +1,12 @@
+Flask
+re_edge_gpt
+ffmpeg
+requests
+urllib3
+re_gpt
+dashscope
+redis
+bleach
+PyMySQL
+pytz
+pydantic
