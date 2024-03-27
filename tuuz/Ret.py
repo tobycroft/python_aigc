@@ -1,8 +1,7 @@
-import json
+import json as jsons
 from typing import Any, Dict, Tuple
 
-import flask
-from flask import Response, make_response
+from sanic import json
 
 import config.app
 import config.secure
@@ -14,22 +13,20 @@ json_ascii_content_type = ["application/json"]
 
 
 def json_response(data):
-    body = json.dumps(data, indent=4, sort_keys=True, default=str, ensure_ascii=False)
-    response = Response(body, content_type="application/json")
-    return response
+    # body = jsons.dumps(data, indent=4, sort_keys=True, default=str, ensure_ascii=False)
+    # response = Response(body, content_type="application/json")
+    return json(data)
 
 
 def secure_json_response(data):
-    body = json.dumps(data)
+    body = ""
     if isinstance(data, list) and len(data) > 0:
         body = config.secure.SECURE_JSON_PREFIX + body
-
-    response = Response(body, content_type="application/json")
-    return response
+    return json(body)
 
 
 def json_encode(data: Any) -> str:
-    return json.dumps(data)
+    return jsons.dumps(data)
 
 
 def success(code: int = 0, data: Any = None, echo: Any = None):
@@ -55,9 +52,9 @@ def success(code: int = 0, data: Any = None, echo: Any = None):
 
     ret_code, ret_json = ret_succ(code, data, echo)
     if config.secure.SECURE_JSON:
-        flask.abort(make_response(secure_json_response(ret_json)))
+        return secure_json_response(ret_json)
     else:
-        flask.abort(make_response(json_response(ret_json)))
+        return json_response(ret_json)
 
 
 def fail(code: int, data: Any = None, echo: Any = None):
