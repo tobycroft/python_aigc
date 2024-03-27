@@ -29,6 +29,11 @@ import app.v1.fastgpt.route as fastgpt
 
 Route.register_blueprint(fastgpt.Route, url_prefix=fastgpt.folder_name)
 
+# iflytek
+import app.v1.iflytek.route as iflytek
+
+Route.register_blueprint(iflytek.Route, url_prefix=iflytek.folder_name)
+
 # knowledge
 import app.v1.knowledge.route as knowledge
 
