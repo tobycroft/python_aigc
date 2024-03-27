@@ -24,7 +24,7 @@ def slash():
 async def login():
     username = Input.Post.String('username')
     password = Input.Post.String("password")
-    user = UserModel.Api_find_byUsernameAndPassword(username, password)
+    user = UserModel.api_find_byUsernameAndPassword(username, password)
     if user is None:
         return Ret.fail(404, None, '用户名或密码错误')
     token = Token.generate_token()
@@ -52,9 +52,9 @@ async def register():
     password = Input.Post.String("password")
     if len(username) < 1:
         return Ret.fail(400, None, '用户名不能为空')
-    if UserModel.Api_find_byUsername(username) is not None:
+    if UserModel.api_find_byUsername(username) is not None:
         return Ret.fail(409, None, '用户名已被注册')
-    if UserModel.Api_insert(username, Encrypt.md5(password)):
-        return Ret.success(0, UserModel.Api_find_byUsername(username))
+    if UserModel.api_insert(username, Encrypt.md5(password)):
+        return Ret.success(0, UserModel.api_find_byUsername(username))
     else:
         return Ret.fail(500, None, '注册失败')

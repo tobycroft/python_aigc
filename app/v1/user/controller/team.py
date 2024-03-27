@@ -20,5 +20,5 @@ def slash():
 
 @Controller.post('create')
 async def create():
-    pass
+
     return Ret.success(0)
