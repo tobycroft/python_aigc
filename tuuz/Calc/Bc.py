@@ -18,10 +18,7 @@ def mul(num1, num2):
 
 
 def div(num1, num2):
-    try:
-        return Decimal(num1) / Decimal(num2)
-    except ZeroDivisionError:
-        return Decimal(0)
+    return Decimal(num1) / Decimal(num2)
 
 
 def pow(num1, num2):
@@ -36,12 +33,8 @@ def div_round(num1, num2, round_to):
     return (Decimal(num1) / Decimal(num2)).quantize(Decimal(str(10 ** -round_to)), rounding=ROUND_HALF_UP)
 
 
-def abs(num1):
-    return abs(Decimal(num1))
-
-
 def neg(num1):
-    return -Decimal(num1)
+    return -abs(num1)
 
 
 def mod(num1, num2):
