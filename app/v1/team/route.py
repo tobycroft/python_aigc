@@ -13,6 +13,6 @@ def index():
     return folder_name
 
 
-import app.v1.sim.controller.openai as openai
+import app.v1.team.controller.info as info
 
-Route.register_blueprint(openai.Controller, url_prefix=openai.Controller.name)
+Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
