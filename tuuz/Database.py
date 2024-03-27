@@ -148,7 +148,6 @@ OP = {'=': '=', '>': '>', '<': '<', '>=': '>=', '<=': '<=', '<>': '<>', 'like': 
 conf = configparser.ConfigParser()
 try:
     conf.read("conf.ini", encoding="utf-8")
-
     try:
         config.db.dbhost = conf.get("database", "dbhost")
     except Exception as e:
@@ -172,6 +171,8 @@ try:
 except Exception as e:
     if "database" not in conf:
         conf["database"] = {
+            "need": "False",
+            "retry": "True",
             "dbhost": "127.0.0.1",
             "dbuser": "",
             "dbpass": "",
