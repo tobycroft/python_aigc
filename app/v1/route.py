@@ -38,6 +38,10 @@ import app.v1.share.route as share
 
 Route.register_blueprint(share.Route, url_prefix=share.folder_name)
 
+import app.v1.system.route as system
+
+Route.register_blueprint(system.Route, url_prefix=system.folder_name)
+
 import app.v1.team.route as team
 
 Route.register_blueprint(team.Route, url_prefix=team.folder_name)
