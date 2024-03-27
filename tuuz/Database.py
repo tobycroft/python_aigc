@@ -148,6 +148,7 @@ OP = {'=': '=', '>': '>', '<': '<', '>=': '>=', '<=': '<=', '<>': '<>', 'like': 
 conf = configparser.ConfigParser()
 try:
     conf.read("conf.ini", encoding="utf-8")
+
     try:
         config.db.dbhost = conf.get("database", "dbhost")
     except Exception as e:
@@ -169,7 +170,18 @@ try:
     except Exception as e:
         print("数据库：读取dbport错误:", e)
 except Exception as e:
-    print("数据库：读取conf配置文件错误:", e)
+    if "database" not in conf:
+        conf["database"] = {
+            "dbhost": "127.0.0.1",
+            "dbuser": "",
+            "dbpass": "",
+            "dbname": "",
+            "dbport": 3306
+        }
+        with open("conf.ini", "w") as configfile:
+            conf.write(configfile)
+        print("e")
+        exit("数据库：读取conf配置文件错误:", )
 
 
 class Db(object):
