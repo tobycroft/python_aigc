@@ -1,14 +1,13 @@
-from sanic import Sanic
-from sanic_cors import CORS
+import flask
+from flask import Flask
+from flask_cors import CORS
 
-import config.app
-from app.v1.route import v1
+import app.v1.route
 
 
-def main_route() -> Sanic:
-    sk = Sanic(name=config.app.Project)
-    CORS(sk)
-    # print("flask_version:", Sanic.__version__)
-    # sk.register_middleware(add_cors_headers, "response")
-    sk.blueprint(v1)
-    return sk
+def MainRoute():
+    fk = Flask(__name__)
+    print("flask_version:",flask.__version__)
+    CORS(fk)
+    fk.register_blueprint(app.v1.route.Route, url_prefix="/v1")
+    return fk
