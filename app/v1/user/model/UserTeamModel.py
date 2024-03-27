@@ -18,3 +18,19 @@ def api_insert(team_id, role, nickname):
         "role": role,
         "nickname": nickname
     })
+
+
+def api_update(id, team_id, role, nickname):
+    return Database.Db().table(Table).where("id", id).update({
+        "team_id": team_id,
+        "role": role,
+        "nickname": nickname
+    })
+
+
+def api_delete(id):
+    return Database.Db().table(Table).where("id", id).delete()
+
+
+def api_find(id):
+    return Database.Db().table(Table).where("id", id).find()
