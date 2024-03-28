@@ -54,7 +54,7 @@ async def delete():
         return fail(404, echo="没有该团队")
     if ut["role"] != "owner" and ut["role"] != "admin":
         return fail(403, echo="没有权限")
-    if TeamModel().api_delete_byUidAndTeamId(uid, id):
+    if TeamModel().api_delete(id):
         return success()
     else:
         return fail(500, echo="删除团队失败")
@@ -73,7 +73,7 @@ async def update():
         return fail(404, echo="没有该团队")
     if ut["role"] != "owner" and ut["role"] != "admin":
         return fail(403, echo="没有权限")
-    if TeamModel().api_update_byUidAndId(uid, id, name, img, content, prefix):
+    if TeamModel().api_update(id, name, img, content, prefix):
         return success()
     else:
         return fail(500, echo="更新团队失败")

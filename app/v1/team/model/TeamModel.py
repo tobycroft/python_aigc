@@ -1,13 +1,14 @@
 # CREATE TABLE `ai_team` (
 #   `id` int unsigned NOT NULL AUTO_INCREMENT,
+#   `uid` int unsigned DEFAULT '0' COMMENT '创建者id',
 #   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
 #   `img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
-#   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
-#   `prefix` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'aigc' COMMENT '本团队使用的subtoken的开头部分',
+#   `content` text COLLATE utf8mb4_general_ci,
+#   `prefix` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '本团队使用的subtoken的开头部分',
 #   `change_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY (`id`)
-# ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 from common.BaseModel import BaseModel
 from tuuz import Database
@@ -42,6 +43,14 @@ class TeamModel(BaseModel):
             "prefix": prefix
         })
 
+    def api_update(self, id, name, img, content, prefix):
+        return Database.Db(self.db).table(self.Table).where("id", id).update({
+            "name": name,
+            "img": img,
+            "content": content,
+            "prefix": prefix
+        })
+
     def api_select_byUid(self, uid):
         return Database.Db(self.db).table(self.Table).where("uid", uid).select()
 
@@ -56,3 +65,6 @@ class TeamModel(BaseModel):
 
     def api_delete_byUidAndTeamId(self, uid, id):
         return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).delete()
+
+    def api_delete(self, id):
+        return Database.Db(self.db).table(self.Table).where("id", id).delete()
