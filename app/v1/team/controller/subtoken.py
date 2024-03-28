@@ -4,6 +4,7 @@ from flask import Blueprint
 
 from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.fastgpt.model.FastgptModel import FastgptModel
+from app.v1.team.model.TeamModel import TeamModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from app.v1.user.model.UserTeamModel import UserTeamModel
 from common.controller.LoginController import LoginedController
@@ -39,6 +40,9 @@ async def create():
     coin_id = Post.Int("coin_id")
     prefix = Post.Str("prefix")
     amount = Post.Float("amount")
+    team = TeamModel().api_find_byId(team_id)
+    if not team:
+        return fail(404, echo="没有找到对应团队")
     coin = CoinModel().api_find(coin_id)
     if not coin:
         return fail(404, echo="没有找到对应模型")
