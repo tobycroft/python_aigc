@@ -14,6 +14,32 @@ from tuuz import Database
 Table = "ai_team"
 
 
+def api_insert(uid, name, img, content, prefix):
+    return Database.Db().table(Table).insert({
+        "uid": uid,
+        "name": name,
+        "img": img,
+        "content": content,
+        "prefix": prefix
+    })
+
+
+def api_insert_uidAndName(uid, name):
+    return Database.Db().table(Table).insert({
+        "uid": uid,
+        "name": name
+    })
+
+
+def api_update_byUidAndId(uid, id, name, img, content, prefix):
+    return Database.Db().table(Table).where("uid", uid).where("id", id).update({
+        "name": name,
+        "img": img,
+        "content": content,
+        "prefix": prefix
+    })
+
+
 def api_select_byUid(uid):
     return Database.Db().table(Table).where("uid", uid).select()
 

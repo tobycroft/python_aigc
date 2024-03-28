@@ -5,6 +5,11 @@ import tuuz.Ret
 
 
 class Combi:
+
+    @staticmethod
+    def Str(key: str, need_xss=False):
+        return Combi.String(key, need_xss)
+
     @staticmethod
     def String(key: str, need_xss=False):
         if request.method == 'GET':
@@ -81,6 +86,11 @@ class Get(Combi):
 
 
 class Header:
+
+    @staticmethod
+    def Str(key: str, need_xss=False):
+        return Header.String(key, need_xss)
+
     @staticmethod
     def String(key: str, need_xss=False):
         in_data = request.headers.get(key)
