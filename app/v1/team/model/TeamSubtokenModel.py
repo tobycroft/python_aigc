@@ -1,14 +1,16 @@
 # CREATE TABLE `ai_team_subtoken` (
-#   `id` int NOT NULL,
+#   `id` int unsigned NOT NULL AUTO_INCREMENT,
+#   `uid` int DEFAULT NULL COMMENT '谁创建的',
 #   `team_id` int unsigned DEFAULT '0' COMMENT '团队id初期用不上',
 #   `coin_id` int DEFAULT NULL COMMENT 'coin表里面找调用类型',
 #   `prefix` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '自定义prefix，可以使用team中的团队prefix',
 #   `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+#   `is_limit` tinyint(1) DEFAULT '1',
 #   `amount` decimal(10,6) DEFAULT '0.000000' COMMENT '积分剩余数量',
 #   `change_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY (`id`)
-# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+# ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 from common.BaseModel import BaseModel
 from tuuz import Database
@@ -26,8 +28,16 @@ class TeamSubtokenModel(BaseModel):
     def api_select_byTeamId(self, team_id):
         return Database.Db(self.db).table(self.Table).where("team_id", team_id).select()
 
-    def api_insert(self, team_id, coin_id, prefix, amount):
-        return Database.Db(self.db).table(self.Table).insert({"team_id": team_id, "coin_id": coin_id, "prefix": prefix, "amount": amount})
+    def api_insert(self, uid, team_id, coin_id, prefix, key, is_limit, amount):
+        return Database.Db(self.db).table(self.Table).insert({
+            "uid": uid,
+            "team_id": team_id,
+            "coin_id": coin_id,
+            "prefix": prefix,
+            "key": key,
+            "is_limit": is_limit,
+            "amount": amount
+        })
 
     def api_delete(self, team_id, id):
         return Database.Db(self.db).table(self.Table).where("team_id", team_id).where("id", id).delete()

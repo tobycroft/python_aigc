@@ -489,11 +489,11 @@ class Db(object):
         i = 0
         for key in data:
             if i == 0:
-                fields = key
+                fields = "`" + key + "`"
                 # values = format_field(data[key], column['type'])
                 values = '%s'
             else:
-                fields += ',' + key
+                fields += ',' + "`" + key + "`"
                 # values += ',' + format_field(data[key], column['type'])
                 values += ', %s '
             self.__bindData.append(data[key])

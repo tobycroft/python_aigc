@@ -6,6 +6,7 @@ from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from app.v1.user.model.UserTeamModel import UserTeamModel
 from common.controller.LoginController import LoginedController
+from tuuz.Calc import Token, Encrypt
 from tuuz.Input import Header, Post
 from tuuz.Ret import fail, success
 
@@ -31,14 +32,20 @@ def slash():
 
 @Controller.post('create')
 async def create():
-    team_id = Post.Int("team _id")
+    uid = Header.Int("uid")
+    team_id = Post.Int("team_id")
     coin_id = Post.Int("coin_id")
     prefix = Post.Str("prefix")
     amount = Post.Float("amount")
     coin = CoinModel().api_find(coin_id)
     if not coin:
         return fail(404, echo="没有找到对应模型")
-    if TeamSubtokenModel().api_insert(team_id, coin_id, prefix, amount):
+    key = Encrypt.sha256(Token.generate_order_id())
+    is_limit = True
+    if amount < 0:
+        is_limit = False
+    print(Token.generate_order_id())
+    if TeamSubtokenModel().api_insert(uid, team_id, coin_id, prefix, key, is_limit, amount):
         return success()
     else:
         return fail(500, echo="创建失败")
@@ -51,7 +58,7 @@ async def list():
     if team_list:
         return success(data=team_list)
     else:
-        return success(echo="还未创建团队")
+        return success(echo="还未创建token")
 
 
 @Controller.post('delete')

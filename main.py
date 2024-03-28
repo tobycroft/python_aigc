@@ -1,4 +1,5 @@
-from asyncio import run, create_task
+import threading
+from asyncio import run
 
 import config.app
 import config.db
@@ -10,14 +11,9 @@ import tuuz.database.db
 from router.router import MainRoute
 from tuuz.Calc import Token
 
-
-async def main():
-    _ = create_task(Token.refresh_base_num())
-    _ = create_task(tuuz.database.db.init())
-    _ = create_task(tuuz.Redis.pyredis.init())
-
-
 if __name__ == "__main__":
-    run(main())
+    threading.Thread(target=Token.refresh_base_num).start()
+    run(tuuz.database.db.init())
+    run(tuuz.Redis.pyredis.init())
     app = MainRoute()
     app.run(host="0.0.0.0", port=84, debug=True)
