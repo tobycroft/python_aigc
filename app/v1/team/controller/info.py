@@ -21,7 +21,7 @@ def slash():
 
 @Controller.post('create')
 async def create():
-    uid = Input.Post.Int("uid")
+    uid = Input.Header.Int("uid")
     name = Input.Post.Str("name")
     if TeamModel.api_insert_uidAndName(uid, name):
         return Ret.success()
@@ -31,7 +31,7 @@ async def create():
 
 @Controller.post('list')
 async def list():
-    uid = Input.Post.Int("uid")
+    uid = Input.Header.Int("uid")
     team_list = TeamModel.api_select_byUid(uid)
     if team_list:
         return Ret.success(data=team_list)
