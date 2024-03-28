@@ -12,7 +12,7 @@ Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__
 
 @Controller.post('/')
 def slash():
-    return "/"
+    return Controller.name
 
 
 @Controller.before_request

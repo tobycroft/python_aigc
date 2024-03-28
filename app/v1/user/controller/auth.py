@@ -17,7 +17,7 @@ def before():
 
 @Controller.post('/')
 def slash():
-    return "/"
+    return Controller.name
 
 
 @Controller.post('/login')
