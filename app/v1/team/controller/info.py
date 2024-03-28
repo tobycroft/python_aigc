@@ -23,10 +23,15 @@ def slash():
 async def create():
     uid = Input.Header.Int("uid")
     name = Input.Post.Str("name")
+    # if name len should be > 1
+    if len(name) < 1:
+        return Ret.fail(400, echo="name应该大于1")
+    if TeamModel.api_find_byUidAndName(uid, name):
+        return Ret.fail(402, echo="该团队已存在")
     if TeamModel.api_insert_uidAndName(uid, name):
         return Ret.success()
     else:
-        return Ret.fail(500, "创建团队失败")
+        return Ret.fail(500, echo="创建团队失败")
 
 
 @Controller.post('list')

@@ -50,3 +50,7 @@ def api_find_byIdAndUid(id, uid):
 
 def api_find_byId(id):
     return Database.Db().table(Table).where("id", id).find()
+
+
+def api_find_byUidAndName(uid, name):
+    return Database.Db().table(Table).where("uid", uid).where("name", name).find()
