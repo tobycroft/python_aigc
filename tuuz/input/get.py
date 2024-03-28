@@ -13,7 +13,7 @@ class Get:
     @staticmethod
     def String(key: str, need_xss=False):
         in_data = request.args.get(key)
-        if not in_data:
+        if in_data is None:
             abort(make_response(fail(400, echo=f"GET-[{key}] not found")))
         else:
             if need_xss:

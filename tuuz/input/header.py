@@ -13,7 +13,7 @@ class Header:
     @staticmethod
     def String(key: str, need_xss=False):
         in_data = request.headers.get(key)
-        if not in_data:
+        if in_data is None:
             abort(make_response(fail(400, echo="Header-[" + key + "]")))
         else:
             if need_xss:

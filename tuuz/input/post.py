@@ -6,14 +6,14 @@ from tuuz.Ret import fail
 
 class Post:
 
-
     @staticmethod
     def Str(key: str, need_xss=False):
         return Post.String(key, need_xss)
+
     @staticmethod
     def String(key: str, need_xss=False):
         in_data = request.form.get(key)
-        if not in_data:
+        if in_data is None:
             abort(make_response(fail(400, echo=f"POST-[{key}] not found")))
         else:
             if need_xss:

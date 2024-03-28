@@ -54,3 +54,7 @@ def api_find_byId(id):
 
 def api_find_byUidAndName(uid, name):
     return Database.Db().table(Table).where("uid", uid).where("name", name).find()
+
+
+def api_delete_byUidAndTeamId(uid, id):
+    return Database.Db().table(Table).where("uid", uid).where("id", id).delete()

@@ -19,7 +19,7 @@ class Combi:
         else:
             abort(make_response(fail(400, echo="Unsupported request method")))
 
-        if not in_data:
+        if in_data is None:
             abort(make_response(fail(400, echo="GET/POST-[" + key + "]")))
         else:
             if need_xss:

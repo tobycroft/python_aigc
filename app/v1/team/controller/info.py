@@ -42,3 +42,13 @@ async def list():
         return Ret.success(data=team_list)
     else:
         return Ret.success(echo="没有团队")
+
+
+@Controller.post('delete')
+async def delete():
+    uid = Input.Header.Int("uid")
+    id = Input.Post.Int("id")
+    if TeamModel.api_delete_byUidAndTeamId(uid, id):
+        return Ret.success()
+    else:
+        return Ret.fail(500, echo="删除团队失败")
