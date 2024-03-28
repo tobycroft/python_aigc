@@ -1,14 +1,13 @@
 # CREATE TABLE `ai_team` (
 #   `id` int unsigned NOT NULL AUTO_INCREMENT,
-#   `uid` int unsigned DEFAULT '0' COMMENT '创建者id',
 #   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
 #   `img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
-#   `content` text COLLATE utf8mb4_general_ci,
-#   `prefix` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '本团队使用的subtoken的开头部分',
+#   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+#   `prefix` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'aigc' COMMENT '本团队使用的subtoken的开头部分',
 #   `change_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY (`id`)
-# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+# ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 from common.BaseModel import BaseModel
 from tuuz import Database

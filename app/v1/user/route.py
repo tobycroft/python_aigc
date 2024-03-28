@@ -20,3 +20,7 @@ Route.register_blueprint(auth.Controller, url_prefix=auth.Controller.name)
 import app.v1.user.controller.info as info
 
 Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
+
+import app.v1.user.controller.team as team
+
+Route.register_blueprint(team.Controller, url_prefix=team.Controller.name)

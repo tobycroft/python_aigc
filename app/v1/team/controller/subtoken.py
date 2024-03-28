@@ -3,7 +3,6 @@ import os
 from flask import Blueprint
 
 from app.v1.coin.model.CoinModel import CoinModel
-from app.v1.team.model.TeamModel import TeamModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from app.v1.user.model.UserTeamModel import UserTeamModel
 from common.controller.LoginController import LoginedController
@@ -57,23 +56,9 @@ async def list():
 
 @Controller.post('delete')
 async def delete():
-    uid = Header.Int("uid")
     id = Post.Int("id")
-    if TeamModel().api_delete_byUidAndTeamId(uid, id):
+    team_id = Post.Int("team_id")
+    if TeamSubtokenModel().api_delete(team_id, id):
         return success()
     else:
-        return fail(500, echo="删除团队失败")
-
-
-@Controller.post('update')
-async def update():
-    uid = Header.Int("uid")
-    id = Post.Int("id")
-    name = Post.Str("name")
-    img = Post.Str("img")
-    content = Post.Str("content")
-    prefix = Post.Str("prefix")
-    if TeamModel().api_update_byUidAndId(uid, id, name, img, content, prefix):
-        return success()
-    else:
-        return fail(500, echo="更新团队失败")
+        return fail(500, echo="删除失败")

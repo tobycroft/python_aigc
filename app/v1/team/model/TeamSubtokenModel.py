@@ -28,3 +28,6 @@ class TeamSubtokenModel(BaseModel):
 
     def api_insert(self, team_id, coin_id, prefix, amount):
         return Database.Db(self.db).table(self.Table).insert({"team_id": team_id, "coin_id": coin_id, "prefix": prefix, "amount": amount})
+
+    def api_delete(self, team_id, id):
+        return Database.Db(self.db).table(self.Table).where("team_id", team_id).where("id", id).delete()

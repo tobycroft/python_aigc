@@ -45,16 +45,6 @@ async def create():
         return fail(500, echo="创建团队失败")
 
 
-@Controller.post('list')
-async def list():
-    uid = Input.Header.Int("uid")
-    team_list = TeamModel().api_select_byUid(uid)
-    if team_list:
-        return success(data=team_list)
-    else:
-        return success(echo="没有团队")
-
-
 @Controller.post('delete')
 async def delete():
     uid = Input.Header.Int("uid")
