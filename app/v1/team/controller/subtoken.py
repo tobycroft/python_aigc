@@ -19,6 +19,8 @@ def before():
     uid = Header.Int("uid")
     team_id = Post.Int("team_id")
     ut = UserTeamModel().api_find_byUidAndTeamId(uid, team_id)
+    if not ut:
+        return fail(404, echo="你不在这个团队")
     if ut["role"] != "owner" and ut["role"] != "admin":
         return fail(403, echo="没有权限")
 
@@ -45,12 +47,12 @@ async def create():
 
 @Controller.post('list')
 async def list():
-    uid = Header.Int("uid")
-    team_list = TeamModel().api_select_byUid(uid)
+    team_id = Post.Int("team_id")
+    team_list = TeamSubtokenModel().api_select_byTeamId(team_id)
     if team_list:
         return success(data=team_list)
     else:
-        return success(echo="没有团队")
+        return success(echo="还未创建团队")
 
 
 @Controller.post('delete')
