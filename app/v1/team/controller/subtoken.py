@@ -37,7 +37,7 @@ async def create():
     amount = Post.Float("amount")
     coin = CoinModel().api_find(coin_id)
     if not coin:
-        return fail(404, echo="没有找到币")
+        return fail(404, echo="没有找到对应模型")
     if TeamSubtokenModel().api_insert(team_id, coin_id, prefix, amount):
         return success()
     else:
