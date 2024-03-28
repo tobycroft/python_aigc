@@ -58,5 +58,5 @@ def text():
     total_tokens = ret.usage.total_tokens
     prompt_tokens = ret.usage.prompt_tokens
     completion_tokens = ret.usage.completion_tokens
-    print(ret.model_dump_json())
+    print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     return json_response(ret.model_dump())
