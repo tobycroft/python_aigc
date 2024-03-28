@@ -2,6 +2,7 @@ import os
 
 from flask import Blueprint
 
+from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from tuuz import Ret
 from tuuz.Input import Header
@@ -23,8 +24,13 @@ def before_request():
         key = auth[1]
     except Exception as e:
         return Ret.fail(401, e, echo="Authorization头不正确")
-    ts = TeamSubtokenModel().api_find_byKey(key)
-    if not ts:
+    subtoken = TeamSubtokenModel().api_find_byKey(key)
+    if not subtoken:
+        return Ret.fail(404, echo="没有找到对应的key")
+    if subtoken["coin_id"] != 5:
+        coin = CoinModel().api_find(subtoken["coin_id"])
+        return Ret.fail(404, echo="key只能使用于" + coin["name"])
+    if subtoken["prefix"] != prefix:
         return Ret.fail(404, echo="没有找到对应的key")
 
 
