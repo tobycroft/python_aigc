@@ -22,11 +22,15 @@ def generate_order_id():
 
 def refresh_base_num():
     print("订单indexpts刷新启用")
-    global base_num
     while True:
-        base_num = 0
-        print("indexpts")
+        refresh()
         time.sleep(1)
+
+
+def refresh():
+    global base_num
+    print("indexpts")
+    base_num = 0
 
 
 def md5(string):
