@@ -15,12 +15,12 @@ Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__
 
 @Controller.before_request
 def before():
+    LoginedController()
     uid = Header.Int("uid")
     team_id = Post.Int("team_id")
-    if LoginedController():
-        ut = UserTeamModel().api_find_byUidAndTeamId(uid, team_id)
-        if ut["role"] != "owner" and ut["role"] != "admin":
-            return fail(403, echo="没有权限")
+    ut = UserTeamModel().api_find_byUidAndTeamId(uid, team_id)
+    if ut["role"] != "owner" and ut["role"] != "admin":
+        return fail(403, echo="没有权限")
 
 
 @Controller.post('/')
