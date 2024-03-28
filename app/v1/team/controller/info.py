@@ -23,8 +23,10 @@ def slash():
 async def create():
     uid = Input.Post.Int("uid")
     name = Input.Post.Str("name")
-    TeamModel.api_insert(uid)
-    return Ret.success()
+    if TeamModel.api_insert_uidAndName(uid, name):
+        return Ret.success()
+    else:
+        return Ret.fail(500, "创建团队失败")
 
 
 @Controller.post('list')
