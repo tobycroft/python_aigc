@@ -29,7 +29,7 @@ def refresh_base_num():
 
 def refresh():
     global base_num
-    print("indexpts")
+    # print("indexpts")
     base_num = 0
 
 
