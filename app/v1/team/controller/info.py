@@ -59,7 +59,7 @@ async def list():
 async def delete():
     uid = Input.Header.Int("uid")
     id = Input.Post.Int("id")
-    ut = UserTeamModel().api_find_byUidAndId(uid, id)
+    ut = UserTeamModel().api_find_byUidAndTeamId(uid, id)
     if not ut:
         return fail(404, echo="没有该团队")
     if ut["role"] != "owner" and ut["role"] != "admin":
@@ -78,7 +78,7 @@ async def update():
     img = Input.Post.Str("img")
     content = Input.Post.Str("content")
     prefix = Input.Post.Str("prefix")
-    ut = UserTeamModel().api_find_byUidAndId(uid, id)
+    ut = UserTeamModel().api_find_byUidAndTeamId(uid, id)
     if not ut:
         return fail(404, echo="没有该团队")
     if ut["role"] != "owner" and ut["role"] != "admin":

@@ -26,8 +26,8 @@ def LoginedController():
 
     if TestMode:
         if debug == Debug:
-            return
+            return True
     if TokenModel.Api_find_byUidAndToken(uid, token):
-        return
+        return True
     else:
         return Ret.fail(-1, 'Auth_fail', '未登录')
