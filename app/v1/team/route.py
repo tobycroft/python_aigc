@@ -16,3 +16,7 @@ def index():
 import app.v1.team.controller.info as info
 
 Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
+
+import app.v1.team.controller.subtoken as subtoken
+
+Route.register_blueprint(subtoken.Controller, url_prefix=subtoken.Controller.name)
