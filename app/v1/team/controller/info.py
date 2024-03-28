@@ -52,3 +52,17 @@ async def delete():
         return Ret.success()
     else:
         return Ret.fail(500, echo="删除团队失败")
+
+
+@Controller.post('update')
+async def update():
+    uid = Input.Header.Int("uid")
+    id = Input.Post.Int("id")
+    name = Input.Post.Str("name")
+    img = Input.Post.Str("img")
+    content = Input.Post.Str("content")
+    prefix = Input.Post.Str("prefix")
+    if TeamModel.api_update_byUidAndId(uid, id, name, img, content, prefix):
+        return Ret.success()
+    else:
+        return Ret.fail(500, echo="更新团队失败")
