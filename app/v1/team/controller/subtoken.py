@@ -45,7 +45,12 @@ async def create():
     if amount < 0:
         is_limit = False
     if TeamSubtokenModel().api_insert(uid, team_id, coin_id, prefix, key, is_limit, amount):
-        return success()
+        return success(data={
+            "key": key,
+            "prefix": prefix,
+            "coin_name": coin["name"],
+            "coin_id": coin_id,
+        })
     else:
         return fail(500, echo="创建失败")
 
