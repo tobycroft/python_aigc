@@ -1,7 +1,8 @@
 # CREATE TABLE `ai_fastgpt` (
 #   `id` int unsigned NOT NULL AUTO_INCREMENT,
-#   `uid` int unsigned DEFAULT '0',
-#   `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '',
+#   `uid` int unsigned DEFAULT '0' COMMENT '添加人',
+#   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'key备注提示',
+#   `team_id` int DEFAULT NULL COMMENT 'team_id是添加到哪个队伍里面去的',
 #   `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
 #   `change_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -17,13 +18,6 @@ class FastgptModel(BaseModel):
 
     def __init__(self, conn=None):
         super().__init__(conn)
-
-    def api_insert(self, uid, name, key):
-        return Database.Db().table(self.Table).insertGetId({
-            "uid": uid,
-            "name": name,
-            "key": key
-        })
 
     def api_find_byId(self, id):
         return Database.Db().table(self.Table).whereRow("id", id).find()

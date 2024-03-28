@@ -3,7 +3,6 @@ import os
 import langchain_openai
 from flask import Blueprint
 
-from app.v1.langchain.model import OpenAiModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 from tuuz.Input import Header
@@ -24,7 +23,6 @@ def before_request():
 @Controller.post('text')
 def text():
     uid = Header.Int("uid")
-    ai = OpenAiModel.Api_find(1)
     # template = """Question: {question}
     #
     # Answer: Let's think step by step."""
