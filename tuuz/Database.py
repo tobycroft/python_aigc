@@ -571,6 +571,7 @@ class Db(object):
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
+                self.__close()
             print("insertGetId:", e)
             return None
         return pk
@@ -650,6 +651,7 @@ class Db(object):
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
+                self.__close()
             print('Database-Error:  ', sql, self.__bindData + self.__bindWhere)
             print("__edit:", e)
         return count
@@ -666,6 +668,7 @@ class Db(object):
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
+                self.__close()
             print('Error:  ', sql)
             print(e)
         return count

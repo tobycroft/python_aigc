@@ -36,12 +36,15 @@ async def create():
     if team_id:
         if UserTeamModel(db).api_insert(uid, team_id, "owner", ""):
             db.commit()
+            db.close()
             return success()
         else:
             db.rollback()
+            db.close()
             return fail(500, echo="创建团队失败")
     else:
         db.rollback()
+        db.close()
         return fail(500, echo="创建团队失败")
 
 
@@ -54,9 +57,20 @@ async def delete():
         return fail(404, echo="没有该团队")
     if ut["role"] != "owner" and ut["role"] != "admin":
         return fail(403, echo="没有权限")
-    if TeamModel().api_delete(id):
-        return success()
+    db = Database.Db.connect_to_db()
+    db.begin()
+    if TeamModel(db).api_delete(id):
+        if UserTeamModel().api_delete_byTeamId(id):
+            db.commit()
+            db.close()
+            return success()
+        else:
+            db.rollback()
+            db.close()
+            return fail(500, echo="删除团队失败")
     else:
+        db.rollback()
+        db.close()
         return fail(500, echo="删除团队失败")
 
 

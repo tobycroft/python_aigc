@@ -37,6 +37,9 @@ class UserTeamModel(BaseModel):
     def api_delete(self, id):
         return Database.Db(self.db).table(self.Table).where("id", id).delete()
 
+    def api_delete_byTeamId(self, team_id):
+        return Database.Db(self.db).table(self.Table).where("team_id", team_id).delete()
+
     def api_find(self, id):
         return Database.Db(self.db).table(self.Table).where("id", id).find()
 
