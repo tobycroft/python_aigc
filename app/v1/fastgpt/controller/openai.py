@@ -24,11 +24,13 @@ def before_request():
     except Exception as e:
         return Ret.fail(401, e, echo="Authorization头不正确")
     ts = TeamSubtokenModel().api_find_byKey(key)
+    if not ts:
+        return Ret.fail(404, echo="没有找到对应的key")
 
 
 @Controller.post('text')
 def text():
-    uid = Header.Int("uid")
+    # uid = Header.Int("uid")
     # a = langchain_openai.ChatOpenAI(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
     # ret = a.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
     # print(ret)

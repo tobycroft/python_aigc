@@ -3,6 +3,7 @@ import os
 from flask import Blueprint
 
 from app.v1.coin.model.CoinModel import CoinModel
+from app.v1.fastgpt.model.FastgptModel import FastgptModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from app.v1.user.model.UserTeamModel import UserTeamModel
 from common.controller.LoginController import LoginedController
@@ -34,17 +35,22 @@ def slash():
 async def create():
     uid = Header.Int("uid")
     team_id = Post.Int("team_id")
+    from_id = Post.Int("from_id")
     coin_id = Post.Int("coin_id")
     prefix = Post.Str("prefix")
     amount = Post.Float("amount")
     coin = CoinModel().api_find(coin_id)
     if not coin:
         return fail(404, echo="没有找到对应模型")
+    if coin["id"] == 5:
+        if not FastgptModel().api_find_byId(from_id):
+            return fail(404, echo="上级的Key未找到，请先配置上级的Key")
+
     key = Encrypt.sha256(Token.generate_order_id())
     is_limit = True
     if amount < 0:
         is_limit = False
-    if TeamSubtokenModel().api_insert(uid, team_id, coin_id, prefix, key, is_limit, amount):
+    if TeamSubtokenModel().api_insert(uid, team_id, coin_id, from_id, prefix, key, is_limit, amount):
         return success(data={
             "key": key,
             "prefix": prefix,
