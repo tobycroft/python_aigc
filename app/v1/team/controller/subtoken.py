@@ -44,7 +44,6 @@ async def create():
     is_limit = True
     if amount < 0:
         is_limit = False
-    print(Token.generate_order_id())
     if TeamSubtokenModel().api_insert(uid, team_id, coin_id, prefix, key, is_limit, amount):
         return success()
     else:
