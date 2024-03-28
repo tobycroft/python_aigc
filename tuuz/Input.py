@@ -20,7 +20,7 @@ class Combi:
             abort(make_response(tuuz.Ret.fail(400, echo="Unsupported request method")))
 
         if not in_data:
-            abort(make_response(tuuz.Ret.fail(400, echo="Header-[" + key + "]")))
+            abort(make_response(tuuz.Ret.fail(400, echo="POST-[" + key + "]")))
         else:
             if need_xss:
                 out = bleach.clean(in_data, tags=[], attributes={}, strip=False, strip_comments=True)
@@ -38,11 +38,11 @@ class Combi:
             abort(make_response(tuuz.Ret.fail(400, echo="Unsupported request method")))
 
         if not in_data:
-            abort(make_response(tuuz.Ret.fail(400, echo=f"Header-[{key}] not found")))
+            abort(make_response(tuuz.Ret.fail(400, echo=f"POST-[{key}] not found")))
         try:
             return int(in_data)
         except ValueError:
-            abort(make_response(tuuz.Ret.fail(400, echo=f"Header-[{key}] is not " + __name__)))
+            abort(make_response(tuuz.Ret.fail(400, echo=f"POST-[{key}] is not " + __name__)))
 
     @staticmethod
     def Float(key: str):
@@ -54,11 +54,11 @@ class Combi:
             abort(make_response(tuuz.Ret.fail(400, echo="Unsupported request method")))
 
         if not in_data:
-            abort(make_response(tuuz.Ret.fail(400, echo=f"Header-[{key}] not found")))
+            abort(make_response(tuuz.Ret.fail(400, echo=f"POST-[{key}] not found")))
         try:
             return float(in_data)
         except ValueError:
-            abort(make_response(tuuz.Ret.fail(400, echo=f"Header-[{key}] is not " + __name__)))
+            abort(make_response(tuuz.Ret.fail(400, echo=f"POST-[{key}] is not " + __name__)))
 
     @staticmethod
     def Bool(key: str) -> bool:
@@ -70,11 +70,11 @@ class Combi:
             abort(make_response(tuuz.Ret.fail(400, echo="Unsupported request method")))
 
         if not in_data:
-            abort(make_response(tuuz.Ret.fail(400, echo=f"Header-[{key}] not found")))
+            abort(make_response(tuuz.Ret.fail(400, echo=f"POST-[{key}] not found")))
         try:
             return bool(int(in_data))
         except ValueError:
-            abort(make_response(tuuz.Ret.fail(400, echo=f"Header-[{key}] is not " + __name__)))
+            abort(make_response(tuuz.Ret.fail(400, echo=f"POST-[{key}] is not " + __name__)))
 
 
 class Post(Combi):
