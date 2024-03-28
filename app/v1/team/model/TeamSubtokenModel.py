@@ -11,10 +11,20 @@
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY (`id`)
 # ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+from pymysql import Connection
+
+from common.BaseModel import BaseModel
 from tuuz import Database
 
-Table = "ai_team_subtoken"
 
+class TeamSubtokenModel(BaseModel):
+    Table = "ai_team_subtoken"
 
-def api_find_byKey(key):
-    return Database.Db().table(Table).where("key", key).find()
+    def __init__(self, Conn: Connection = None):
+        super().__init__(Conn)
+
+    def api_find_byKey(self, key):
+        return Database.Db(self.db).table(self.Table).where("key", key).find()
+
+    def api_select_byTeamId(self, team_id):
+        return Database.Db(self.db).table(self.Table).where("team_id", team_id).select()

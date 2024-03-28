@@ -1,24 +1,28 @@
+from pymysql import Connection
+
+from common.BaseModel import BaseModel
 from tuuz import Database
 
-Table = "ai_user"
 
+class UserModel(BaseModel):
+    Table = "ai_user"
 
-def api_find_byUsername(username):
-    return Database.Db().table(Table).where('username', username).find()
+    def __init__(self, Conn: Connection = None):
+        super().__init__(Conn)
 
+    def api_find_byUsername(self, username):
+        return Database.Db(self.db).table(self.Table).where('username', username).find()
 
-def api_find_byUsernameAndPassword(username, password):
-    return Database.Db().table(Table).where('username', username).where('password', password).find()
+    def api_find_byUsernameAndPassword(self, username, password):
+        return Database.Db(self.db).table(self.Table).where('username', username).where('password', password).find()
 
+    def api_insert(self, username, password):
+        return Database.Db(self.db).table(self.Table).insert({
+            'username': username,
+            'password': password,
+        })
 
-def api_insert(username, password):
-    return Database.Db().table(Table).insert({
-        'username': username,
-        'password': password,
-    })
-
-
-def api_update(username, password):
-    return Database.Db().table(Table).where('username', username).update({
-        'password': password,
-    })
+    def api_update(self, username, password):
+        return Database.Db(self.db).table(self.Table).where('username', username).update({
+            'password': password,
+        })

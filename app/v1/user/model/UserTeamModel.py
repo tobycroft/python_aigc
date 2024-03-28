@@ -1,8 +1,3 @@
-from tuuz import Database
-
-Table = "ai_user_team"
-
-
 # CREATE TABLE `ai_user_team` (
 #   `id` int NOT NULL,
 #   `team_id` int DEFAULT NULL COMMENT '团队id',
@@ -12,25 +7,33 @@ Table = "ai_user_team"
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY (`id`)
 # ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-def api_insert(team_id, role, nickname):
-    return Database.Db().table(Table).insert({
-        "team_id": team_id,
-        "role": role,
-        "nickname": nickname
-    })
+
+from common.BaseModel import BaseModel
+from tuuz import Database
 
 
-def api_update(id, team_id, role, nickname):
-    return Database.Db().table(Table).where("id", id).update({
-        "team_id": team_id,
-        "role": role,
-        "nickname": nickname
-    })
+class UserModel(BaseModel):
+    Table = "ai_user_team"
 
+    def __init__(self, Conn=None):
+        super().__init__(Conn)
 
-def api_delete(id):
-    return Database.Db().table(Table).where("id", id).delete()
+    def api_insert(self, team_id, role, nickname):
+        return Database.Db(self.db).table(self.Table).insert({
+            "team_id": team_id,
+            "role": role,
+            "nickname": nickname
+        })
 
+    def api_update(self, id, team_id, role, nickname):
+        return Database.Db(self.db).table(self.Table).where("id", id).update({
+            "team_id": team_id,
+            "role": role,
+            "nickname": nickname
+        })
 
-def api_find(id):
-    return Database.Db().table(Table).where("id", id).find()
+    def api_delete(self, id):
+        return Database.Db(self.db).table(self.Table).where("id", id).delete()
+
+    def api_find(self, id):
+        return Database.Db(self.db).table(self.Table).where("id", id).find()
