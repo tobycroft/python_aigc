@@ -10,5 +10,4 @@ class BaseModel:
         if Conn is not None:
             self.db = Conn
         else:
-            self.db = Database.Db().get_connection()
             pass
