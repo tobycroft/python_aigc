@@ -3,7 +3,6 @@ import os
 import langchain_openai
 from flask import Blueprint
 
-from app.v1.langchain.model import OpenAiModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 from tuuz.Input import Header
@@ -24,16 +23,15 @@ def before_request():
 @Controller.post('text')
 def text():
     uid = Header.Int("uid")
-    ai = OpenAiModel.Api_find(1)
     # template = """Question: {question}
     #
     # Answer: Let's think step by step."""
 
     # prompt = PromptTemplate.from_template(template)
-    print(ai["key"])
-    a = langchain_openai.ChatOpenAI(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
-    ret = a.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
-    print(ret)
+    # print(ai["key"])
+    # a = langchain_openai.ChatOpenAI(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
+    # ret = a.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
+    # print(ret)
     # openai = OpenAIChat(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
     # openai.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
     # openai = OpenAI(openai_api_key=ai["key"])

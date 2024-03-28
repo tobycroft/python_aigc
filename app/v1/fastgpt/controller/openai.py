@@ -1,9 +1,8 @@
 import os
 
-import langchain_openai
 from flask import Blueprint
 
-from common.controller.LoginController import LoginedController
+from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from tuuz import Ret
 from tuuz.Input import Header
 
@@ -17,21 +16,22 @@ def slash():
 
 @Controller.before_request
 def before_request():
-    return LoginedController()
+    Authorization = Header.Str("Authorization")
+    try:
+        auth = Authorization.replace("Bearer ", "").split('-')
+        prefix = auth[0]
+        key = auth[1]
+    except Exception as e:
+        return Ret.fail(401, e, echo="Authorization头不正确")
+    ts = TeamSubtokenModel().api_find_byKey(key)
 
 
 @Controller.post('text')
 def text():
     uid = Header.Int("uid")
-    # template = """Question: {question}
-    #
-    # Answer: Let's think step by step."""
-
-    # prompt = PromptTemplate.from_template(template)
-    print(ai["key"])
-    a = langchain_openai.ChatOpenAI(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
-    ret = a.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
-    print(ret)
+    # a = langchain_openai.ChatOpenAI(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
+    # ret = a.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
+    # print(ret)
     # openai = OpenAIChat(api_key=ai["key"], base_url="https://fastgpt.ai.yaoyuankj.top/api/v1")
     # openai.invoke("What NFL team won the Super Bowl in the year Justin Beiber was born?")
     # openai = OpenAI(openai_api_key=ai["key"])
