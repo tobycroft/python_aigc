@@ -15,8 +15,8 @@ from tuuz import Database
 class UserPackModel(BaseModel):
     Table = "ai_user_pack"
 
-    def __init__(self, Conn=None):
-        super().__init__(Conn)
+    def __init__(self, conn=None):
+        super().__init__(conn)
 
     def api_find_byUid(self, uid):
         return Database.Db(self.db).table(self.Table).where('uid', uid).find()

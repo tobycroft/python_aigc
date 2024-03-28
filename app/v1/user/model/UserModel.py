@@ -1,5 +1,3 @@
-from pymysql import Connection
-
 from common.BaseModel import BaseModel
 from tuuz import Database
 
@@ -7,8 +5,8 @@ from tuuz import Database
 class UserModel(BaseModel):
     Table = "ai_user"
 
-    def __init__(self, Conn: Connection = None):
-        super().__init__(Conn)
+    def __init__(self, conn=None):
+        super().__init__(conn)
 
     def api_find_byUsername(self, username):
         return Database.Db(self.db).table(self.Table).where('username', username).find()

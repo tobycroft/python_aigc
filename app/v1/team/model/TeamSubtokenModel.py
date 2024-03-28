@@ -19,8 +19,8 @@ from tuuz import Database
 class TeamSubtokenModel(BaseModel):
     Table = "ai_team_subtoken"
 
-    def __init__(self, Conn=None):
-        super().__init__(Conn)
+    def __init__(self, conn=None):
+        super().__init__(conn)
 
     def api_find_byKey(self, key):
         return Database.Db(self.db).table(self.Table).where("key", key).find()

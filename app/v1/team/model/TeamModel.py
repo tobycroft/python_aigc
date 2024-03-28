@@ -9,7 +9,6 @@
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY (`id`)
 # ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-from pymysql import Connection
 
 from common.BaseModel import BaseModel
 from tuuz import Database
@@ -18,8 +17,8 @@ from tuuz import Database
 class TeamModel(BaseModel):
     Table = "ai_team"
 
-    def __init__(self, Conn: Connection = None):
-        super().__init__(Conn)
+    def __init__(self, conn=None):
+        super().__init__(conn)
 
     def api_insert(self, uid, name, img, content, prefix):
         return Database.Db(self.db).table(self.Table).insert({
