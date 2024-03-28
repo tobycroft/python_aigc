@@ -1,5 +1,6 @@
 import os
 
+import langchain_openai
 from flask import Blueprint
 
 from app.v1.langchain.model import OpenAiModel
