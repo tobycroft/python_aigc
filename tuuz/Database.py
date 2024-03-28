@@ -213,19 +213,23 @@ class Db(object):
         if self.__conn is None:
             if self.__debug:
                 print("数据库连接至MySQL……")
-            self.__conn = pymysql.connect(host=config.db.dbhost,
-                                          user=config.db.dbuser,
-                                          password=config.db.dbpass,
-                                          database=config.db.dbname,
-                                          port=int(config.db.dbport),
-                                          charset='utf8mb4',
-                                          connect_timeout=5,
-                                          init_command="SET SESSION time_zone='+08:00'",
-                                          autocommit=False)
+            self.__conn = self.connect_to_db()
         self.cursor = self.__conn.cursor()
 
     def get_connection(self):
         return self.__conn
+
+    @staticmethod
+    def connect_to_db():
+        return pymysql.connect(host=config.db.dbhost,
+                               user=config.db.dbuser,
+                               password=config.db.dbpass,
+                               database=config.db.dbname,
+                               port=int(config.db.dbport),
+                               charset='utf8mb4',
+                               connect_timeout=5,
+                               init_command="SET SESSION time_zone='+08:00'",
+                               autocommit=False)
 
     def begin(self):
         self.__autocommit = False

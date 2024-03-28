@@ -30,7 +30,7 @@ class TeamModel(BaseModel):
         })
 
     def api_insert_uidAndName(self, uid, name):
-        return Database.Db(self.db).table(self.Table).insert({
+        return Database.Db(self.db).table(self.Table).insertGetId({
             "uid": uid,
             "name": name
         })
