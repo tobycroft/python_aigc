@@ -66,21 +66,3 @@ async def update():
         return Ret.success()
     else:
         return Ret.fail(500, echo="更新团队失败")
-
-
-@Controller.post('test')
-async def test():
-    uid = Input.Header.Int("uid")
-    id = Input.Post.Int("id")
-    name = Input.Post.Str("name")
-    img = Input.Post.Str("img")
-    content = Input.Post.Str("content")
-    prefix = Input.Post.Str("prefix")
-    db = Database.Db().get_connection()
-    db.begin()
-    if TeamModel(db).api_update_byUidAndId(uid, id, name, img, content, prefix):
-        db.commit()
-        return Ret.success()
-    else:
-        db.rollback()
-        return Ret.fail(500)
