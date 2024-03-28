@@ -1,9 +1,7 @@
 # CREATE TABLE `ai_team_subtoken` (
 #   `id` int NOT NULL,
 #   `team_id` int unsigned DEFAULT '0' COMMENT '团队id初期用不上',
-#   `type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '本token调用类型，ollama,openai,fastgpt',
-#   `use_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '调用名称',
-#   `coin_id` int unsigned DEFAULT '0' COMMENT '扣费模式',
+#   `coin_id` int DEFAULT NULL COMMENT 'coin表里面找调用类型',
 #   `prefix` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '自定义prefix，可以使用team中的团队prefix',
 #   `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
 #   `amount` decimal(10,6) DEFAULT '0.000000' COMMENT '积分剩余数量',
@@ -27,3 +25,6 @@ class TeamSubtokenModel(BaseModel):
 
     def api_select_byTeamId(self, team_id):
         return Database.Db(self.db).table(self.Table).where("team_id", team_id).select()
+
+    def api_insert(self, team_id, coin_id, prefix, amount):
+        return Database.Db(self.db).table(self.Table).insert({"team_id": team_id, "coin_id": coin_id, "prefix": prefix, "amount": amount})

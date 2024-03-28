@@ -3,6 +3,7 @@ import os
 from flask import Blueprint
 
 from app.v1.team.model.TeamModel import TeamModel
+from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 from tuuz.Input import Header, Post
@@ -23,17 +24,11 @@ def slash():
 @Controller.post('create')
 async def create():
     uid = Header.Int("uid")
-    name = Post.Str("name")
-    # if name len should be > 1
-    if len(name) < 1:
-        return Ret.fail(400, echo="name应该大于1")
-    if TeamModel().api_find_byUidAndName(uid, name):
-        return Ret.fail(402, echo="该团队已存在")
-    if TeamModel().api_insert_uidAndName(uid, name):
-        return Ret.success()
-    else:
-        return Ret.fail(500, echo="创建团队失败")
-
+    team_id = Post.Int("team_id")
+    coin_id = Post.Int("coin_id")
+    prefix = Post.Str("prefix")
+    amount = Post.Float("amount")
+    TeamSubtokenModel().api_find_byKey()
 
 @Controller.post('list')
 async def list():
