@@ -41,4 +41,4 @@ async def list():
     if team_list:
         return Ret.success(data=team_list)
     else:
-        return Ret.success()
+        return Ret.success(echo="没有团队")
