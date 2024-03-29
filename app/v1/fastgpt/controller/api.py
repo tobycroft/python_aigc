@@ -12,7 +12,7 @@ from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 from tuuz.Input import Header, Post
-from tuuz.Ret import json_response
+from tuuz.Ret import success
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
@@ -30,10 +30,10 @@ def before_request():
 @Controller.post('text')
 def text():
     uid = Header.Int("uid")
-    fastgpt_id = Post.Int("fastgpt_id")
+    subtoken_id = Post.Int("subtoken_id")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
-    subtoken = TeamSubtokenModel().api_find_byUidAndId(uid, fastgpt_id)
+    subtoken = TeamSubtokenModel().api_find_byUidAndId(uid, subtoken_id)
     if not subtoken:
         return Ret.fail(404, echo="没有找到对应的key")
     if int(subtoken["is_limit"]) == 1 and float(subtoken["amount"]) <= 0:
@@ -47,9 +47,10 @@ def text():
     fastgpt = FastgptModel().api_find_byId(subtoken["from_id"])
     if not fastgpt:
         return Ret.fail(404, echo="FastGPT中的上级Key被删除")
-
-    records = FastgptRecordModel().api_select_byFastgptIdAndChatId(fastgpt_id, chat_id)
-    messages: list = json.loads(records["send"])
+    messages: list[dict] = []
+    records = FastgptRecordModel().api_find_bySubtokenIdAndChatId(subtoken_id, chat_id)
+    if records:
+        messages += json.loads(records["send"])
     messages.append({"role": "user", "content": message})
     client = OpenAI(api_key=fastgpt["key"], base_url=fastgpt["base_url"])
 
@@ -74,4 +75,7 @@ def text():
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
-    return json_response(ret.model_dump())
+    ret_message = ""
+    if len(ret.choices) > 0:
+        ret_message = ret.choices[0].message.content
+    return success(data=messages, echo=ret_message)
