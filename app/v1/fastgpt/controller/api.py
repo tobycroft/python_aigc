@@ -30,6 +30,7 @@ def before_request():
 def text():
     uid = Header.Int("uid")
     id = Post.Int("id")
+    message = Post.Str("message")
     subtoken = TeamSubtokenModel().api_find_byUidAndId(uid, id)
     if not subtoken:
         return Ret.fail(404, echo="没有找到对应的key")
@@ -58,7 +59,7 @@ def text():
     total_tokens = ret.usage.total_tokens
     prompt_tokens = ret.usage.prompt_tokens
     completion_tokens = ret.usage.completion_tokens
-
+    tokens = ret.tokens
     used_price = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(used_price))
 

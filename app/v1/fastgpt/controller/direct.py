@@ -7,6 +7,7 @@ from openai import OpenAI
 from app.v1.coin.action.CoinCalcAction import CoinCalcAction
 from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.fastgpt.model.FastgptModel import FastgptModel
+from app.v1.fastgpt.model.FastgptRecordModel import FastgptRecordModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from tuuz import Ret
 from tuuz.Input import Header
@@ -48,12 +49,14 @@ def text():
     if not fastgpt:
         return Ret.fail(404, echo="FastGPT中的上级Key被删除")
     client = OpenAI(api_key=fastgpt["key"], base_url=fastgpt["base_url"])
+    chatId = flask.request.json.get("chatId")
+    messages = flask.request.json.get("messages")
     ret = client.chat.completions.create(
         model=fastgpt["model"],
-        messages=flask.request.json.get("messages"),
+        messages=messages,
         response_format={"type": "json_object"},
         extra_body={
-            "chatId": flask.request.json.get("chatId"),
+            "chatId": chatId,
             "detail": fastgpt["detail"],
         }
         # temperature=0,
@@ -64,6 +67,6 @@ def text():
 
     used_price = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(used_price))
-
+    FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chatId, messages, ret.model_dump_json(), completion_tokens, prompt_tokens, total_tokens)
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     return json_response(ret.model_dump())
