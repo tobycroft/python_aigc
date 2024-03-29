@@ -41,3 +41,6 @@ class FastgptRecordModel(BaseModel):
             "finish_reason": finish_reason,
             "amount": amount
         })
+
+    def api_select_byFastgptIdAndChatId(self, fastgpt_id, chatId):
+        return Database.Db().table(self.Table).whereRow("fastgpt_id", fastgpt_id).whereRow("chatId", chatId).order("id asc").select()

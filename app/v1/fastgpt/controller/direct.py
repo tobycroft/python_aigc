@@ -50,14 +50,14 @@ def text():
     if not fastgpt:
         return Ret.fail(404, echo="FastGPT中的上级Key被删除")
     client = OpenAI(api_key=fastgpt["key"], base_url=fastgpt["base_url"])
-    chatId = flask.request.json.get("chatId")
+    chat_id = flask.request.json.get("chatId")
     messages = flask.request.json.get("messages")
     ret = client.chat.completions.create(
         model=fastgpt["model"],
         messages=messages,
         response_format={"type": "json_object"},
         extra_body={
-            "chatId": chatId,
+            "chatId": chat_id,
             "detail": fastgpt["detail"],
         }
         # temperature=0,
@@ -69,7 +69,7 @@ def text():
     amount = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(amount))
 
-    FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chatId, json.dumps(messages), ret.model_dump_json(),
+    FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chat_id, json.dumps(messages, ensure_ascii=False), ret.model_dump_json(),
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
