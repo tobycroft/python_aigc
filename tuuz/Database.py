@@ -503,11 +503,9 @@ class Db(object):
         sql = str(" insert into " + self.__name + " ( " + fields + ") values ( " + values + " ) ")
         return self.__add(sql)
 
-    def update(self, data):
-        if typeof(data) != 'dict':
-            return None
-        fields = ''
-        sql = ''
+    def __where_to_sql(self, sql=None):
+        if sql is None:
+            sql = ''
         if len(self.__map) > 0:
             sql += ' where'
             i = 0
@@ -518,25 +516,27 @@ class Db(object):
                 if typeof(item) == 'str':
                     sql += ' ( `' + item + '` ) '
                 elif typeof(item) == 'dict':
-                    # values = format_field(item.get('val'), column['type'])
-                    values = item.get('val')
-                    # sql += ' ( ' + item.get('key') + ' ' + item.get('type') + ' ' + values + ' ) '
                     sql += ' ( `' + item.get('key') + '` ' + item.get('type') + ' %s ) '
         else:
-            print('禁止不使用 where 更新数据')
+            print('禁止不使用 where 查询数据')
+        return sql
+
+    def update(self, data):
+        if typeof(data) != 'dict':
+            return None
+        fields = ''
+        sql = self.__where_to_sql()
         i = 0
         for key in data:
             if i == 0:
-                # fields = key + '=' + format_field(data[key], column['type'])
                 fields = "`" + key + '` = %s'
             else:
-                # fields += str(',' + key + '=' + format_field(data[key], column['type']))
-                fields += str(', `' + key + '` =%s')
+                fields += str(', `' + key + '` = %s')
             self.__bindData.append(data[key])
             i += 1
         if fields == '':
             return 0
-        sql = str("update ·" + self.__name + "· set " + fields + ' ' + sql)
+        sql = str("update " + self.__name + " set " + fields + ' ' + sql)
         return self.__edit(sql)
 
     def insertGetId(self, data):
@@ -606,10 +606,22 @@ class Db(object):
         return self.__edit(sql)
 
     def setInc(self, key, step=1):
-        return self.update({key: key + '+' + str(step)})
+        sql = self.__where_to_sql()
+        fields = "`" + key + '`=`' + key + '`+%s'
+        self.__bindData.append(step)
+        if fields == '':
+            return 0
+        sql = str("update " + self.__name + " set " + fields + ' ' + sql)
+        return self.__edit(sql)
 
     def setDec(self, key, step=1):
-        return self.update({key: key + '-' + str(step)})
+        sql = self.__where_to_sql()
+        fields = "`" + key + '`=`' + key + '`-%s'
+        self.__bindData.append(step)
+        if fields == '':
+            return 0
+        sql = str("update " + self.__name + " set " + fields + ' ' + sql)
+        return self.__edit(sql)
 
     def query(self, sql):
         return self.__edit(sql)
