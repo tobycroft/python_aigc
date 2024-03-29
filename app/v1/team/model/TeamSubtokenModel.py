@@ -43,3 +43,6 @@ class TeamSubtokenModel(BaseModel):
 
     def api_delete(self, team_id, id):
         return Database.Db(self.db).table(self.Table).where("team_id", team_id).where("id", id).delete()
+
+    def api_inc_amount_byKey(self, key, amount):
+        return Database.Db(self.db).table(self.Table).where("key", key).setInc("amount", amount)
