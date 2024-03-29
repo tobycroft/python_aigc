@@ -13,7 +13,7 @@ def LoginedController():
     token = ""
     debug = ""
     if request.method == 'OPTIONS':
-        return flask.abort(200)
+        return flask.make_response('')
 
     if HEADER_AUTH_MODE:
         uid = Input.Header.Int("uid")
