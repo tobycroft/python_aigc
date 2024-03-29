@@ -64,5 +64,6 @@ def text():
 
     used_price = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(key, -abs(used_price))
+
     print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     return json_response(ret.model_dump())
