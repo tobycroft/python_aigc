@@ -8,6 +8,6 @@ import app.v1.route
 def MainRoute():
     fk = Flask(__name__)
     print("flask_version:", flask.__version__)
-    CORS(fk)
+    CORS(fk, max_age=3600)
     fk.register_blueprint(app.v1.route.Route, url_prefix="/v1")
     return fk
