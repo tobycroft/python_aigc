@@ -10,11 +10,9 @@
 from common.BaseModel import BaseModel
 from tuuz import Database
 
-Table = 'ai_user_info'
-
 
 class UserInfoModel(BaseModel):
-    Table = "ai_user"
+    Table = 'ai_user_info'
 
     def __init__(self, conn=None):
         super().__init__(conn)
