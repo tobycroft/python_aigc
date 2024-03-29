@@ -14,14 +14,14 @@ class CoinCalcAction:
             raise Exception("没有找到对应的币")
 
     def _price_for_one_token(self):
-        if self.Coin is None:
-            return None
         price = self.Coin["price"]
         token = self.Coin["token"]
         self.__price4one = Bc.div(price, token)
+        return self
 
     def Calc(self, amount):
         if self.Coin is None:
             return None
+        self._price_for_one_token()
         final_amount = Bc.mul(amount, self.__price4one)
         return final_amount
