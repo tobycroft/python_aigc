@@ -16,12 +16,12 @@ def LoginedController():
         return flask.make_response('', 204)
 
     if HEADER_AUTH_MODE:
-        uid = Input.Header.Int("uid")
-        token = Input.Header.String('token')
+        uid = request.headers.get("uid")
+        token = request.headers.get('token')
         debug = request.headers.get("debug")
     else:
-        uid = Input.Post.Int("uid")
-        token = Input.Post.String('token')
+        uid = request.form.get("uid")
+        token = request.form.get('token')
         debug = request.form.get("debug")
 
     if TestMode:
