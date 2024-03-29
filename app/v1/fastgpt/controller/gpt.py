@@ -4,6 +4,7 @@ import flask
 from flask import Blueprint
 from openai import OpenAI
 
+from app.v1.coin.action.CoinCalcAction import CoinCalcAction
 from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.fastgpt.model.FastgptModel import FastgptModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
@@ -60,6 +61,8 @@ def text():
     total_tokens = ret.usage.total_tokens
     prompt_tokens = ret.usage.prompt_tokens
     completion_tokens = ret.usage.completion_tokens
-    TeamSubtokenModel().api_inc_amount_byKey(key, -abs(total_tokens))
+
+    used_price = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
+    TeamSubtokenModel().api_inc_amount_byKey(key, -abs(used_price))
     print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     return json_response(ret.model_dump())

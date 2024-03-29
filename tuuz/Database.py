@@ -528,15 +528,15 @@ class Db(object):
         for key in data:
             if i == 0:
                 # fields = key + '=' + format_field(data[key], column['type'])
-                fields = key + '=%s'
+                fields = "`" + key + '` = %s'
             else:
                 # fields += str(',' + key + '=' + format_field(data[key], column['type']))
-                fields += str(',' + key + '=%s')
+                fields += str(', `' + key + '` =%s')
             self.__bindData.append(data[key])
             i += 1
         if fields == '':
             return 0
-        sql = str("update " + self.__name + " set " + fields + ' ' + sql)
+        sql = str("update ·" + self.__name + "· set " + fields + ' ' + sql)
         return self.__edit(sql)
 
     def insertGetId(self, data):
