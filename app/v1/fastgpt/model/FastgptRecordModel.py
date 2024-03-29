@@ -13,10 +13,11 @@
 #   `date` datetime DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY (`id`)
 # ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+from common.BaseModel import BaseModel
 from tuuz import Database
 
 
-class FastgptRecordModel:
+class FastgptRecordModel(BaseModel):
     Table = "ai_fastgpt_record"
 
     def __init__(self, conn=None):

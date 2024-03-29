@@ -67,6 +67,7 @@ def text():
 
     used_price = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(used_price))
+
     FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chatId, messages, ret.model_dump_json(), completion_tokens, prompt_tokens, total_tokens)
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     return json_response(ret.model_dump())
