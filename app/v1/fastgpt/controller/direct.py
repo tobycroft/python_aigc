@@ -1,3 +1,4 @@
+import json
 import os
 
 import flask
@@ -65,9 +66,11 @@ def text():
     prompt_tokens = ret.usage.prompt_tokens
     completion_tokens = ret.usage.completion_tokens
 
-    used_price = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
-    TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(used_price))
+    amount = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
+    TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(amount))
 
-    FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chatId, messages, ret.model_dump_json(), completion_tokens, prompt_tokens, total_tokens)
+    FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chatId, json.dumps(messages), ret.model_dump_json(),
+                                    completion_tokens, prompt_tokens, total_tokens, "stop", amount)
+
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     return json_response(ret.model_dump())
