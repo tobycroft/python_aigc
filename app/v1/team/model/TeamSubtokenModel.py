@@ -23,6 +23,12 @@ class TeamSubtokenModel(BaseModel):
     def __init__(self, conn=None):
         super().__init__(conn)
 
+    def api_find(self, id):
+        return Database.Db(self.db).table(self.Table).where("id", id).find()
+
+    def api_find_byUidAndId(self, uid, id):
+        return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).find()
+
     def api_find_byKey(self, key):
         return Database.Db(self.db).table(self.Table).where("key", key).find()
 

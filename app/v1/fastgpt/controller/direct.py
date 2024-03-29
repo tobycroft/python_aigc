@@ -54,7 +54,7 @@ def text():
         response_format={"type": "json_object"},
         extra_body={
             "chatId": flask.request.json.get("chatId"),
-            "detail": True,
+            "detail": fastgpt["detail"],
         }
         # temperature=0,
     )
@@ -63,7 +63,7 @@ def text():
     completion_tokens = ret.usage.completion_tokens
 
     used_price = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
-    TeamSubtokenModel().api_inc_amount_byKey(key, -abs(used_price))
+    TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(used_price))
 
-    print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
+    # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     return json_response(ret.model_dump())
