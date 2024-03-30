@@ -3,6 +3,7 @@ import os
 from flask import Blueprint
 
 from app.v1.team.model.TeamModel import TeamModel
+from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from app.v1.user.model.UserTeamModel import UserTeamModel
 from common.controller.LoginController import LoginedController
 from tuuz import Database
@@ -52,6 +53,10 @@ async def delete():
             db.rollback()
             db.close()
             return fail(500, echo="删除团队失败2")
+        if not TeamSubtokenModel().api_delete(ut["team_id"]):
+            db.rollback()
+            db.close()
+            return fail(500, echo="删除团队失败3")
     db.commit()
     db.close()
     success()
