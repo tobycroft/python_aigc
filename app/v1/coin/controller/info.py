@@ -2,6 +2,7 @@ import os
 
 from flask import Blueprint
 
+from app.v1.coin.model.CoinModel import CoinModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 
@@ -18,6 +19,7 @@ def slash():
     return Controller.name
 
 
-@Controller.post('create')
-async def create():
-    return Ret.success(0)
+@Controller.post('list')
+async def list():
+    data = CoinModel().api_select()
+    return Ret.success(data=data)
