@@ -35,6 +35,17 @@ async def list():
         return success(echo="没有团队")
 
 
+@Controller.post('get')
+async def get():
+    uid = Header.Int("uid")
+    id = Post.Int("id")
+    ut = UserTeamModel().api_find_byUidAndTeamId(uid, id)
+    if not ut:
+        return fail(404, echo="没有该团队")
+    ut["team_info"] = TeamModel().api_find_byId(ut["team_id"])
+    return success(data=ut)
+
+
 @Controller.post('delete')
 async def delete():
     uid = Header.Int("uid")
