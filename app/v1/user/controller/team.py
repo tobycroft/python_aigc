@@ -43,17 +43,15 @@ async def delete():
         return fail(404, echo="没有该团队")
     db = Database.Db.connect_to_db()
     db.begin()
-    if UserTeamModel().api_delete_byTeamId(id):
-        if ut["role"] == "owner" or ut["role"] == "admin":
-            if TeamModel(db).api_delete(id):
-                db.commit()
-                db.close()
-                success()
-            else:
-                db.rollback()
-                db.close()
-                return fail(500, echo="删除团队失败")
-    else:
+    if not UserTeamModel().api_delete_byTeamId(id):
         db.rollback()
         db.close()
         return fail(500, echo="删除团队失败")
+    if ut["role"] == "owner" or ut["role"] == "admin":
+        if not TeamModel(db).api_delete(id):
+            db.rollback()
+            db.close()
+            return fail(500, echo="删除团队失败")
+    db.commit()
+    db.close()
+    success()
