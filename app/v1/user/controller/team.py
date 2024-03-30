@@ -38,8 +38,8 @@ async def list():
 @Controller.post('get')
 async def get():
     uid = Header.Int("uid")
-    id = Post.Int("id")
-    ut = UserTeamModel().api_find_byUidAndTeamId(uid, id)
+    team_id = Post.Int("team_id")
+    ut = UserTeamModel().api_find_byUidAndTeamId(uid, team_id)
     if not ut:
         return fail(404, echo="没有该团队")
     ut["team_info"] = TeamModel().api_find_byId(ut["team_id"])
