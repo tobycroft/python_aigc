@@ -52,3 +52,6 @@ class TeamSubtokenModel(BaseModel):
 
     def api_inc_amount_byKey(self, key, amount):
         return Database.Db(self.db).table(self.Table).where("key", key).setInc("amount", amount)
+
+    def api_find_byIdAndTeamId(self, id, team_id):
+        return Database.Db(self.db).table(self.Table).where("id", id).where("team_id", team_id).find()

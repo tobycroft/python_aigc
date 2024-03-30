@@ -83,3 +83,13 @@ async def delete():
         return success()
     else:
         return fail(500, echo="删除失败")
+
+
+@Controller.post('get')
+async def get():
+    id = Post.Int("id")
+    team_id = Post.Int("team_id")
+    data = TeamSubtokenModel().api_find_byIdAndTeamId(id, team_id)
+    if not data:
+        return fail(404, echo="没有找到对应的token")
+    return success(data=data)
