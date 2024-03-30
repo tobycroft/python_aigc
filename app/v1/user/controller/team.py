@@ -49,13 +49,13 @@ async def get():
 @Controller.post('delete')
 async def delete():
     uid = Header.Int("uid")
-    id = Post.Int("id")
-    ut = UserTeamModel().api_find_byUidAndTeamId(uid, id)
+    team_id = Post.Int("team_id")
+    ut = UserTeamModel().api_find_byUidAndTeamId(uid, team_id)
     if not ut:
         return fail(404, echo="没有该团队")
     db = Database.Db.connect_to_db()
     db.begin()
-    if not UserTeamModel().api_delete_byTeamId(id):
+    if not UserTeamModel().api_delete_byTeamId(team_id):
         db.rollback()
         db.close()
         return fail(500, echo="删除团队失败1")
