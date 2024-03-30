@@ -48,7 +48,7 @@ async def delete():
         db.close()
         return fail(500, echo="删除团队失败")
     if ut["role"] == "owner" or ut["role"] == "admin":
-        if not TeamModel(db).api_delete(id):
+        if not TeamModel(db).api_delete(ut["team_id"]):
             db.rollback()
             db.close()
             return fail(500, echo="删除团队失败")
