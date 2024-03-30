@@ -60,7 +60,7 @@ async def delete():
     db = Database.Db.connect_to_db()
     db.begin()
     if TeamModel(db).api_delete(id):
-        if UserTeamModel().api_delete_byTeamId(id):
+        if UserTeamModel(db).api_delete_byTeamId(id):
             db.commit()
             db.close()
             return success()

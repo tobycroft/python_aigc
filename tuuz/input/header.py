@@ -23,7 +23,7 @@ class Header:
                 return in_data
 
     @staticmethod
-    def Int(key: str):
+    def Int(key: str) -> object:
         in_data = request.headers.get(key)
         if not in_data:
             abort(make_response(fail(400, echo=f"Header-[{key}] not found")))
