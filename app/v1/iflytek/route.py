@@ -13,6 +13,7 @@ def index():
     return folder_name
 
 
-import app.v1.coin.controller.info as info
+# tts
+import app.v1.iflytek.controller.tts as tts
 
-Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
+Route.register_blueprint(tts.Controller, url_prefix=tts.Controller.name)

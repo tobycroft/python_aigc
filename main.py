@@ -30,7 +30,7 @@ if __name__ == "__main__":
     run(main())
     sch = BackgroundScheduler()
     sch.remove_all_jobs()
-    sch.add_job(Token.refresh, 'interval', seconds=1)
+    sch.add_job(Token.refresh, 'interval', seconds=1, replace_existing=True, )
     if not sch.running:
         sch.start()
     # app.run(host="0.0.0.0", port=84, debug=config.app.TestMode, threaded=True)

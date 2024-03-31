@@ -3,12 +3,13 @@ import os
 from flask import Blueprint
 
 from app.v1.coin.model.CoinModel import CoinModel
-from app.v1.iflytek.action.TtsAction import VmsApi
+from app.v1.iflytek.action.TtsAction import TtsAction
 from app.v1.iflytek.model.IflytekModel import IflytekModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 from tuuz.Input import Header, Post
+from tuuz.Ret import success
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
@@ -23,7 +24,7 @@ def slash():
     return Controller.name
 
 
-@Controller.post('create')
+@Controller.post('text')
 async def text():
     uid = Header.Int("uid")
     subtoken_id = Post.Int("subtoken_id")
@@ -42,18 +43,5 @@ async def text():
     iflytts = IflytekModel().api_find_byId(subtoken["from_id"])
     if not iflytts:
         return Ret.fail(404, echo="讯飞语音中的上级Key被删除")
-    vms = VmsApi(iflytts["host"], iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"])
-    start_url = "/v1/private/vms2d_start"
-    print("启动")
-    session = vms.start(start_url)
-    if session:
-        text_url = "/v1/private/vms2d_ctrl"
-        vms.text_ctrl(text_url, session, message)
-
-        stop_url = "/v1/private/vms2d_stop"
-        vms.stop(stop_url, session)
-        return Ret.success(0)
-    else:
-        stop_url = "/v1/private/vms2d_stop"
-        vms.stop(stop_url, session)
-        return Ret.fail(500, echo="讯飞语音创建会话失败")
+    TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).text()
+    return success()
