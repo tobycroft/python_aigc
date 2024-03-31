@@ -16,8 +16,6 @@ from wsgiref.handlers import format_date_time
 import requests
 from ws4py.client.threadedclient import WebSocketClient
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-
 ################init 参数######################
 # 音频驱动参数
 STATUS_FIRST_FRAME = 0  # 第一帧的标识
@@ -272,58 +270,57 @@ class AudioCtrl(WebSocketClient):
         self.send(json_data)
 
 
-if __name__ == "__main__":
-    vms = VmsApi()
-    start_url = "/v1/private/vms2d_start"
-    print("启动")
-    session = vms.start(start_url)
+vms = VmsApi()
+start_url = "/v1/private/vms2d_start"
+print("启动")
+session = vms.start(start_url)
 
-    if session:
-        # 文本驱动，自定义文本内容
-        time.sleep(10)
-        print("\n文本驱动")
-        text = "你好，有什么可以帮助你的？"
-        text_url = "/v1/private/vms2d_ctrl"
+if session:
+    # 文本驱动，自定义文本内容
+    time.sleep(10)
+    print("\n文本驱动")
+    text = "你好，有什么可以帮助你的？"
+    text_url = "/v1/private/vms2d_ctrl"
+    vms.text_ctrl(text_url, session, text)
+
+    # 音频驱动
+    # time.sleep(10)
+    # print("\n音频驱动")
+    audio_url = "/v1/private/vms2d_audio_ctrl"
+    audio_file = "tts.mp3"
+    # vms.audio_ctrl(audio_url, session, audio_file)
+
+    # 心跳
+    # time.sleep(10)
+    # print("\n心跳")
+    ping_url = "/v1/private/vms2d_ping"
+    # vms.ping(ping_url, session)
+
+    # 文本驱动
+
+    while text != "再见":
+        text = input("请输入文本：")
+        test = text.encode("utf-8").decode("latin1")
+
+        # conn = http.client.HTTPSConnection("api.link-ai.chat")
+        # payload = "{\n  \"app_code\": \"default\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": "+ text +"\n    }\n  ]\n}"
+        # headers = {
+        #    'Content-Type': "application/json",
+        #     'Authorization': "Bearer Link_7Vv9LnL0cBkPyhJLedj7XmhwTHJ3aFbwIpdP47G7fR"
+        #    }
+        # conn.request("POST", "/v1/chat/completions", payload, headers)
+        # res = conn.getresponse()
+        # data = res.read()
+
+        # res_content=data['choices']['message']['content']
+        # text=res_content.decode("utf-8")
+        # print(text)
+
+        vms.ping(ping_url, session)
         vms.text_ctrl(text_url, session, text)
 
-        # 音频驱动
-        # time.sleep(10)
-        # print("\n音频驱动")
-        audio_url = "/v1/private/vms2d_audio_ctrl"
-        audio_file = "tts.mp3"
-        # vms.audio_ctrl(audio_url, session, audio_file)
-
-        # 心跳
-        # time.sleep(10)
-        # print("\n心跳")
-        ping_url = "/v1/private/vms2d_ping"
-        # vms.ping(ping_url, session)
-
-        # 文本驱动
-
-        while text != "再见":
-            text = input("请输入文本：")
-            test = text.encode("utf-8").decode("latin1")
-
-            # conn = http.client.HTTPSConnection("api.link-ai.chat")
-            # payload = "{\n  \"app_code\": \"default\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": "+ text +"\n    }\n  ]\n}"
-            # headers = {
-            #    'Content-Type': "application/json",
-            #     'Authorization': "Bearer Link_7Vv9LnL0cBkPyhJLedj7XmhwTHJ3aFbwIpdP47G7fR"
-            #    }
-            # conn.request("POST", "/v1/chat/completions", payload, headers)
-            # res = conn.getresponse()
-            # data = res.read()
-
-            # res_content=data['choices']['message']['content']
-            # text=res_content.decode("utf-8")
-            # print(text)
-
-            vms.ping(ping_url, session)
-            vms.text_ctrl(text_url, session, text)
-
-        # 停止
-        # time.sleep(10)
-        # print("\n停止")
-        # stop_url = "/v1/private/vms2d_stop"
-        # vms.stop(stop_url, session)
+    # 停止
+    # time.sleep(10)
+    # print("\n停止")
+    # stop_url = "/v1/private/vms2d_stop"
+    # vms.stop(stop_url, session)

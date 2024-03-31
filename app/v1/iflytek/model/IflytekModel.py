@@ -1,3 +1,17 @@
+# CREATE TABLE `ai_iflytek` (
+#   `id` int unsigned NOT NULL AUTO_INCREMENT,
+#   `uid` int unsigned DEFAULT '0',
+#   `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '',
+#   `team_id` int unsigned DEFAULT '0',
+#   `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'vms.cn-huadong-1.xf-yun.com',
+#   `api_secret` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+#   `api_id` int DEFAULT NULL,
+#   `api_key` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+#   `change_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+#   `date` datetime DEFAULT CURRENT_TIMESTAMP,
+#   PRIMARY KEY (`id`)
+# ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 from common.BaseModel import BaseModel
 from tuuz import Database
 
