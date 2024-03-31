@@ -105,8 +105,8 @@ class TtsAction(object):
             else:
                 self.audioBase64Slices.append(audio_message)
                 self.audioBytes += audio
-                with open("test.mp3", 'ab') as f:
-                    f.write(audio)
+                # with open("test.mp3", 'ab') as f:
+                #     f.write(audio)
                 # ws.close()
         except Exception as e:
             print("receive msg,but parse exception:", e)
