@@ -24,8 +24,8 @@ def slash():
     return Controller.name
 
 
-@Controller.post('text')
-async def text():
+@Controller.post('audio')
+async def audio():
     uid = Header.Int("uid")
     subtoken_id = Post.Int("subtoken_id")
     message = Post.Str("message")
@@ -44,5 +44,4 @@ async def text():
     if not iflytts:
         return Ret.fail(404, echo="讯飞语音中的上级Key被删除")
     b64 = TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).data().get_audioBytes()
-    # return success(data=b64)
     return Response(b64, mimetype="audio/mp3")
