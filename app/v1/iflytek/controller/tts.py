@@ -50,7 +50,7 @@ async def audio():
 async def auto():
     uid = Header.Int("uid")
     message = Post.Str("message")
-    subtoken = TeamSubtokenModel().api_find_byUidAndAmountAndIsLimit(uid, 0, [0, 1])
+    subtoken = TeamSubtokenModel().api_find_byUidAndAmountOrIsLimit(uid, 6, 0, 0)
     if not subtoken:
         return Ret.fail(404, echo="没有找到对应的key")
     if int(subtoken["is_limit"]) == 1 and float(subtoken["amount"]) <= 0:

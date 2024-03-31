@@ -427,7 +427,7 @@ class Db(object):
             data[columns[i]] = value
         return data
 
-    def query(self, sql, args):
+    def query(self, sql, args=None):
         try:
             self.cursor.execute(sql, args)
             result = self.cursor.fetchone()
@@ -435,14 +435,14 @@ class Db(object):
             if self.__autocommit:
                 self.__close()
         except Exception as e:
-            print("query-error:", sql, self.__bindWhere)
-            print(e)
+            print("query-error:", sql, args, e)
             return None
         if result is None:
             return None
         data = {}
         for i, value in enumerate(result):
             data[columns[i]] = value
+        return data
 
     def select(self):
         if self.__name is None:
@@ -637,9 +637,6 @@ class Db(object):
         if fields == '':
             return 0
         sql = str("update " + self.__name + " set " + fields + ' ' + sql)
-        return self.__edit(sql)
-
-    def query(self, sql):
         return self.__edit(sql)
 
     # def __showColumn(self, is_str=False, table=None):

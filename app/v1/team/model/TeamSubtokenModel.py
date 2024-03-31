@@ -29,8 +29,8 @@ class TeamSubtokenModel(BaseModel):
     def api_find_byUidAndId(self, uid, id):
         return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).find()
 
-    def api_find_byUidAndAmountAndIsLimit(self, uid, amount, is_limit):
-        return Database.Db(self.db).table(self.Table).where("uid", uid).where("amount", ">", amount).whereIn("is_limit", is_limit).find()
+    def api_find_byUidAndAmountOrIsLimit(self, uid, coin_id, amount, is_limit):
+        return Database.Db(self.db).query("SELECT * FROM ai_team_subtoken WHERE uid = %s AND coin_id = %s AND (amount > %s OR is_limit = %s)", [uid, coin_id, amount, is_limit])
 
     def api_find_byKey(self, key):
         return Database.Db(self.db).table(self.Table).where("key", key).find()
