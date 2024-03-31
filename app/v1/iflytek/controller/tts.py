@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint
+from flask import Blueprint, Response
 
 from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.iflytek.action.TtsAction import TtsAction
@@ -43,5 +43,6 @@ async def text():
     iflytts = IflytekModel().api_find_byId(subtoken["from_id"])
     if not iflytts:
         return Ret.fail(404, echo="讯飞语音中的上级Key被删除")
-    TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).text()
-    return success()
+    b64 = TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).data().get_audioBytes()
+    # return success(data=b64)
+    return Response(b64, mimetype="audio/mp3")

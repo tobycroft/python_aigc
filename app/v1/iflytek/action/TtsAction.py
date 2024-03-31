@@ -42,8 +42,9 @@ class TtsAction(object):
         self.APISecret = APISecret
         self.Text = Text
         self.Vcn = Vcn
-        self.ws: websocket.WebSocketApp = None
-
+        self.ws: websocket.WebSocketApp
+        self.audioBase64Slices = []
+        self.audioBytes = b''
         # 公共参数(common)
         self.CommonArgs = {"app_id": self.APPID}
         # 业务参数(business)，更多个性化参数可在官网查看
@@ -83,7 +84,7 @@ class TtsAction(object):
         # print("date: ",date)
         # print("v: ",v)
         # 此处打印出建立连接时候的url,参考本demo的时候可取消上方打印的注释，比对相同参数时生成的url与自己代码生成的url是否一致
-        print('websocket url :', url)
+        # print('websocket url :', url)
         return url
 
     def on_message(self, ws, message):
@@ -91,10 +92,10 @@ class TtsAction(object):
             message = json.loads(message)
             code = message["code"]
             sid = message["sid"]
-            audio = message["data"]["audio"]
-            audio = base64.b64decode(audio)
+            audio_message = message["data"]["audio"]
+            audio = base64.b64decode(audio_message)
             status = message["data"]["status"]
-            print(message)
+            # print(message)
             if status == 2:
                 print("ws is closed")
                 ws.close()
@@ -102,9 +103,11 @@ class TtsAction(object):
                 errMsg = message["message"]
                 print("sid:%s call error:%s code is:%s" % (sid, errMsg, code))
             else:
+                self.audioBase64Slices.append(audio_message)
+                self.audioBytes += audio
                 with open("test.mp3", 'ab') as f:
                     f.write(audio)
-
+                # ws.close()
         except Exception as e:
             print("receive msg,but parse exception:", e)
 
@@ -128,10 +131,18 @@ class TtsAction(object):
             ws.send(d)
             if os.path.exists("test.mp3"):
                 os.remove("test.mp3")
+
         thread.start_new_thread(run, ())
 
-    def text(self):
+    def data(self):
         websocket.enableTrace(False)
         wsUrl = self.create_url()
         self.ws = websocket.WebSocketApp(wsUrl, on_message=self.on_message, on_error=self.on_error, on_close=self.on_close, on_open=self.on_open)
         self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+        return self
+
+    def get_base64(self):
+        return self.audioBase64Slices
+
+    def get_audioBytes(self):
+        return self.audioBytes
