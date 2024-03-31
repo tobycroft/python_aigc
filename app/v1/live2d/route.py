@@ -13,6 +13,7 @@ def index():
     return folder_name
 
 
-import app.v1.vrm.controller.info as info
+# models
+import app.v1.live2d.controller.models as models
 
-Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
+Route.register_blueprint(models.Controller, url_prefix=models.Controller.name)
