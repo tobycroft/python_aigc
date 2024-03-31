@@ -27,7 +27,6 @@ def slash():
 async def text():
     uid = Header.Int("uid")
     subtoken_id = Post.Int("subtoken_id")
-    chat_id = Post.Str("chat_id")
     message = Post.Str("message")
     subtoken = TeamSubtokenModel().api_find_byUidAndId(uid, subtoken_id)
     if not subtoken:
@@ -49,7 +48,7 @@ async def text():
     session = vms.start(start_url)
     if session:
         text_url = "/v1/private/vms2d_ctrl"
-        vms.text_ctrl(text_url, session, text)
+        vms.text_ctrl(text_url, session, message)
 
         stop_url = "/v1/private/vms2d_stop"
         vms.stop(stop_url, session)
