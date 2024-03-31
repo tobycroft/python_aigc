@@ -17,3 +17,8 @@ def index():
 import app.v1.live2d.controller.models as models
 
 Route.register_blueprint(models.Controller, url_prefix=models.Controller.name)
+
+# tips
+import app.v1.live2d.controller.tips as tips
+
+Route.register_blueprint(tips.Controller, url_prefix=tips.Controller.name)
