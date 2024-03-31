@@ -287,9 +287,9 @@ class Db(object):
         return self.where({'key': key, 'val': val, 'type': mark})
 
     def whereIn(self, key, val):
-        if typeof(val) == 'tuple':
-            return self.where({'key': key, 'val': '(' + ','.join(val) + ')', 'type': 'in'})
-        return self.where({'key': key, 'val': '(' + val + ')', 'type': 'in'})
+        if typeof(val) == 'str':
+            return self.where({'key': key, 'val': tuple(str(val).split(',')), 'type': 'in'})
+        return self.where({'key': key, 'val': tuple(val), 'type': 'in'})
 
     def whereLike(self, key, val):
         return self.where({'key': key, 'val': val, 'type': 'like'})
@@ -418,7 +418,7 @@ class Db(object):
             if self.__autocommit:
                 self.__close()
         except Exception as e:
-            print(sql, self.__bindWhere)
+            print("find-sql:", sql, self.__bindWhere)
             print(e)
             exit(-1)
         if result is None:
