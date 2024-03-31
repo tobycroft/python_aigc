@@ -102,7 +102,6 @@ class TtsAction(object):
                 errMsg = message["message"]
                 print("sid:%s call error:%s code is:%s" % (sid, errMsg, code))
             else:
-
                 with open("test.mp3", 'ab') as f:
                     f.write(audio)
 
@@ -129,7 +128,6 @@ class TtsAction(object):
             ws.send(d)
             if os.path.exists("test.mp3"):
                 os.remove("test.mp3")
-
         thread.start_new_thread(run, ())
 
     def text(self):
@@ -137,5 +135,3 @@ class TtsAction(object):
         wsUrl = self.create_url()
         self.ws = websocket.WebSocketApp(wsUrl, on_message=self.on_message, on_error=self.on_error, on_close=self.on_close, on_open=self.on_open)
         self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
-        if os.path.exists("test.mp3"):
-            os.remove("test.mp3")
