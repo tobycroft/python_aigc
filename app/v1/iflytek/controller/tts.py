@@ -43,8 +43,18 @@ async def text():
     iflytts = IflytekModel().api_find_byId(subtoken["from_id"])
     if not iflytts:
         return Ret.fail(404, echo="讯飞语音中的上级Key被删除")
-    vms = VmsApi(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"])
+    vms = VmsApi(iflytts["host"], iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"])
     start_url = "/v1/private/vms2d_start"
     print("启动")
     session = vms.start(start_url)
-    return Ret.success(0)
+    if session:
+        text_url = "/v1/private/vms2d_ctrl"
+        vms.text_ctrl(text_url, session, text)
+
+        stop_url = "/v1/private/vms2d_stop"
+        vms.stop(stop_url, session)
+        return Ret.success(0)
+    else:
+        stop_url = "/v1/private/vms2d_stop"
+        vms.stop(stop_url, session)
+        return Ret.fail(500, echo="讯飞语音创建会话失败")
