@@ -352,8 +352,7 @@ class Db(object):
         if len(self.__join) > 0:
             if '*' in column:
                 print('使用 join 必须指定字段名')
-                exit(-1)
-                # return None
+                return None
             for item in self.__join:
                 sql += item['mold'] + ' join ' + item['table'] + ' on ' + item['where'] + ' '
 
@@ -420,13 +419,30 @@ class Db(object):
         except Exception as e:
             print("find-sql:", sql, self.__bindWhere)
             print(e)
-            exit(-1)
+            return None
         if result is None:
             return None
         data = {}
         for i, value in enumerate(result):
             data[columns[i]] = value
         return data
+
+    def query(self, sql, args):
+        try:
+            self.cursor.execute(sql, args)
+            result = self.cursor.fetchone()
+            columns = [desc[0] for desc in self.cursor.description]
+            if self.__autocommit:
+                self.__close()
+        except Exception as e:
+            print("query-error:", sql, self.__bindWhere)
+            print(e)
+            return None
+        if result is None:
+            return None
+        data = {}
+        for i, value in enumerate(result):
+            data[columns[i]] = value
 
     def select(self):
         if self.__name is None:
@@ -449,7 +465,7 @@ class Db(object):
         except Exception as e:
             print(sql, self.__bindWhere)
             print(e)
-            exit(-1)
+            return None
         if result is None:
             return None
         data = []
@@ -474,7 +490,7 @@ class Db(object):
         except Exception as e:
             print(sql)
             print(e)
-            exit(-1)
+            return None
         if result is not None:
             return result[0]
         else:
