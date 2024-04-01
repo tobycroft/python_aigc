@@ -16,7 +16,10 @@ json_ascii_content_type = ["application/json"]
 def json_response(data):
     body = json.dumps(data, indent=4, sort_keys=True, default=str, ensure_ascii=False)
     response = Response(body, content_type="application/json")
-    response.headers['Access-Control-Allow-Origin'] = flask.request.origin
+    if flask.request.origin:
+        response.headers['Access-Control-Allow-Origin'] = flask.request.origin
+    else:
+        response.headers['Access-Control-Allow-Origin'] = "*"
     response.headers['Access-Control-Allow-Methods'] = "*"
     response.headers['Access-Control-Allow-Headers'] = "*"
     response.headers['Access-Control-Allow-Credentials'] = "true"
@@ -29,7 +32,10 @@ def secure_json_response(data):
         body = config.secure.SECURE_JSON_PREFIX + body
 
     response = Response(body, content_type="application/json", )
-    response.headers['Access-Control-Allow-Origin'] = flask.request.origin
+    if flask.request.origin:
+        response.headers['Access-Control-Allow-Origin'] = flask.request.origin
+    else:
+        response.headers['Access-Control-Allow-Origin'] = "*"
     response.headers['Access-Control-Allow-Methods'] = "*"
     response.headers['Access-Control-Allow-Headers'] = "*"
     response.headers['Access-Control-Allow-Credentials'] = "true"
