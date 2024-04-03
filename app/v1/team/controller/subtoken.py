@@ -67,8 +67,7 @@ async def create():
 
 @Controller.post('list')
 async def list():
-    team_id = Post.Int("team_id")
-    team_list = TeamSubtokenModel().api_select_byTeamId(team_id)
+    team_list = TeamSubtokenModel()
     if team_list:
         return success(data=team_list)
     else:
