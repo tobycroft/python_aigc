@@ -13,7 +13,7 @@ from common.BaseModel import BaseModel
 from tuuz import Database
 
 
-class FastgptModel(BaseModel):
+class QianwenModel(BaseModel):
     Table = "ai_qianwen"
 
     def __init__(self, conn=None):

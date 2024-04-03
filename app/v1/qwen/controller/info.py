@@ -2,7 +2,7 @@ import os
 
 from flask import Blueprint
 
-from app.v1.fastgpt.model.FastgptModel import FastgptModel
+from app.v1.qwen.model.QianwenModel import QianwenModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 from tuuz.Input import Header, Post
@@ -20,11 +20,10 @@ def before_request():
     return LoginedController()
 
 
-# list
 @Controller.post('/list')
 def list():
     uid = Header.Int('uid')
-    data = FastgptModel().api_select_byUid(uid)
+    data = QianwenModel().api_select_byUid(uid)
     return Ret.success(data=data)
 
 
@@ -35,13 +34,9 @@ def update():
     id = Post.Int('id')
     name = Post.Str('name')
     key = Post.Str('key')
-    base_url = Post.Str('base_url')
+    rid = Post.Int('rid')
     model = Post.Str('model')
-    detail = Post.Int('detail')
-    if FastgptModel().api_update_byUidAndId(uid, id, name, key, base_url, model, detail):
-        return Ret.success()
-    else:
-        return Ret.fail(500, echo='FastgptModel更新失败')
+    QianwenModel().api_update_byUidAndId(uid, id, name, key, rid, model)
 
 
 # delete
@@ -49,26 +44,25 @@ def update():
 def delete():
     uid = Header.Int('uid')
     id = Post.Int('id')
-    if FastgptModel().api_delete_byUidAndId(uid, id):
+    if QianwenModel().api_delete_byUidAndId(uid, id):
         return Ret.success()
     else:
-        return Ret.fail(500, echo='FastgptModel删除失败')
+        return Ret.fail(500, echo='QianwenModel删除失败')
 
 
 # add
 @Controller.post('/add')
 def add():
     uid = Header.Int('uid')
+    id = Post.Int('id')
     name = Post.Str('name')
-    team_id = Post.Int('team_id')
     key = Post.Str('key')
-    base_url = Post.Str('base_url')
+    rid = Post.Int('rid')
     model = Post.Str('model')
-    detail = Post.Int('detail')
-    if FastgptModel().api_insert(uid, name, team_id, key, base_url, model, detail):
+    if QianwenModel().api_insert(uid, id, name, key, rid, model):
         return Ret.success()
     else:
-        return Ret.fail(500, echo='FastgptModel添加失败')
+        return Ret.fail(500, echo='QianwenModel添加失败')
 
 
 # get
@@ -76,7 +70,7 @@ def add():
 def get():
     uid = Header.Int('uid')
     id = Post.Int('id')
-    data = FastgptModel().api_find_byUidAndId(uid, id)
+    data = QianwenModel().api_find_byUidAndId(uid, id)
     if data is None:
         return Ret.fail(404, echo='数据不存在')
     return Ret.success(data=data)
