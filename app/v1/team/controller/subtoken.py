@@ -63,6 +63,7 @@ async def list():
 
 @Controller.post('delete')
 async def delete():
+    uid = Header.Int("uid")
     id = Post.Int("id")
     team_id = Post.Int("team_id")
     ut = UserTeamModel().api_find_byUidAndTeamId_inRole(uid, team_id, "owner,admin")
@@ -85,3 +86,20 @@ async def get():
     if not data:
         return fail(404, echo="没有找到对应的token")
     return success(data=data)
+
+
+# update
+@Controller.post('update')
+async def update():
+    uid = Header.Int("uid")
+    id = Post.Int("id")
+    team_id = Post.Int("team_id")
+    prefix = Post.Str("prefix")
+    amount = Post.Float("amount")
+    ut = UserTeamModel().api_find_byUidAndTeamId_inRole(uid, team_id, "owner,admin")
+    if not ut:
+        return fail(403, echo="仅支持团队管理员操作")
+    if TeamSubtokenModel().api_update_byId(id, amount):
+        return success()
+    else:
+        return fail(500, echo="更新失败")
