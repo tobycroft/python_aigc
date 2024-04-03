@@ -17,4 +17,4 @@ class Live2dModelModel(BaseModel):
         super().__init__(conn)
 
     def api_select(self):
-        return Database.Db().table(self.Table).select()
+        return Database.Db(self.db).table(self.Table).select()

@@ -11,9 +11,24 @@
 # ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 from common.BaseModel import BaseModel
+from tuuz import Database
+
 
 class TeamSubtokenModel(BaseModel):
     Table = "ai_team_subtoken"
 
     def __init__(self, conn=None):
         super().__init__(conn)
+
+    def api_insert(self, team_id, prefix, key, is_limit, amount):
+        return Database.Db(self.db).table(self.Table).insert(
+            {"team_id": team_id, "prefix": prefix, "key": key, "is_limit": is_limit, "amount": amount})
+
+    def api_delete(self, team_id, id):
+        return Database.Db(self.db).table(self.Table).where("team_id", team_id).where("id", id).delete()
+
+    def api_find_byId(self, id):
+        return Database.Db(self.db).table(self.Table).where("id", id).find()
+
+    def api_find_byTeamIdAndKey(self, team_id, key):
+        return Database.Db(self.db).table(self.Table).where("team_id", team_id).where("key", key).find()

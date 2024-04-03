@@ -20,19 +20,19 @@ class QianwenModel(BaseModel):
         super().__init__(conn)
 
     def api_insert(self, uid, id, name, key, rid, model):
-        return Database.Db().table(self.Table).insert({"uid": uid, "id": id, "name": name, "key": key, "rid": rid, "model": model})
+        return Database.Db(self.db).table(self.Table).insert({"uid": uid, "id": id, "name": name, "key": key, "rid": rid, "model": model})
 
     def api_find_byId(self, id):
-        return Database.Db().table(self.Table).where("id", id).find()
+        return Database.Db(self.db).table(self.Table).where("id", id).find()
 
     def api_find_byUidAndId(self, uid, id):
-        return Database.Db().table(self.Table).where("uid", uid).where("id", id).find()
+        return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).find()
 
     def api_select_byUid(self, uid):
-        return Database.Db().table(self.Table).where("uid", uid).select()
+        return Database.Db(self.db).table(self.Table).where("uid", uid).select()
 
     def api_update_byUidAndId(self, uid, id, name, key, rid, model):
-        return Database.Db().table(self.Table).where("uid", uid).where("id", id).update({"name": name, "key": key, "rid": rid, "model": model})
+        return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).update({"name": name, "key": key, "rid": rid, "model": model})
 
     def api_delete_byUidAndId(self, uid, id):
-        return Database.Db().table(self.Table).where("uid", uid).where("id", id).delete()
+        return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).delete()
