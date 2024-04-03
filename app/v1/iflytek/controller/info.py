@@ -31,17 +31,17 @@ def list():
 # update
 @Controller.post('/update')
 def update():
-    # uid, id, name, team_id, host, app_secret, app_id, app_key, vcn
+    # uid, id, name, team_id, host, api_secret, app_id, api_key, vcn
     uid = Header.Int('uid')
     id = Post.Int('id')
     name = Post.Str('name')
     team_id = Post.Int('team_id')
     host = Post.Str('host')
-    app_secret = Post.Str('app_secret')
+    api_secret = Post.Str('api_secret')
     app_id = Post.Str('app_id')
-    app_key = Post.Str('app_key')
+    api_key = Post.Str('api_key')
     vcn = Post.Str('vcn')
-    if IflytekModel().api_update_byUidAndId(uid, id, name, team_id, host, app_secret, app_id, app_key, vcn):
+    if IflytekModel().api_update_byUidAndId(uid, id, name, team_id, host, api_secret, app_id, api_key, vcn):
         return Ret.success()
     else:
         return Ret.fail(500, echo='IflytekModel更新失败')
@@ -61,16 +61,16 @@ def delete():
 # add
 @Controller.post('/add')
 def add():
-    # uid, name, team_id, host, app_secret, app_id, app_key, vcn
+    # uid, name, team_id, host, api_secret, app_id, api_key, vcn
     uid = Header.Int('uid')
     name = Post.Str('name')
     team_id = Post.Int('team_id')
     host = Post.Str('host')
-    app_secret = Post.Str('app_secret')
+    api_secret = Post.Str('api_secret')
     app_id = Post.Str('app_id')
-    app_key = Post.Str('app_key')
+    api_key = Post.Str('api_key')
     vcn = Post.Str('vcn')
-    if IflytekModel().api_insert(uid, name, team_id, host, app_secret, app_id, app_key, vcn):
+    if IflytekModel().api_insert(uid, name, team_id, host, api_secret, app_id, api_key, vcn):
         return Ret.success()
     else:
         return Ret.fail(500, echo='IflytekModel添加失败')
