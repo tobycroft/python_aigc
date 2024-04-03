@@ -25,3 +25,23 @@ class IflytekModel(BaseModel):
 
     def api_find_byId(self, id):
         return Database.Db().table(self.Table).where("id", id).find()
+
+    def api_insert(self, uid, name, team_id, host, app_secret, app_id, app_key, vcn):
+        return Database.Db().table(self.Table).insert(
+            {"uid": uid, "name": name, "team_id": team_id, "host": host, "app_secret": app_secret, "app_id": app_id, "app_key": app_key, "vcn": vcn})
+
+    def api_update_byUidAndId(self, uid, id, name, team_id, host, app_secret, app_id, app_key, vcn):
+        return Database.Db().table(self.Table).where("uid", uid).where("id", id).update(
+            {"name": name, "team_id": team_id, "host": host, "app_secret": app_secret, "app_id": app_id, "app_key": app_key, "vcn": vcn})
+
+    def api_delete(self, id):
+        return Database.Db().table(self.Table).where("id", id).delete()
+
+    def api_delete_byUidAndId(self, uid, id):
+        return Database.Db().table(self.Table).where("uid", uid).where("id", id).delete()
+
+    def api_find_byUidAndId(self, uid, id):
+        return Database.Db().table(self.Table).where("uid", uid).where("id", id).find()
+
+    def api_select_byUid(self, uid):
+        return Database.Db().table(self.Table).where("uid", uid).select()
