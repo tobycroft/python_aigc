@@ -34,7 +34,7 @@ async def create():
         return fail(404, echo="没有找到对应团队")
     ut = UserTeamModel().api_find_byUidAndTeamId_inRole(uid, team_id, "owner,admin")
     if not ut:
-        return fail(403, echo="仅支持团队管理员添加key")
+        return fail(403, echo="仅支持团队管理员操作")
     key = Encrypt.sha256(Token.generate_order_id())
     is_limit = True
     if amount < 0:
@@ -65,6 +65,9 @@ async def list():
 async def delete():
     id = Post.Int("id")
     team_id = Post.Int("team_id")
+    ut = UserTeamModel().api_find_byUidAndTeamId_inRole(uid, team_id, "owner,admin")
+    if not ut:
+        return fail(403, echo="仅支持团队管理员操作")
     if TeamSubtokenModel().api_delete(team_id, id):
         return success()
     else:
@@ -73,8 +76,11 @@ async def delete():
 
 @Controller.post('get')
 async def get():
+    uid = Header.Int("uid")
     id = Post.Int("id")
     team_id = Post.Int("team_id")
+    if UserTeamModel().api_find_byUidAndTeamId(uid, team_id) is None:
+        return fail(403, echo="你不在这个团队中")
     data = TeamSubtokenModel().api_find_byIdAndTeamId(id, team_id)
     if not data:
         return fail(404, echo="没有找到对应的token")
