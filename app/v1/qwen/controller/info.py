@@ -36,7 +36,10 @@ def update():
     key = Post.Str('key')
     rid = Post.Int('rid')
     model = Post.Str('model')
-    QianwenModel().api_update_byUidAndId(uid, id, name, key, rid, model)
+    if QianwenModel().api_update_byUidAndId(uid, id, name, key, rid, model):
+        return Ret.success()
+    else:
+        return Ret.fail(500, echo='QianwenModel更新失败')
 
 
 # delete
