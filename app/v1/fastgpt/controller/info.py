@@ -70,7 +70,7 @@ def add():
 
 
 # get
-@Controller.post('/get')
+@Controller.post('get')
 def get():
     uid = Header.Int('uid')
     id = Post.Int('id')
