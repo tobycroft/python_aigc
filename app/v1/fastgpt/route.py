@@ -13,7 +13,7 @@ def index():
     return folder_name
 
 
-# info
+# direct
 import app.v1.fastgpt.controller.direct as info
 
 Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
@@ -27,3 +27,8 @@ Route.register_blueprint(embed.Controller, url_prefix=embed.Controller.name)
 import app.v1.fastgpt.controller.api as api
 
 Route.register_blueprint(api.Controller, url_prefix=api.Controller.name)
+
+# info
+import app.v1.fastgpt.controller.info as info
+
+Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
