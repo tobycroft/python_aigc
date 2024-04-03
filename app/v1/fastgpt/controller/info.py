@@ -21,7 +21,7 @@ def before_request():
 
 
 # list
-@Controller.get('/list')
+@Controller.post('/list')
 def list():
     uid = Header.Int('uid')
     data = FastgptModel().api_select_byUid(uid)
