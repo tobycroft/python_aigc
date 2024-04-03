@@ -17,3 +17,8 @@ def index():
 import app.v1.iflytek.controller.tts as tts
 
 Route.register_blueprint(tts.Controller, url_prefix=tts.Controller.name)
+
+# info
+import app.v1.iflytek.controller.info as info
+
+Route.register_blueprint(info.Controller, url_prefix=info.Controller.name)
