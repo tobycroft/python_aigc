@@ -36,7 +36,9 @@ def update():
     name = Post.Str('name')
     key = Post.Str('key')
     base_url = Post.Str('base_url')
-    if FastgptModel().api_update_nameAndKeyAndBaseUrl_byUidAndId(uid, id, name, key, base_url):
+    model = Post.Str('model')
+    detail = Post.Int('detail')
+    if FastgptModel().api_update_byUidAndId(uid, id, name, key, base_url, model, detail):
         return Ret.success()
     else:
         return Ret.fail(500, echo='FastgptModel更新失败')
