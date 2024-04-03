@@ -36,6 +36,9 @@ class TeamSubtokenModel(BaseModel):
     def api_update_byId(self, id, amount):
         return Database.Db(self.db).table(self.Table).where("id", id).update({"amount": amount})
 
+    def api_update_AmountAndIsLimit(self, id, amount, is_limit):
+        return Database.Db(self.db).table(self.Table).where("id", id).update({"amount": amount, "is_limit": is_limit})
+
     def api_select_inTeamId(self, team_ids):
         return Database.Db(self.db).table(self.Table).whereIn("team_id", team_ids).select()
 
