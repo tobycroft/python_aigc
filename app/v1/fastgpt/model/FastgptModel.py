@@ -22,3 +22,6 @@ class FastgptModel(BaseModel):
 
     def api_find_byId(self, id):
         return Database.Db().table(self.Table).whereRow("id", id).find()
+
+    def api_select_byUid(self, uid):
+        return Database.Db().table(self.Table).whereRow("uid", uid).select()
