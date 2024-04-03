@@ -21,7 +21,7 @@ def slash():
 @Controller.before_request
 def before():
     token = tuuz.Input.Header.String("token")
-    data = tuuz.Database.Db().table("ai_project").whereRow('token', token).find()
+    data = tuuz.Database.Db().table("ai_project").where('token', token).find()
     if data is None:
         return tuuz.Ret.fail(400, 'project未启用')
     pass

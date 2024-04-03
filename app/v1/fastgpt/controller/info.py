@@ -67,3 +67,12 @@ def add():
         return Ret.success()
     else:
         return Ret.fail(500, echo='FastgptModel添加失败')
+
+
+# get
+@Controller.post('/get')
+def get():
+    uid = Header.Int('uid')
+    id = Post.Int('id')
+    data = FastgptModel().api_find_byId(id)
+    return Ret.success(data=data)

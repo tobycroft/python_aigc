@@ -23,16 +23,18 @@ class FastgptModel(BaseModel):
         super().__init__(conn)
 
     def api_find_byId(self, id):
-        return Database.Db().table(self.Table).whereRow("id", id).find()
+        return Database.Db().table(self.Table).where("id", id).find()
 
+    def api_find_byUidAndId(self, uid, id):
+        return Database.Db().table(self.Table).where("uid", uid).where("id", id).find()
     def api_select_byUid(self, uid):
-        return Database.Db().table(self.Table).whereRow("uid", uid).select()
+        return Database.Db().table(self.Table).where("uid", uid).select()
 
     def api_update_nameAndKeyAndBaseUrl_byUidAndId(self, uid, id, name, key, base_url):
-        return Database.Db().table(self.Table).whereRow("uid", uid).whereRow("id", id).update({"name": name, "key": key, "base_url": base_url})
+        return Database.Db().table(self.Table).where("uid", uid).where("id", id).update({"name": name, "key": key, "base_url": base_url})
 
     def api_delete_byUidAndId(self, uid, id):
-        return Database.Db().table(self.Table).whereRow("uid", uid).whereRow("id", id).delete()
+        return Database.Db().table(self.Table).where("uid", uid).where("id", id).delete()
 
     def api_insert(self, uid, name, team_id, key, base_url, model, detail):
         return Database.Db().table(self.Table).insert({"uid": uid, "name": name, "team_id": team_id, "key": key, "base_url": base_url, "model": model, "detail": detail})

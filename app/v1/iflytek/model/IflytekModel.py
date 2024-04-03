@@ -24,4 +24,4 @@ class IflytekModel(BaseModel):
         super().__init__(conn)
 
     def api_find_byId(self, id):
-        return Database.Db().table(self.Table).whereRow("id", id).find()
+        return Database.Db().table(self.Table).where("id", id).find()

@@ -17,8 +17,8 @@ import config.db
 #       使用方法: sql.where({'id','(1,2)','in'})
 #       使用方法: sql.where([{'id','(1,2)','in'},{'name','%我%','like'}])
 #   whereRow方法:可多次调用，入参：字段名,值,对应关系
-#       使用方法: sql.whereRow('id',1)
-#       使用方法: sql.whereRow('id',1,'>')
+#       使用方法: sql.where('id',1)
+#       使用方法: sql.where('id',1,'>')
 #   whereIn方法:可多次调用，入参：字段名,值(逗号拼接的字符串或元组)
 #       使用方法: sql.whereIn('id','1,2')
 #       使用方法: sql.whereIn('id',(1,2))
@@ -282,9 +282,6 @@ class Db(object):
         else:
             print('禁止不使用 where 条件')
             return self
-
-    def whereRow(self, key, val, mark='='):
-        return self.where({'key': key, 'val': val, 'type': mark})
 
     def whereIn(self, key, val):
         if typeof(val) == 'str':
