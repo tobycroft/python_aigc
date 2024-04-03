@@ -51,3 +51,19 @@ def delete():
         return Ret.success()
     else:
         return Ret.fail(500, echo='FastgptModel删除失败')
+
+
+# add
+@Controller.post('/add')
+def add():
+    uid = Header.Int('uid')
+    name = Post.Str('name')
+    team_id = Post.Int('team_id')
+    key = Post.Str('key')
+    base_url = Post.Str('base_url')
+    model = Post.Str('model')
+    detail = Post.Int('detail')
+    if FastgptModel().api_insert(uid, name, team_id, key, base_url, model, detail):
+        return Ret.success()
+    else:
+        return Ret.fail(500, echo='FastgptModel添加失败')
