@@ -49,8 +49,11 @@ class UserTeamModel(BaseModel):
     def api_find_byUidAndId(self, uid, id):
         return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).find()
 
-    def api_find_byUidAndTeamIdAndRole(self, uid, team_id, role):
-        return Database.Db(self.db).table(self.Table).where("uid", uid).where("team_id", team_id).where("role", role).find()
+    def api_find_byUidAndTeamId_inRole(self, uid, team_id, roles):
+        return Database.Db(self.db).table(self.Table).where("uid", uid).where("team_id", team_id).whereIn("role", roles).find()
 
     def api_select(self, uid):
+        return Database.Db(self.db).table(self.Table).where("uid", uid).select()
+
+    def api_select_byUid(self, uid):
         return Database.Db(self.db).table(self.Table).where("uid", uid).select()

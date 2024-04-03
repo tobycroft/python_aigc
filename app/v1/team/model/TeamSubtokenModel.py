@@ -32,3 +32,9 @@ class TeamSubtokenModel(BaseModel):
 
     def api_find_byTeamIdAndKey(self, team_id, key):
         return Database.Db(self.db).table(self.Table).where("team_id", team_id).where("key", key).find()
+
+    def api_update_byId(self, id, amount):
+        return Database.Db(self.db).table(self.Table).where("id", id).update({"amount": amount})
+
+    def api_select_inTeamId(self, team_ids):
+        return Database.Db(self.db).table(self.Table).whereIn("team_id", team_ids).select()
