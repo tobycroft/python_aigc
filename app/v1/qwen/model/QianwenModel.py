@@ -19,6 +19,9 @@ class FastgptModel(BaseModel):
     def __init__(self, conn=None):
         super().__init__(conn)
 
+    def api_insert(self, uid, id, name, key, rid, model):
+        return Database.Db().table(self.Table).insert({"uid": uid, "id": id, "name": name, "key": key, "rid": rid, "model": model})
+
     def api_find_byId(self, id):
         return Database.Db().table(self.Table).where("id", id).find()
 
@@ -28,8 +31,8 @@ class FastgptModel(BaseModel):
     def api_select_byUid(self, uid):
         return Database.Db().table(self.Table).where("uid", uid).select()
 
-    def api_update_byUidAndId(self, uid, id, name, key, model, detail):
-        return Database.Db().table(self.Table).where("uid", uid).where("id", id).update({"name": name, "key": key, "model": model, "detail": detail})
+    def api_update_byUidAndId(self, uid, id, name, key, rid, model):
+        return Database.Db().table(self.Table).where("uid", uid).where("id", id).update({"name": name, "key": key, "rid": rid, "model": model})
 
     def api_delete_byUidAndId(self, uid, id):
         return Database.Db().table(self.Table).where("uid", uid).where("id", id).delete()
