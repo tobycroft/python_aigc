@@ -74,5 +74,7 @@ def add():
 def get():
     uid = Header.Int('uid')
     id = Post.Int('id')
-    data = FastgptModel().api_find_byId(id)
+    data = FastgptModel().api_find_byUidAndId(uid, id)
+    if data is None:
+        return Ret.fail(404, echo='FastgptModel获取失败')
     return Ret.success(data=data)
