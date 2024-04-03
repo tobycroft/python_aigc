@@ -26,6 +26,7 @@ def slash():
 @Controller.post('create')
 async def create():
     uid = Header.Int("uid")
+    name = Post.Str("name")
     team_id = Post.Int("team_id")
     prefix = Post.Str("prefix")
     amount = Post.Float("amount")
@@ -39,7 +40,7 @@ async def create():
     is_limit = True
     if amount < 0:
         is_limit = False
-    if TeamSubtokenModel().api_insert(team_id, prefix, key, is_limit, amount):
+    if TeamSubtokenModel().api_insert(name, team_id, prefix, key, is_limit, amount):
         return success(data={
             "key": key,
             "prefix": prefix,
@@ -93,6 +94,7 @@ async def get():
 async def update():
     uid = Header.Int("uid")
     id = Post.Int("id")
+    name = Post.Str("name")
     team_id = Post.Int("team_id")
     amount = Post.Float("amount")
     ut = UserTeamModel().api_find_byUidAndTeamId_inRole(uid, team_id, "owner,admin")
@@ -101,7 +103,7 @@ async def update():
     is_limit = True
     if amount < 0:
         is_limit = False
-    if TeamSubtokenModel().api_update_AmountAndIsLimit(id, amount, is_limit):
+    if TeamSubtokenModel().api_update_nameAndAmountAndIsLimit(id, name, amount, is_limit):
         return success()
     else:
         return fail(500, echo="更新失败")
