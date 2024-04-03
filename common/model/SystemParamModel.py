@@ -1,11 +1,12 @@
+from common.BaseModel import BaseModel
 from tuuz import Database
 
-Table = 'system_param'
 
+class SystemParamModel(BaseModel):
+    Table = 'system_param'
 
-def Api_find(key):
-    return Database.Db(self.db).table(Table).where('key', key).find()
+    def Api_find(self, key):
+        return Database.Db(self.db).table(self.Table).where('key', key).find()
 
-
-def Api_find_value(key):
-    return Database.Db(self.db).table(Table).where('key', key).value('value')
+    def Api_find_value(self, key):
+        return Database.Db(self.db).table(self.Table).where('key', key).value('value')
