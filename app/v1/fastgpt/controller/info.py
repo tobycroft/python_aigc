@@ -76,5 +76,5 @@ def get():
     id = Post.Int('id')
     data = FastgptModel().api_find_byUidAndId(uid, id)
     if data is None:
-        return Ret.fail(404, )
+        return Ret.fail(404, echo='数据不存在')
     return Ret.success(data=data)
