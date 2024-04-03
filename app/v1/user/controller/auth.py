@@ -3,7 +3,7 @@ import os
 from flask import Blueprint
 
 from app.v1.user.model.UserModel import UserModel
-from common.model import TokenModel
+from common.model.TokenModel import TokenModel
 from tuuz import Input, Ret
 from tuuz.Calc import Token, Encrypt
 
@@ -28,7 +28,7 @@ async def login():
     if user is None:
         return Ret.fail(404, None, '用户名或密码错误')
     token = Token.generate_token()
-    if TokenModel.Api_insert(user["id"], token, ""):
+    if TokenModel().Api_insert(user["id"], token, ""):
         return Ret.success(0, {"uid": user["id"], "token": token, 'username': user['username']})
     else:
         return Ret.fail(500, None, '登录失败')

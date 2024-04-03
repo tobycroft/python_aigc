@@ -1,7 +1,7 @@
 import flask
 from flask import request
 
-from common.model import TokenModel
+from common.model.TokenModel import TokenModel
 from config.app import TestMode, Debug
 from config.secure import HEADER_AUTH_MODE
 from tuuz import Input, Ret
@@ -27,7 +27,7 @@ def LoginedController():
     if TestMode:
         if debug == Debug:
             return
-    if TokenModel.Api_find_byUidAndToken(uid, token):
+    if TokenModel().Api_find_byUidAndToken(uid, token):
         return
     else:
         return Ret.fail(-1, 'Auth_fail', '未登录')
