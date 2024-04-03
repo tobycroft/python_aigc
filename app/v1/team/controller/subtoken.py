@@ -94,12 +94,14 @@ async def update():
     uid = Header.Int("uid")
     id = Post.Int("id")
     team_id = Post.Int("team_id")
-    prefix = Post.Str("prefix")
     amount = Post.Float("amount")
     ut = UserTeamModel().api_find_byUidAndTeamId_inRole(uid, team_id, "owner,admin")
     if not ut:
         return fail(403, echo="仅支持团队管理员操作")
-    if TeamSubtokenModel().api_update_byId(id, amount):
+    is_limit = True
+    if amount < 0:
+        is_limit = False
+    if TeamSubtokenModel().api_update_AmountAndIsLimit(id, amount, is_limit):
         return success()
     else:
         return fail(500, echo="更新失败")
