@@ -88,3 +88,8 @@ Route.register_blueprint(vrm.Route, url_prefix=vrm.folder_name)
 import app.v1.live2d.route as live2d
 
 Route.register_blueprint(live2d.Route, url_prefix=live2d.folder_name)
+
+# qwen
+import app.v1.qwen.route as qwen
+
+Route.register_blueprint(qwen.Route, url_prefix=qwen.folder_name)
