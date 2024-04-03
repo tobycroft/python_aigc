@@ -479,18 +479,44 @@ class Db(object):
             return sql
         result = None
         try:
-            self.cursor.execute(sql)
+            self.cursor.execute(sql, self.__bindWhere)
             result = self.cursor.fetchone()
             if self.__autocommit:
                 self.__close()
         except Exception as e:
-            print(sql)
+            print(sql, self.__bindWhere)
             print(e)
             return None
         if result is not None:
             return result[0]
         else:
             return None
+
+    def column(self, field):
+        self.__column = field
+        sql = self.__comQuerySql()
+        if self.__build:
+            return sql
+        result = None
+        try:
+            self.cursor.execute(sql, self.__bindWhere)
+            result = self.cursor.fetchall()
+            if self.__autocommit:
+                self.__close()
+        except Exception as e:
+            print(sql, self.__bindWhere)
+            print(e)
+            return None
+        if result is not None:
+            columns = [desc[0] for desc in self.cursor.description]
+            data = []
+            for row in result:
+                row_data = {}
+                for i, value in enumerate(row):
+                    row_data[columns[i]] = value
+                if field in row_data:
+                    data.append(row_data[field])
+            return tuple(data)
 
     def count(self):
         return self.value('count(*)')

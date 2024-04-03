@@ -55,5 +55,5 @@ class UserTeamModel(BaseModel):
     def api_select(self, uid):
         return Database.Db(self.db).table(self.Table).where("uid", uid).select()
 
-    def api_select_byUid(self, uid):
-        return Database.Db(self.db).table(self.Table).where("uid", uid).select()
+    def api_column_teamId_byUid(self, uid):
+        return Database.Db(self.db).table(self.Table).where("uid", uid).column("team_id")

@@ -51,8 +51,10 @@ async def create():
 @Controller.post('list')
 async def list():
     uid = Header.Int("uid")
-    UserTeamModel().api_select_byUid(uid)
-    team_list = TeamSubtokenModel()
+    teamids = UserTeamModel().api_column_teamId_byUid(uid)
+    if not teamids:
+        return success(echo="还未加入团队")
+    team_list = TeamSubtokenModel().api_select_inTeamId(teamids)
     if team_list:
         return success(data=team_list)
     else:
