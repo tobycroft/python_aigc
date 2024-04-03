@@ -26,3 +26,28 @@ def list():
     uid = Header.Int('uid')
     data = FastgptModel().api_select_byUid(uid)
     return Ret.success(data=data)
+
+
+# update
+@Controller.post('/update')
+def update():
+    uid = Header.Int('uid')
+    id = Header.Int('id')
+    name = Header.Str('name')
+    key = Header.Str('key')
+    base_url = Header.Str('base_url')
+    if FastgptModel().api_update_nameAndKeyAndBaseUrl_byUidAndId(uid, id, name, key, base_url):
+        return Ret.success()
+    else:
+        return Ret.fail(500, echo='FastgptModel更新失败')
+
+
+# delete
+@Controller.post('/delete')
+def delete():
+    uid = Header.Int('uid')
+    id = Header.Int('id')
+    if FastgptModel().api_delete_byUidAndId(uid, id):
+        return Ret.success()
+    else:
+        return Ret.fail(500, echo='FastgptModel删除失败')

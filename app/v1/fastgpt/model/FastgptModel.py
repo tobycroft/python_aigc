@@ -25,3 +25,9 @@ class FastgptModel(BaseModel):
 
     def api_select_byUid(self, uid):
         return Database.Db().table(self.Table).whereRow("uid", uid).select()
+
+    def api_update_nameAndKeyAndBaseUrl_byUidAndId(self, uid, id, name, key, base_url):
+        return Database.Db().table(self.Table).whereRow("uid", uid).whereRow("id", id).update({"name": name, "key": key, "base_url": base_url})
+
+    def api_delete_byUidAndId(self, uid, id):
+        return Database.Db().table(self.Table).whereRow("uid", uid).whereRow("id", id).delete()
