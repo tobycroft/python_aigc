@@ -9,6 +9,7 @@ from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.fastgpt.model.FastgptModel import FastgptModel
 from app.v1.fastgpt.model.FastgptRecordModel import FastgptRecordModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
+from app.v1.user.model.UserTeamModel import UserTeamModel
 from common.controller.LoginController import LoginedController
 from tuuz import Ret
 from tuuz.Input import Header, Post
@@ -30,23 +31,21 @@ def before_request():
 @Controller.post('text')
 def text():
     uid = Header.Int("uid")
-    subtoken_id = Post.Int("subtoken_id")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
-    subtoken = TeamSubtokenModel().api_find_byUidAndId(uid, subtoken_id)
+    subtoken = Post.Str("subtoken")
     if not subtoken:
-        return Ret.fail(404, echo="没有找到对应的key")
-    if int(subtoken["is_limit"]) == 1 and float(subtoken["amount"]) <= 0:
-        return Ret.fail(403, echo="你的key已经没有余量了，请在控制台增加余量或将key设定为无限量模式")
-    if subtoken["coin_id"] != 5:
-        coin_name = ""
-        coin = CoinModel().api_find(subtoken["coin_id"])
-        if coin:
-            coin_name = coin["name"]
-        return Ret.fail(404, echo="key只能使用于" + coin_name)
-    fastgpt = FastgptModel().api_find_byId(subtoken["from_id"])
+        team_id = UserTeamModel().api_column_teamId_byUid(uid)
+        if not team_id:
+            return Ret.fail(404, echo="你还未加入任何团队")
+    else:
+        team_id = TeamSubtokenModel().api_value_teamId_bySubtoken(subtoken)
+        if not team_id:
+            return Ret.fail(404, echo="你还未加入任何团队")
+
+    fastgpt = FastgptModel().api_find_inTeamId(team_id)
     if not fastgpt:
-        return Ret.fail(404, echo="FastGPT中的上级Key被删除")
+        return Ret.fail(404, echo="没有找到对应的key")
     messages: list[dict] = []
     records = FastgptRecordModel().api_find_bySubtokenIdAndChatId(subtoken_id, chat_id)
     if records:

@@ -489,7 +489,7 @@ class Db(object):
             print(e)
             return None
         if result is not None:
-            return result[0]
+            return result[field]
         else:
             return None
 

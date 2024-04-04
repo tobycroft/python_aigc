@@ -33,7 +33,7 @@ async def audio():
         if not team_id:
             return Ret.fail(404, echo="你还未加入任何团队")
     else:
-        team_id = TeamSubtokenModel().api_find_bySubtoken(subtoken)
+        team_id = TeamSubtokenModel().api_value_teamId_bySubtoken(subtoken)
         if not team_id:
             return Ret.fail(404, echo="你还未加入任何团队")
     iflytts = IflytekModel().api_find_inTeamId([team_id])
@@ -53,7 +53,7 @@ async def auto():
         if not team_id:
             return Ret.fail(404, echo="你还未加入任何团队")
     else:
-        team_id = TeamSubtokenModel().api_find_bySubtoken(subtoken)
+        team_id = TeamSubtokenModel().api_value_teamId_bySubtoken(subtoken)
         if not team_id:
             return Ret.fail(404, echo="你还未加入任何团队")
 
