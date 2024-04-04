@@ -79,17 +79,18 @@ def text():
 
 @Controller.post('raw')
 def raw():
-    uid = Header.Int("uid")
+    Authorization = Header.Str("Authorization")
+    try:
+        auth = Authorization.replace("Bearer ", "").split('-')
+        prefix = auth[0]
+        key = auth[1]
+    except Exception as e:
+        return Ret.fail(401, e, echo="Authorization头不正确")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
-    teamids = UserTeamModel().api_column_teamId_byUid(uid)
-    if not teamids:
-        return Ret.fail(404, echo="你还未加入任何团队")
-    subtokens = TeamSubtokenModel().api_select_byAmountOrIsLimit_inTeamId(teamids, 0, 0)
-    if not subtokens:
-        return Ret.fail(404, echo="没有找到可用的key")
-
-    subtoken = subtokens[0]
+    subtoken = TeamSubtokenModel().api_find_byPrefixAndKey(prefix, key)
+    if not subtoken:
+        return Ret.fail(404, echo="没有找到对应的key")
     team_id = subtoken["team_id"]
     key = subtoken["key"]
     qwen = QianwenModel().api_find_inTeamId([team_id])
