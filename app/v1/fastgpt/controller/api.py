@@ -120,7 +120,7 @@ def raw():
     amount = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(amount))
 
-    FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chat_id, json.dumps(messages, ensure_ascii=False), ret.model_dump_json(),
+    FastgptRecordModel().api_insert(fastgpt["id"], key, chat_id, json.dumps(messages, ensure_ascii=False), ret.model_dump_json(),
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
