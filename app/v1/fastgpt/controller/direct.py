@@ -35,7 +35,7 @@ def text():
         key = auth[1]
     except Exception as e:
         return Ret.fail(401, e, echo="Authorization头不正确")
-    subtoken = TeamSubtokenModel().api_find_byKey(key)
+    subtoken = TeamSubtokenModel().api_find_byPrefixAndKey(prefix, key)
     if not subtoken:
         return Ret.fail(404, echo="没有找到对应的key")
     if int(subtoken["is_limit"]) == 1 and float(subtoken["amount"]) <= 0:
