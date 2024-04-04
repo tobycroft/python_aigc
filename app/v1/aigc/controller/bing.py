@@ -29,7 +29,7 @@ def truncate_text(text, max_length):
 @Controller.before_request
 def before():
     token = tuuz.Input.Header.String("token")
-    data = tuuz.Database.Db(self.db).table("ai_project").where('token', token).find()
+    data = tuuz.Database.Db().table("ai_project").where('token', token).find()
     if data is None:
         return tuuz.Ret.fail(400, 'project未启用')
     pass
@@ -44,8 +44,8 @@ cont = 0
 async def text():
     token = tuuz.Input.Header.String("token")
     text = tuuz.Input.Post.String("text")
-    data = tuuz.Database.Db(self.db).table("ai_project").where('token', token).find()
-    bing = tuuz.Database.Db(self.db).table("ai_bing").where('project_name', data["name"]).find()
+    data = tuuz.Database.Db().table("ai_project").where('token', token).find()
+    bing = tuuz.Database.Db().table("ai_bing").where('project_name', data["name"]).find()
     if bing["cookies"] is None:
         return tuuz.Ret.fail(400, 'bing未启用')
     global bot
@@ -87,7 +87,7 @@ async def text():
     print("response:", json.dumps(response, indent=2, ensure_ascii=False))
     conversation = await bot.chat_hub.get_conversation()
     # print(conversation)
-    tuuz.Database.Db(self.db).table("ai_bing").where('project_name', data["name"]).update({"conversation": json.dumps(conversation)})
+    tuuz.Database.Db().table("ai_bing").where('project_name', data["name"]).update({"conversation": json.dumps(conversation)})
     if response["item"]["throttling"]["numUserMessagesInConversation"] >= response["item"]["throttling"]["maxNumUserMessagesInConversation"]:
         if bot is not None:
             await bot.close()
@@ -114,7 +114,7 @@ async def text():
     endtime = time.time()
     print("运行时间", endtime - starttime)
     try:
-        tuuz.Database.Db(self.db).table("log").insert({"type": "bing", "project": data["name"], "ask": text, "reply": json.dumps(response, indent=2, ensure_ascii=False)})
+        tuuz.Database.Db().table("log").insert({"type": "bing", "project": data["name"], "ask": text, "reply": json.dumps(response, indent=2, ensure_ascii=False)})
     except Exception as error:
         print("db-log", error)
     return tuuz.Ret.success(0, normal_text, final_resp)
