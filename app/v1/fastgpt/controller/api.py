@@ -33,12 +33,10 @@ def text():
     uid = Header.Int("uid")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
-    subtoken = Post.Str("subtoken")
-    if not subtoken:
-        team_id = UserTeamModel().api_column_teamId_byUid(uid)
-        if not team_id:
-            return Ret.fail(404, echo="你还未加入任何团队")
-    subtoken_id = TeamSubtokenModel().api_find_inTeamId(team_id)
+    team_id = UserTeamModel().api_column_teamId_byUid(uid)
+    if not team_id:
+        return Ret.fail(404, echo="你还未加入任何团队")
+    subtoken_id = TeamSubtokenModel().api_find_byTeamIdAndKey()
     fastgpt = FastgptModel().api_find_inTeamId(team_id)
     if not fastgpt:
         return Ret.fail(404, echo="没有找到对应的key")

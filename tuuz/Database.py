@@ -425,7 +425,12 @@ class Db(object):
             data[columns[i]] = value
         return data
 
-    def query(self, sql, args=None):
+    def query(self, sql, *args):
+        if len(args) > 1:
+            args2 = []
+            for i in args:
+                args2.append(i)
+            args = args2
         try:
             self.cursor.execute(sql, args)
             result = self.cursor.fetchone()
