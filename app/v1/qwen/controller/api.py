@@ -105,6 +105,7 @@ def raw():
         return Ret.fail(401, e, echo="Authorization头不正确")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
+    total_len = len(message)
     subtoken = TeamSubtokenModel().api_find_byPrefixAndKey(prefix, key)
     if not subtoken:
         return Ret.fail(404, echo="没有找到对应的key")
@@ -114,6 +115,7 @@ def raw():
     if not qianwen:
         return Ret.fail(404, echo="没有找到对应的key")
     messages = []
+    total_len += len(qianwen["prompt"])
     messages.append(Message("system", qianwen["prompt"]))
     # messages.append({"role": "system", "content": qianwen["prompt"]})
     records = QianwenRecordModel().api_find_bySubtokenAndChatId(key, chat_id)
@@ -121,9 +123,12 @@ def raw():
         send = json.loads(records["send"])
         i = 0
         for msg in send:
-            if i > 10:
+            if i > 30:
+                break
+            if total_len > 1200:
                 break
             i += 1
+            total_len += len(msg["content"])
             messages.append(Message(msg["role"], msg["content"]))
 
     # messages.append({"role": "user", "content": message})
