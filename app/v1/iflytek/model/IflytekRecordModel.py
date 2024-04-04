@@ -1,6 +1,6 @@
 # CREATE TABLE `ai_iflytek_record` (
 #   `id` int unsigned NOT NULL AUTO_INCREMENT,
-#   `fastgpt_id` int unsigned DEFAULT '0' COMMENT 'fastgpt表的id',
+#   `iflytek_id` int unsigned DEFAULT '0' COMMENT 'fastgpt表的id',
 #   `subtoken` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'subtoken',
 #   `send` json DEFAULT NULL COMMENT '发送的message字段',
 #   `reply` json DEFAULT NULL COMMENT '返回的message字段',
@@ -27,10 +27,10 @@ class IflytekRecordModel(BaseModel):
     def api_find_byId(self, id):
         return Database.Db(self.db).table(self.Table).where("id", id).find()
 
-    def api_insert(self, fastgpt_id, subtoken_id, send, reply, completion_tokens, prompt_tokens, total_tokens,
+    def api_insert(self, iflytek_id, subtoken_id, send, reply, completion_tokens, prompt_tokens, total_tokens,
                    finish_reason, amount):
         return Database.Db(self.db).table(self.Table).insert({
-            "fastgpt_id": fastgpt_id,
+            "iflytek_id": iflytek_id,
             "subtoken_id": subtoken_id,
             "send": send,
             "reply": reply,
@@ -41,11 +41,11 @@ class IflytekRecordModel(BaseModel):
             "amount": amount
         })
 
-    def api_select_byFastgptIdAndChatId(self, fastgpt_id, chatId):
-        return Database.Db(self.db).table(self.Table).where("fastgpt_id", fastgpt_id).where("chatId", chatId).order("id asc").select()
+    def api_select_byFastgptIdAndChatId(self, iflytek_id, chatId):
+        return Database.Db(self.db).table(self.Table).where("iflytek_id", iflytek_id).where("chatId", chatId).order("id asc").select()
 
-    def api_find_byFastgptIdAndChatId(self, fastgpt_id, chatId):
-        return Database.Db(self.db).table(self.Table).where("fastgpt_id", fastgpt_id).where("chatId", chatId).order("id desc").find()
+    def api_find_byFastgptIdAndChatId(self, iflytek_id, chatId):
+        return Database.Db(self.db).table(self.Table).where("iflytek_id", iflytek_id).where("chatId", chatId).order("id desc").find()
 
     def api_find_bySubtokenIdAndChatId(self, subtoken_id, chatId):
         return Database.Db(self.db).table(self.Table).where("subtoken_id", subtoken_id).where("chatId", chatId).order("id desc").find()
