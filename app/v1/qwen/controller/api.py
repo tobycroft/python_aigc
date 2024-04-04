@@ -40,39 +40,54 @@ def text():
     subtoken = subtokens[0]
     team_id = subtoken["team_id"]
     key = subtoken["key"]
-    qwen = QianwenModel().api_find_inTeamId([team_id])
-    if not qwen:
+    qianwen = QianwenModel().api_find_inTeamId([team_id])
+    if not qianwen:
         return Ret.fail(404, echo="没有找到对应的key")
-    messages: list[dict] = []
+    messages = []
+    messages.append(Message("system", qianwen["prompt"]))
+    # messages.append({"role": "system", "content": qianwen["prompt"]})
     records = QianwenRecordModel().api_find_bySubtokenAndChatId(key, chat_id)
     if records:
-        messages += json.loads(records["send"])
-    messages.append({"role": "user", "content": message})
-    client = OpenAI(api_key=qwen["key"], base_url=qwen["base_url"])
+        send = json.loads(records["send"])
+        for msg in send:
+            messages.append(Message(msg["role"], msg["content"]))
 
-    ret = client.chat.completions.create(
-        model=qwen["model"],
+    # messages.append({"role": "user", "content": message})
+    messages.append(Message("user", message))
+    print(messages)
+    dashscope.api_key = qianwen["key"]
+    response = dashscope.Generation.call(
+        model="qwen-1.8b-chat",
         messages=messages,
-        response_format={"type": "json_object"},
-        extra_body={
-            "chatId": chat_id,
-            "detail": qwen["detail"],
-        }
-        # temperature=0,
+        # seed=1234,
+        top_p=0.83,
+        result_format='message',
+        max_tokens=1500,
+        temperature=0.7,
+        repetition_penalty=0.7,
     )
-    total_tokens = ret.usage.total_tokens
-    prompt_tokens = ret.usage.prompt_tokens
-    completion_tokens = ret.usage.completion_tokens
+    if response.status_code is not HTTPStatus.OK:
+        print('Request id: %s, Status code: %s, error code: %s, error message: %s' % (
+            response.request_id, response.status_code,
+            response.code, response.message
+        ))
+        return Ret.fail(402, response)
+
+    total_tokens = response.usage.total_tokens
+    prompt_tokens = response.usage.input_tokens
+    completion_tokens = response.usage.output_tokens
 
     amount = CoinCalcAction("qwen1.8").Calc(total_tokens)
-    TeamSubtokenModel().api_inc_amount_byKey(key, -abs(amount))
-    QianwenRecordModel().api_insert(qwen["id"], key, chat_id, json.dumps(messages, ensure_ascii=False), ret.model_dump_json(),
+    TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(amount))
+    messages.append({"role": "assistant", "content": response.output.choices[0].message.content})
+    messages.pop(0)
+    QianwenRecordModel().api_insert(qianwen["id"], key, chat_id, json.dumps(messages, ensure_ascii=False), json.dumps(response, ensure_ascii=False),
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
     ret_message = ""
-    if len(ret.choices) > 0:
-        ret_message = ret.choices[0].message.content
+    if len(response.output.choices) > 0:
+        ret_message = response.output.choices[0].message.content
     return success(data=messages, echo=ret_message)
 
 
@@ -95,19 +110,19 @@ def raw():
     qianwen = QianwenModel().api_find_inTeamId([team_id])
     if not qianwen:
         return Ret.fail(404, echo="没有找到对应的key")
-    prompt = qianwen["prompt"]
-    messages = list[Message]([
-        {"role": "system",
-         "content": prompt
-         },
-    ])
+    messages = []
+    messages.append(Message("system", qianwen["prompt"]))
+    # messages.append({"role": "system", "content": qianwen["prompt"]})
     records = QianwenRecordModel().api_find_bySubtokenAndChatId(key, chat_id)
     if records:
-        messages += json.loads(records["reply"])
-    messages.append(Message("user", message))
+        send = json.loads(records["send"])
+        for msg in send:
+            messages.append(Message(msg["role"], msg["content"]))
 
-    api_key = qianwen["key"]
-    dashscope.api_key = api_key
+    # messages.append({"role": "user", "content": message})
+    messages.append(Message("user", message))
+    print(messages)
+    dashscope.api_key = qianwen["key"]
     response = dashscope.Generation.call(
         model="qwen-1.8b-chat",
         messages=messages,
@@ -118,21 +133,22 @@ def raw():
         temperature=0.7,
         repetition_penalty=0.7,
     )
-    if response.status_code == HTTPStatus.OK:
-        print(response)
-    else:
+    if response.status_code is not HTTPStatus.OK:
         print('Request id: %s, Status code: %s, error code: %s, error message: %s' % (
             response.request_id, response.status_code,
             response.code, response.message
         ))
+        return Ret.fail(402, response)
+
     total_tokens = response.usage.total_tokens
     prompt_tokens = response.usage.input_tokens
     completion_tokens = response.usage.output_tokens
 
     amount = CoinCalcAction("qwen1.8").Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(amount))
-
-    QianwenRecordModel().api_insert(qianwen["id"], key, chat_id, json.dumps(response.output.choices, ensure_ascii=False), json.dumps(response, ensure_ascii=False),
+    messages.append({"role": "assistant", "content": response.output.choices[0].message.content})
+    messages.pop(0)
+    QianwenRecordModel().api_insert(qianwen["id"], key, chat_id, json.dumps(messages, ensure_ascii=False), json.dumps(response, ensure_ascii=False),
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
