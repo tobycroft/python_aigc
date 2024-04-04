@@ -5,7 +5,6 @@ from http import HTTPStatus
 import dashscope
 from dashscope.api_entities.dashscope_response import Message
 from flask import Blueprint
-from openai import OpenAI
 
 from app.v1.coin.action.CoinCalcAction import CoinCalcAction
 from app.v1.qwen.model.QianwenModel import QianwenModel
@@ -49,7 +48,11 @@ def text():
     records = QianwenRecordModel().api_find_bySubtokenAndChatId(key, chat_id)
     if records:
         send = json.loads(records["send"])
+        i = 0
         for msg in send:
+            if i > 10:
+                break
+            i += 1
             messages.append(Message(msg["role"], msg["content"]))
 
     # messages.append({"role": "user", "content": message})
@@ -116,22 +119,26 @@ def raw():
     records = QianwenRecordModel().api_find_bySubtokenAndChatId(key, chat_id)
     if records:
         send = json.loads(records["send"])
+        i = 0
         for msg in send:
+            if i > 10:
+                break
+            i += 1
             messages.append(Message(msg["role"], msg["content"]))
 
     # messages.append({"role": "user", "content": message})
     messages.append(Message("user", message))
-    print(messages)
+    # print(messages)
     dashscope.api_key = qianwen["key"]
     response = dashscope.Generation.call(
         model="qwen-1.8b-chat",
         messages=messages,
         # seed=1234,
-        top_p=0.83,
+        top_p=0.7,
         result_format='message',
         max_tokens=1500,
         temperature=0.7,
-        repetition_penalty=0.7,
+        repetition_penalty=1.1,
     )
     if response.status_code is not HTTPStatus.OK:
         print('Request id: %s, Status code: %s, error code: %s, error message: %s' % (
