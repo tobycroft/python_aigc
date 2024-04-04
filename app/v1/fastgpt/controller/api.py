@@ -67,7 +67,6 @@ def text():
 
     amount = CoinCalcAction("fastgpt").Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(key, -abs(amount))
-
     FastgptRecordModel().api_insert(fastgpt["id"], key, chat_id, json.dumps(messages, ensure_ascii=False), ret.model_dump_json(),
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 

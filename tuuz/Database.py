@@ -501,7 +501,7 @@ class Db(object):
         else:
             return None
 
-    def column(self, field):
+    def column(self, field) -> tuple:
         self.__column = field
         sql = self.__comQuerySql()
         if self.__build:
