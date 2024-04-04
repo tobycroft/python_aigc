@@ -22,13 +22,9 @@ def slash():
     return Controller.name
 
 
-@Controller.before_request
-def before_request():
-    return LoginedController()
-
-
 @Controller.post('text')
 def text():
+    LoginedController()
     uid = Header.Int("uid")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
