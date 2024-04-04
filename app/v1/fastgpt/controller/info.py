@@ -39,7 +39,7 @@ def update():
     model = Post.Str('model')
     detail = Post.Int('detail')
     team_id = Post.Int('team_id')
-    if FastgptModel().api_update_byUidAndId(uid, id, name, key, base_url, model, detail):
+    if FastgptModel().api_update_byUidAndId(uid, id, name, team_id, key, base_url, model, detail):
         return Ret.success()
     else:
         return Ret.fail(500, echo='FastgptModel更新失败')
