@@ -58,12 +58,18 @@ async def register():
     db.begin()
     id = UserModel(db).api_insert(username, Encrypt.md5(password))
     if not id:
+        db.rollback()
+        db.close()
         return Ret.fail(500, None, '注册失败')
     user = UserModel(db).api_find_limit_byUsername(id)
     if not user:
+        db.rollback()
+        db.close()
         return Ret.fail(500, None, '未找到用户')
     token = Token.generate_token()
     if not TokenModel(db).Api_insert(user["id"], token, Input.ip()):
+        db.rollback()
+        db.close()
         return Ret.fail(500, None, 'token失败')
     db.commit()
     db.close()
