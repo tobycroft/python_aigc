@@ -25,9 +25,6 @@ class FastgptModel(BaseModel):
     def api_find_byId(self, id):
         return Database.Db(self.db).table(self.Table).where("id", id).find()
 
-    def api_find_inTeamId(self, team_id):
-        return Database.Db(self.db).table(self.Table).whereIn("team_id", team_id).find()
-
     def api_find_byUidAndId(self, uid, id):
         return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).find()
 
@@ -43,3 +40,6 @@ class FastgptModel(BaseModel):
 
     def api_insert(self, uid, name, team_id, key, base_url, model, detail):
         return Database.Db(self.db).table(self.Table).insert({"uid": uid, "name": name, "team_id": team_id, "key": key, "base_url": base_url, "model": model, "detail": detail})
+
+    def api_find_inTeamId(self, team_id):
+        return Database.Db(self.db).table(self.Table).whereIn("team_id", team_id).find()

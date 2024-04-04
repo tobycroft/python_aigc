@@ -36,3 +36,6 @@ class QianwenModel(BaseModel):
 
     def api_delete_byUidAndId(self, uid, id):
         return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).delete()
+
+    def api_find_inTeamId(self, team_id):
+        return Database.Db(self.db).table(self.Table).whereIn("team_id", team_id).find()
