@@ -62,7 +62,7 @@ class TeamSubtokenModel(BaseModel):
         return Database.Db(self.db).table(self.Table).where("key", subtoken).value("team_id")
 
     def api_inc_amount_byKey(self, key, amount):
-        return Database.Db(self.db).table(self.Table).where("key", key).inc("amount", amount)
+        return Database.Db(self.db).table(self.Table).where("key", key).setInc("amount", amount)
 
     def api_select_byAmountOrIsLimit_inTeamId(self, team_id, amount, is_limit):
         return Database.Db(self.db).query("SELECT * FROM ai_team_subtoken WHERE `team_id` in %s and `amount` > %s or `is_limit` = %s", team_id, amount, is_limit)
