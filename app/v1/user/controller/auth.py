@@ -4,7 +4,7 @@ from flask import Blueprint
 
 from app.v1.user.model.UserModel import UserModel
 from common.model.TokenModel import TokenModel
-from tuuz import Input, Ret
+from tuuz import Input, Ret, Database
 from tuuz.Calc import Token, Encrypt
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
@@ -28,7 +28,7 @@ async def login():
     if user is None:
         return Ret.fail(404, None, '用户名或密码错误')
     token = Token.generate_token()
-    if TokenModel().Api_insert(user["id"], token, ""):
+    if TokenModel().Api_insert(user["id"], token, Input.ip()):
         return Ret.success(0, {"uid": user["id"], "token": token, 'username': user['username']})
     else:
         return Ret.fail(500, None, '登录失败')
@@ -54,8 +54,13 @@ async def register():
         return Ret.fail(400, None, '用户名不能为空')
     if UserModel().api_find_byUsername(username) is not None:
         return Ret.fail(409, None, '用户名已被注册')
-    id = UserModel().api_insert(username, Encrypt.md5(password))
+    db = Database.Db()
+    db.begin()
+    id = UserModel(db).api_insert(username, Encrypt.md5(password))
     if id:
-        return Ret.success(0, UserModel().api_find_limit_byUsername(id))
+        user = UserModel(db).api_find_limit_byUsername(id)
+        token = Token.generate_token()
+        if TokenModel().Api_insert(user["id"], token, Input.ip()):
+            return Ret.success(0, {"uid": user["id"], "token": token, 'username': user['username']})
     else:
         return Ret.fail(500, None, '注册失败')

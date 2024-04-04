@@ -1,3 +1,5 @@
+import flask
+
 from tuuz.input.combi import Combi as __Combi
 from tuuz.input.get import Get as __Get
 from tuuz.input.header import Header as __Header
@@ -18,3 +20,7 @@ class Get(__Get):
 
 class Header(__Header):
     pass
+
+
+def ip():
+    return flask.helpers.request.remote_addr
