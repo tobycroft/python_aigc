@@ -38,16 +38,12 @@ def text():
         team_id = UserTeamModel().api_column_teamId_byUid(uid)
         if not team_id:
             return Ret.fail(404, echo="你还未加入任何团队")
-    else:
-        team_id = TeamSubtokenModel().api_value_teamId_bySubtoken(subtoken)
-        if not team_id:
-            return Ret.fail(404, echo="你还未加入任何团队")
-
+    subtoken_id = TeamSubtokenModel().api_find_inTeamId(team_id)
     fastgpt = FastgptModel().api_find_inTeamId(team_id)
     if not fastgpt:
         return Ret.fail(404, echo="没有找到对应的key")
     messages: list[dict] = []
-    records = FastgptRecordModel().api_find_bySubtokenIdAndChatId(subtoken_id, chat_id)
+    records = FastgptRecordModel().api_find_bySubtokenAndChatId(subtoken_id, chat_id)
     if records:
         messages += json.loads(records["send"])
     messages.append({"role": "user", "content": message})
@@ -101,7 +97,7 @@ def raw():
     if not fastgpt:
         return Ret.fail(404, echo="FastGPT中的上级Key被删除")
     messages: list[dict] = []
-    records = FastgptRecordModel().api_find_bySubtokenIdAndChatId(subtoken_id, chat_id)
+    records = FastgptRecordModel().api_find_bySubtokenAndChatId(subtoken_id, chat_id)
     if records:
         messages += json.loads(records["send"])
     messages.append({"role": "user", "content": message})
@@ -154,7 +150,7 @@ def auto():
     if not fastgpt:
         return Ret.fail(404, echo="FastGPT中的上级Key被删除")
     messages: list[dict] = []
-    records = FastgptRecordModel().api_find_bySubtokenIdAndChatId(subtoken["id"], chat_id)
+    records = FastgptRecordModel().api_find_bySubtokenAndChatId(subtoken["id"], chat_id)
     if records:
         messages += json.loads(records["send"])
     messages.append({"role": "user", "content": message})

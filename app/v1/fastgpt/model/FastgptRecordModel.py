@@ -48,5 +48,5 @@ class FastgptRecordModel(BaseModel):
     def api_find_byFastgptIdAndChatId(self, fastgpt_id, chatId):
         return Database.Db(self.db).table(self.Table).where("fastgpt_id", fastgpt_id).where("chatId", chatId).order("id desc").find()
 
-    def api_find_bySubtokenIdAndChatId(self, subtoken, chatId):
+    def api_find_bySubtokenAndChatId(self, subtoken, chatId):
         return Database.Db(self.db).table(self.Table).where("subtoken", subtoken).where("chatId", chatId).order("id desc").find()
