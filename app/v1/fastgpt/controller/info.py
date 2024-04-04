@@ -34,11 +34,11 @@ def update():
     uid = Header.Int('uid')
     id = Post.Int('id')
     name = Post.Str('name')
+    team_id = Post.Int('team_id')
     key = Post.Str('key')
     base_url = Post.Str('base_url')
     model = Post.Str('model')
     detail = Post.Int('detail')
-    team_id = Post.Int('team_id')
     if FastgptModel().api_update_byUidAndId(uid, id, name, team_id, key, base_url, model, detail):
         return Ret.success()
     else:
