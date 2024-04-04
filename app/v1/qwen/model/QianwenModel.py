@@ -31,8 +31,8 @@ class QianwenModel(BaseModel):
     def api_select_byUid(self, uid):
         return Database.Db(self.db).table(self.Table).where("uid", uid).select()
 
-    def api_update_byUidAndId(self, uid, id, name, key, rid, model):
-        return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).update({"name": name, "key": key, "rid": rid, "model": model})
+    def api_update_byUidAndId(self, uid, id, name, team_id, key, rid, model):
+        return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).update({"name": name, "team_id": team_id, "key": key, "rid": rid, "model": model})
 
     def api_delete_byUidAndId(self, uid, id):
         return Database.Db(self.db).table(self.Table).where("uid", uid).where("id", id).delete()
