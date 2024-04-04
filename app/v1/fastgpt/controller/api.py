@@ -33,15 +33,20 @@ def text():
     uid = Header.Int("uid")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
-    team_id = UserTeamModel().api_column_teamId_byUid(uid)
-    if not team_id:
+    teamids = UserTeamModel().api_column_teamId_byUid(uid)
+    if not teamids:
         return Ret.fail(404, echo="你还未加入任何团队")
-    subtoken_id = TeamSubtokenModel().api_find_byTeamIdAndKey()
-    fastgpt = FastgptModel().api_find_inTeamId(team_id)
+    subtokens = TeamSubtokenModel().api_select_byAmountOrIsLimit_inTeamId(teamids, 0, 0)
+    if not subtokens:
+        return Ret.fail(404, echo="没有找到可用的key")
+    subtoken = subtokens[0]
+    team_id = subtoken["team_id"]
+    key = subtoken["key"]
+    fastgpt = FastgptModel().api_find_inTeamId([team_id])
     if not fastgpt:
         return Ret.fail(404, echo="没有找到对应的key")
     messages: list[dict] = []
-    records = FastgptRecordModel().api_find_bySubtokenAndChatId(subtoken_id, chat_id)
+    records = FastgptRecordModel().api_find_bySubtokenAndChatId(key, chat_id)
     if records:
         messages += json.loads(records["send"])
     messages.append({"role": "user", "content": message})
@@ -61,10 +66,10 @@ def text():
     prompt_tokens = ret.usage.prompt_tokens
     completion_tokens = ret.usage.completion_tokens
 
-    amount = CoinCalcAction(subtoken["coin_id"]).Calc(total_tokens)
-    TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(amount))
+    amount = CoinCalcAction("fastgpt").Calc(total_tokens)
+    TeamSubtokenModel().api_inc_amount_byKey(key, -abs(amount))
 
-    FastgptRecordModel().api_insert(fastgpt["id"], subtoken["id"], chat_id, json.dumps(messages, ensure_ascii=False), ret.model_dump_json(),
+    FastgptRecordModel().api_insert(fastgpt["id"], key, chat_id, json.dumps(messages, ensure_ascii=False), ret.model_dump_json(),
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
@@ -80,22 +85,21 @@ def raw():
     subtoken_id = Post.Int("subtoken_id")
     chat_id = Post.Str("chat_id")
     message = Post.Str("message")
-    subtoken = TeamSubtokenModel().api_find_byUidAndId(uid, subtoken_id)
-    if not subtoken:
-        return Ret.fail(404, echo="没有找到对应的key")
-    if int(subtoken["is_limit"]) == 1 and float(subtoken["amount"]) <= 0:
-        return Ret.fail(403, echo="你的key已经没有余量了，请在控制台增加余量或将key设定为无限量模式")
-    if subtoken["coin_id"] != 5:
-        coin_name = ""
-        coin = CoinModel().api_find(subtoken["coin_id"])
-        if coin:
-            coin_name = coin["name"]
-        return Ret.fail(404, echo="key只能使用于" + coin_name)
-    fastgpt = FastgptModel().api_find_byId(subtoken["from_id"])
+    teamids = UserTeamModel().api_column_teamId_byUid(uid)
+    if not teamids:
+        return Ret.fail(404, echo="你还未加入任何团队")
+    subtokens = TeamSubtokenModel().api_select_byAmountOrIsLimit_inTeamId(teamids, 0, 0)
+    if not subtokens:
+        return Ret.fail(404, echo="没有找到可用的key")
+
+    subtoken = subtokens[0]
+    team_id = subtoken["team_id"]
+    key = subtoken["key"]
+    fastgpt = FastgptModel().api_find_inTeamId([team_id])
     if not fastgpt:
-        return Ret.fail(404, echo="FastGPT中的上级Key被删除")
+        return Ret.fail(404, echo="没有找到对应的key")
     messages: list[dict] = []
-    records = FastgptRecordModel().api_find_bySubtokenAndChatId(subtoken_id, chat_id)
+    records = FastgptRecordModel().api_find_bySubtokenAndChatId(key, chat_id)
     if records:
         messages += json.loads(records["send"])
     messages.append({"role": "user", "content": message})

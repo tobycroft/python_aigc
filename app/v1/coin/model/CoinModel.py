@@ -23,5 +23,8 @@ class CoinModel(BaseModel):
     def api_find(self, id):
         return Database.Db(self.db).table(self.Table).where('id', id).find()
 
+    def api_find_byName(self, name):
+        return Database.Db(self.db).table(self.Table).where('name', name).find()
+
     def api_select(self):
         return Database.Db(self.db).table(self.Table).select()

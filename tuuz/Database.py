@@ -433,7 +433,7 @@ class Db(object):
             args = args2
         try:
             self.cursor.execute(sql, args)
-            result = self.cursor.fetchone()
+            result = self.cursor.fetchall()
             columns = [desc[0] for desc in self.cursor.description]
             if self.__autocommit:
                 self.__close()
@@ -442,9 +442,12 @@ class Db(object):
             return None
         if result is None:
             return None
-        data = {}
-        for i, value in enumerate(result):
-            data[columns[i]] = value
+        data = []
+        for row in result:
+            row_data = {}
+            for i, value in enumerate(row):
+                row_data[columns[i]] = value
+            data.append(row_data)
         return data
 
     def select(self):

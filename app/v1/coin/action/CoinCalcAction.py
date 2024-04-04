@@ -7,9 +7,9 @@ class CoinCalcAction:
     coin_id = 0
     __price4one = 0
 
-    def __init__(self, coin_id):
-        self.coin_id = coin_id
-        self.Coin = CoinModel().api_find(coin_id)
+    def __init__(self, coin_name):
+        self.coin_id = coin_name
+        self.Coin = CoinModel().api_find_byName(coin_name)
         if not self.Coin:
             raise Exception("没有找到对应的币")
 
