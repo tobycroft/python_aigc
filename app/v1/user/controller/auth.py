@@ -66,4 +66,5 @@ async def register():
     if not TokenModel(db).Api_insert(user["id"], token, Input.ip()):
         return Ret.fail(500, None, 'token失败')
     db.commit()
+    db.close()
     return Ret.success(0, {"uid": user["id"], "token": token, 'username': user['username']})

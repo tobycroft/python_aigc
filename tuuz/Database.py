@@ -240,7 +240,6 @@ class Db(object):
         if self.__debug:
             print("数据库:commit", )
         self.__conn.commit()
-        self.__close()
         return self
 
     def rollback(self):
@@ -607,6 +606,7 @@ class Db(object):
             pk = self.__conn.insert_id()
             if self.__autocommit:
                 self.commit()
+                self.__close()
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
@@ -672,6 +672,7 @@ class Db(object):
             count = self.cursor.execute(sql, self.__bindData + self.__bindWhere)
             if self.__autocommit:
                 self.commit()
+                self.__close()
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
@@ -688,6 +689,7 @@ class Db(object):
             count = self.cursor.execute(sql, self.__bindData)
             if self.__autocommit:
                 self.commit()
+                self.__close()
         except Exception as e:
             if self.__autocommit:
                 self.rollback()
