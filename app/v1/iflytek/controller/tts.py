@@ -2,7 +2,6 @@ import os
 
 from flask import Blueprint, Response
 
-from app.v1.coin.model.CoinModel import CoinModel
 from app.v1.iflytek.action.TtsAction import TtsAction
 from app.v1.iflytek.model.IflytekModel import IflytekModel
 from app.v1.team.model.TeamSubtokenModel import TeamSubtokenModel
@@ -30,38 +29,36 @@ async def audio():
     message = Post.Str("message")
     subtoken = Post.Str("subtoken")
     if not subtoken:
-        teamids = UserTeamModel().api_column_teamId_byUid(uid)
-        iflytts = IflytekModel().api_find_inTeamId(teamids)
-        if not iflytts:
-            return Ret.fail(404, echo="在你加入的所有团队中没有找到讯飞语音")
-        b64 = TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).data().get_audioBytes()
-        return Response(b64, mimetype="audio/mp3")
+        team_id = UserTeamModel().api_column_teamId_byUid(uid)
+        if not team_id:
+            return Ret.fail(404, echo="你还未加入任何团队")
     else:
         team_id = TeamSubtokenModel().api_find_bySubtoken(subtoken)
-        iflytts = IflytekModel().api_find_inTeamId([team_id])
-        if not iflytts:
-            return Ret.fail(404, echo="没有找到对应的key")
-        b64 = TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).data().get_audioBytes()
-        return Response(b64, mimetype="audio/mp3")
+        if not team_id:
+            return Ret.fail(404, echo="你还未加入任何团队")
+    iflytts = IflytekModel().api_find_inTeamId([team_id])
+    if not iflytts:
+        return Ret.fail(404, echo="没有找到对应的key")
+    b64 = TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).data().get_audioBytes()
+    return Response(b64, mimetype="audio/mp3")
 
 
 @Controller.post('auto')
 async def auto():
     uid = Header.Int("uid")
     message = Post.Str("message")
-    subtoken = TeamSubtokenModel().api_find_byUidAndAmountOrIsLimit(uid, 6, 0, 0)
+    subtoken = Post.Str("subtoken")
     if not subtoken:
-        return Ret.fail(404, echo="没有找到对应的key")
-    if int(subtoken["is_limit"]) == 1 and float(subtoken["amount"]) <= 0:
-        return Ret.fail(403, echo="你的key已经没有余量了，请在控制台增加余量或将key设定为无限量模式")
-    if subtoken["coin_id"] != 6:
-        coin_name = ""
-        coin = CoinModel().api_find(subtoken["coin_id"])
-        if coin:
-            coin_name = coin["name"]
-        return Ret.fail(404, echo="key只能使用于" + coin_name)
-    iflytts = IflytekModel().api_find_byId(subtoken["from_id"])
+        team_id = UserTeamModel().api_column_teamId_byUid(uid)
+        if not team_id:
+            return Ret.fail(404, echo="你还未加入任何团队")
+    else:
+        team_id = TeamSubtokenModel().api_find_bySubtoken(subtoken)
+        if not team_id:
+            return Ret.fail(404, echo="你还未加入任何团队")
+
+    iflytts = IflytekModel().api_find_inTeamId([team_id])
     if not iflytts:
-        return Ret.fail(404, echo="讯飞语音中的上级Key被删除")
+        return Ret.fail(404, echo="没有找到对应的key")
     b64 = TtsAction(iflytts["app_id"], iflytts["api_key"], iflytts["api_secret"], message, iflytts["vcn"]).data().get_audioBytes()
     return Response(b64, mimetype="audio/mp3")
