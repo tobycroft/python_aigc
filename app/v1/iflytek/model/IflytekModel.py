@@ -26,6 +26,9 @@ class IflytekModel(BaseModel):
     def api_find_byId(self, id):
         return Database.Db(self.db).table(self.Table).where("id", id).find()
 
+    def api_find_inTeamId(self, team_id):
+        return Database.Db(self.db).table(self.Table).whereIn("team_id", team_id).find()
+
     def api_insert(self, uid, name, team_id, host, api_secret, app_id, api_key, vcn):
         return Database.Db(self.db).table(self.Table).insert(
             {"uid": uid, "name": name, "team_id": team_id, "host": host, "api_secret": api_secret, "app_id": app_id, "api_key": api_key, "vcn": vcn})

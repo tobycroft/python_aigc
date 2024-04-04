@@ -37,6 +37,9 @@ class TeamSubtokenModel(BaseModel):
     def api_find_byId(self, id):
         return Database.Db(self.db).table(self.Table).where("id", id).find()
 
+    def api_find_bySubtoken(self, subtoken):
+        return Database.Db(self.db).table(self.Table).where("key", subtoken).find()
+
     def api_find_byTeamIdAndKey(self, team_id, key):
         return Database.Db(self.db).table(self.Table).where("team_id", team_id).where("key", key).find()
 
