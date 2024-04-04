@@ -15,7 +15,7 @@ class UserModel(BaseModel):
         return Database.Db(self.db).table(self.Table).where('username', username).where('password', password).find()
 
     def api_insert(self, username, password):
-        return Database.Db(self.db).table(self.Table).insert({
+        return Database.Db(self.db).table(self.Table).insertGetId({
             'username': username,
             'password': password,
         })
@@ -24,3 +24,6 @@ class UserModel(BaseModel):
         return Database.Db(self.db).table(self.Table).where('username', username).update({
             'password': password,
         })
+
+    def api_find_limit_byUsername(self, id):
+        return Database.Db(self.db).table(self.Table).field("id", "username").where('id', id).find()

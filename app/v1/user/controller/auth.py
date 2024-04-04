@@ -54,7 +54,8 @@ async def register():
         return Ret.fail(400, None, '用户名不能为空')
     if UserModel().api_find_byUsername(username) is not None:
         return Ret.fail(409, None, '用户名已被注册')
-    if UserModel().api_insert(username, Encrypt.md5(password)):
-        return Ret.success(0, UserModel().api_find_byUsername(username))
+    id = UserModel().api_insert(username, Encrypt.md5(password))
+    if id:
+        return Ret.success(0, UserModel().api_find_limit_byUsername(id))
     else:
         return Ret.fail(500, None, '注册失败')
