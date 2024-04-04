@@ -54,13 +54,16 @@ async def register():
         return Ret.fail(400, None, '用户名不能为空')
     if UserModel().api_find_byUsername(username) is not None:
         return Ret.fail(409, None, '用户名已被注册')
-    db = Database.Db()
+    db = Database.Db().get_connection()
     db.begin()
     id = UserModel(db).api_insert(username, Encrypt.md5(password))
-    if id:
-        user = UserModel(db).api_find_limit_byUsername(id)
-        token = Token.generate_token()
-        if TokenModel().Api_insert(user["id"], token, Input.ip()):
-            return Ret.success(0, {"uid": user["id"], "token": token, 'username': user['username']})
-    else:
+    if not id:
         return Ret.fail(500, None, '注册失败')
+    user = UserModel(db).api_find_limit_byUsername(id)
+    if not user:
+        return Ret.fail(500, None, '未找到用户')
+    token = Token.generate_token()
+    if not TokenModel(db).Api_insert(user["id"], token, Input.ip()):
+        return Ret.fail(500, None, 'token失败')
+    db.commit()
+    return Ret.success(0, {"uid": user["id"], "token": token, 'username': user['username']})
