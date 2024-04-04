@@ -314,8 +314,9 @@ class Db(object):
         self.__option['group'] = group
         return self
 
-    def field(self, field):
-        self.__column = field
+    def field(self, *field):
+        self.__column = ','.join(field)
+        # self.__column = field
         return self
 
     def distinct(self, is_true=True):
