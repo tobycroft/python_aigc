@@ -132,7 +132,7 @@ def raw():
     amount = CoinCalcAction("qwen1.8").Calc(total_tokens)
     TeamSubtokenModel().api_inc_amount_byKey(subtoken["key"], -abs(amount))
 
-    QianwenRecordModel().api_insert(qianwen["id"], key, chat_id, json.dumps(messages, ensure_ascii=False), json.dumps(response.output.choices, ensure_ascii=False),
+    QianwenRecordModel().api_insert(qianwen["id"], key, chat_id, json.dumps(response.output.choices, ensure_ascii=False), json.dumps(response, ensure_ascii=False),
                                     completion_tokens, prompt_tokens, total_tokens, "stop", amount)
 
     # print(ret.model_dump(), total_tokens, prompt_tokens, completion_tokens)
