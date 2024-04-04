@@ -28,3 +28,7 @@ Route.register_blueprint(chatgpt.Controller, url_prefix=chatgpt.Controller.name)
 import app.v1.aigc.controller.groq as groq
 
 Route.register_blueprint(groq.Controller, url_prefix=groq.Controller.name)
+
+import app.v1.aigc.controller.qwen as qwen
+
+Route.register_blueprint(qwen.Controller, url_prefix=qwen.Controller.name)

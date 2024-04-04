@@ -8,7 +8,8 @@ from flask import Blueprint
 import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
-from app.v1.langchain.model import QianwenModel
+from app.v1.qwen.model.QianwenModel import QianwenModel
+from tuuz.input.header import Header
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
@@ -18,19 +19,10 @@ def slash():
     return Controller.name
 
 
-@Controller.before_request
-def before():
-    token = tuuz.Input.Header.String("token")
-    data = tuuz.Database.Db().table("ai_project").where('token', token).find()
-    if data is None:
-        return tuuz.Ret.fail(400, 'project未启用')
-    pass
-
-
 @Controller.post('/text')
 async def text():
-    token = tuuz.Input.Header.String("token")
-    qianwen = QianwenModel.Api_find_byProjectName(token)
+    token = Header.String("token")
+    qianwen = QianwenModel().api_find_byId(token)
     if qianwen is None:
         return tuuz.Ret.fail(404, "没有找到对应的项目")
     messages = list[Message]([
