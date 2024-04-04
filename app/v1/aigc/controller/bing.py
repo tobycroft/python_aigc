@@ -43,7 +43,7 @@ cont = 0
 @Controller.post('/text')
 async def text():
     token = tuuz.Input.Header.String("token")
-    text = tuuz.Input.Post.String("text")
+    message = tuuz.Input.Post.String("text")
     data = tuuz.Database.Db().table("ai_project").where('token', token).find()
     bing = tuuz.Database.Db().table("ai_bing").where('project_name', data["name"]).find()
     if bing["cookies"] is None:
@@ -66,7 +66,7 @@ async def text():
         return tuuz.Ret.fail(500, error, "conversation设定故障")
     try:
         response = await bot.ask(
-            prompt=text,
+            prompt=message,
             conversation_style=ConversationStyle.precise,
             simplify_response=False,
         )
@@ -114,7 +114,7 @@ async def text():
     endtime = time.time()
     print("运行时间", endtime - starttime)
     try:
-        tuuz.Database.Db().table("log").insert({"type": "bing", "project": data["name"], "ask": text, "reply": json.dumps(response, indent=2, ensure_ascii=False)})
+        tuuz.Database.Db().table("log").insert({"type": "bing", "project": data["name"], "ask": message, "reply": json.dumps(response, indent=2, ensure_ascii=False)})
     except Exception as error:
         print("db-log", error)
     return tuuz.Ret.success(0, normal_text, final_resp)
