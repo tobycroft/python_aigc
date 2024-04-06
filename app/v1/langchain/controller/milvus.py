@@ -1,6 +1,10 @@
 import os
 
 from flask import Blueprint
+from langchain_community.document_loaders.web_base import WebBaseLoader
+from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
+from langchain_community.vectorstores.milvus import Milvus
+from langchain_text_splitters import CharacterTextSplitter
 
 import tuuz.Database
 import tuuz.Input
@@ -8,35 +12,22 @@ import tuuz.Ret
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
-from langchain.document_loaders import WebBaseLoader
-from langchain.embeddings import HuggingFaceBgeEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import Milvus
-
 
 @Controller.post('/')
 def slash():
     return Controller.name
 
 
-@Controller.before_request
-def before():
-    token = tuuz.Input.Header.String("token")
-    data = tuuz.Database.Db().table("ai_project").where('token', token).find()
-    if data is None:
-        return tuuz.Ret.fail(400, 'project未启用')
-    pass
-
-
 @Controller.post('/text')
 async def text():
     loader = WebBaseLoader("https://www.baidu.com")
+    # print(loader)
     # loader = TextLoader("story.txt")
     documents = loader.load()
     text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
     docs = text_splitter.split_documents(documents)
 
-    model_name = "/extend/bge/"
+    model_name = "./extend/bge-large-zh-v1.5/"
     model_kwargs = {'device': 'cuda'}
     encode_kwargs = {'normalize_embeddings': True}  # set True to compute cosine similarity
     embeddings = HuggingFaceBgeEmbeddings(
