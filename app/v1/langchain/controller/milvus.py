@@ -36,7 +36,7 @@ async def text():
     text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
     docs = text_splitter.split_documents(documents)
 
-    model_name = "/mnt/code/LLM_Service/text_model/bge-large-zh-v1.5/"
+    model_name = "/extend/bge/"
     model_kwargs = {'device': 'cuda'}
     encode_kwargs = {'normalize_embeddings': True}  # set True to compute cosine similarity
     embeddings = HuggingFaceBgeEmbeddings(
@@ -46,7 +46,7 @@ async def text():
         query_instruction=""
     )
 
-    MILVUS_HOST = "192.168.175.4"
+    MILVUS_HOST = "10.0.0.174"
     MILVUS_PORT = "19530"
 
     vector_store = Milvus.from_documents(
