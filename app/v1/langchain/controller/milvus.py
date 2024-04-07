@@ -20,7 +20,7 @@ def slash():
 @Controller.post('/text')
 async def text():
     text = Post.Str("text")
-    embeddings = EmbeddingAction().FromText(text).Embedding()
+    embeddings = EmbeddingAction().FromText(text, ).Embedding()
     print(embeddings.GetDoc())
     # embeddings = EmbeddingAction().Embedding()
 
