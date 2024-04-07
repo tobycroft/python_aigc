@@ -28,9 +28,9 @@ async def text():
     MILVUS_PORT = "19530"
 
     vector_store = Milvus(embeddings.GetEmbedding(),
-                          collection_name="collection_4",
+                          collection_name="collection_5",
                           connection_args={"host": MILVUS_HOST, "port": MILVUS_PORT})
-    vector_store.from_documents(embeddings.GetDoc(), embeddings.GetEmbedding(), collection_name="collection_4", connection_args={"host": MILVUS_HOST, "port": MILVUS_PORT})
+    vector_store.from_documents(embeddings.GetDoc(), embeddings.GetEmbedding(), collection_name="collection_5", connection_args={"host": MILVUS_HOST, "port": MILVUS_PORT})
     # vector_store = Milvus.from_documents(
     #     embeddings.GetDoc(),
     #     embedding=embeddings.GetEmbedding(),

@@ -11,7 +11,7 @@ class EmbeddingAction:
     def __init__(self):
         pass
 
-    def FromWeb(self, url, chunk_size=100, chunk_overlap=0):
+    def FromWeb(self, url, chunk_size=64, chunk_overlap=8):
         loader = WebBaseLoader(url)
         documents = loader.load()
         text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
@@ -19,7 +19,7 @@ class EmbeddingAction:
         self.__doc = docs
         return self
 
-    def FromFile(self, text, chunk_size=100, chunk_overlap=0):
+    def FromFile(self, text, chunk_size=64, chunk_overlap=8):
         loader = TextLoader(text, encoding='UTF-8')
         documents = loader.load()
         text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
@@ -27,8 +27,9 @@ class EmbeddingAction:
         self.__doc = docs
         return self
 
-    def FromText(self, text, chunk_size=100, chunk_overlap=0):
-        text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separator="\n")
+    def FromText(self, text, chunk_size=64, chunk_overlap=8):
+        text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separator='\n')
+
         docs = text_splitter.create_documents(text_splitter.split_text(text))
         self.__doc = docs
         return self
