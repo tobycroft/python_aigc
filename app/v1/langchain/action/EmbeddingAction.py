@@ -37,7 +37,7 @@ class EmbeddingAction:
 
     def Embedding(self):
         model_name = "BAAI/bge-large-zh-v1.5"
-        model_kwargs = {'device': 'cuda'}
+        model_kwargs = {'device': 'cpu'}
         encode_kwargs = {'normalize_embeddings': True}  # set True to compute cosine similarity
         self.__embedding = HuggingFaceBgeEmbeddings(
             model_name=model_name,
