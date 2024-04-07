@@ -28,7 +28,7 @@ class EmbeddingAction:
         return self
 
     def FromText(self, text, chunk_size=100, chunk_overlap=0):
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separators=["\n\n", "\n", "。", "；"])
+        text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separator="")
         docs = text_splitter.split_text(text)
         self.__doc = docs
         return self
@@ -42,7 +42,7 @@ class EmbeddingAction:
             cache_folder="./huggingface/bge-large-zh-v1.5",
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs,
-            query_instruction="",
+            query_instruction="为这个句子生成表示以用于检索相关文章：",
         )
         return self
 
