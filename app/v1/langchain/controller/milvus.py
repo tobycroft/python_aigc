@@ -1,14 +1,12 @@
 import os
 
 from flask import Blueprint
-from langchain_community.document_loaders.web_base import WebBaseLoader
-from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
 from langchain_community.vectorstores.milvus import Milvus
-from langchain_text_splitters import CharacterTextSplitter
 
 import tuuz.Database
 import tuuz.Input
 import tuuz.Ret
+from app.v1.langchain.action.EmbeddingAction import EmbeddingAction
 
 Controller = Blueprint(os.path.splitext(os.path.basename(__file__))[0], __name__)
 
@@ -20,35 +18,22 @@ def slash():
 
 @Controller.post('/text')
 async def text():
-    loader = WebBaseLoader("https://www.baidu.com")
-    # print(loader)
-    # loader = TextLoader("story.txt")
-    documents = loader.load()
-    text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
-    docs = text_splitter.split_documents(documents)
-
-    model_name = "./extend/bge-large-zh-v1.5/"
-    model_kwargs = {'device': 'cuda'}
-    encode_kwargs = {'normalize_embeddings': True}  # set True to compute cosine similarity
-    embeddings = HuggingFaceBgeEmbeddings(
-        model_name=model_name,
-        model_kwargs=model_kwargs,
-        encode_kwargs=encode_kwargs,
-        query_instruction=""
-    )
+    embeddings = EmbeddingAction().FromWeb("https://www.bilibili.com/").Embedding()
 
     MILVUS_HOST = "10.0.0.174"
     MILVUS_PORT = "19530"
 
     vector_store = Milvus.from_documents(
-        docs,
-        embedding=embeddings,
+        embeddings.GetDoc(),
+        embedding=embeddings.GetEmbedding(),
         collection_name="collection_1",
         connection_args={"host": MILVUS_HOST, "port": MILVUS_PORT}
     )
 
-    query = "托马斯是时间行者"
-    docs = vector_store.similarity_search_with_score(query)
+    query1 = "托马斯是时间行者"
+    docs1 = vector_store.similarity_search_with_score(query1)
+    query2 = "Bilibili"
+    docs2 = vector_store.similarity_search_with_score(query2)
 
-    print(docs)
-    return tuuz.Ret.success(0, )
+    # print(docs)
+    return tuuz.Ret.success(0, [docs1, docs2])
