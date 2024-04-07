@@ -1,6 +1,7 @@
+from langchain_community.document_loaders.text import TextLoader
 from langchain_community.document_loaders.web_base import WebBaseLoader
 from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
 
 
 class EmbeddingAction:
@@ -18,15 +19,23 @@ class EmbeddingAction:
         self.__doc = docs
         return self
 
-    def FromText(self, text, chunk_size=100, chunk_overlap=0):
+    def FromFile(self, text, chunk_size=100, chunk_overlap=0):
+        loader = TextLoader(text)
+        documents = loader.load()
         text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-        docs = text_splitter.split_documents(text)
+        docs = text_splitter.split_documents(documents)
+        self.__doc = docs
+        return self
+
+    def FromText(self, text, chunk_size=100, chunk_overlap=0):
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separators=["\n\n", "\n", "。", "；"])
+        docs = text_splitter.split_text(text)
         self.__doc = docs
         return self
 
     def Embedding(self):
         model_name = "BAAI/bge-large-zh-v1.5"
-        model_kwargs = {'device': 'cpu'}
+        model_kwargs = {'device': 'cuda'}
         encode_kwargs = {'normalize_embeddings': True}  # set True to compute cosine similarity
         self.__embedding = HuggingFaceBgeEmbeddings(
             model_name=model_name,
