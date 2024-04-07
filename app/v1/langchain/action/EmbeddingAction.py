@@ -1,7 +1,7 @@
 from langchain_community.document_loaders.text import TextLoader
 from langchain_community.document_loaders.web_base import WebBaseLoader
 from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
-from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
+from langchain_text_splitters import CharacterTextSplitter
 
 
 class EmbeddingAction:
@@ -20,7 +20,7 @@ class EmbeddingAction:
         return self
 
     def FromFile(self, text, chunk_size=100, chunk_overlap=0):
-        loader = TextLoader(text)
+        loader = TextLoader(text, encoding='UTF-8')
         documents = loader.load()
         text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         docs = text_splitter.split_documents(documents)
@@ -28,8 +28,8 @@ class EmbeddingAction:
         return self
 
     def FromText(self, text, chunk_size=100, chunk_overlap=0):
-        text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separator="")
-        docs = text_splitter.split_text(text)
+        text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separator="\n")
+        docs = text_splitter.create_documents(text_splitter.split_text(text))
         self.__doc = docs
         return self
 
