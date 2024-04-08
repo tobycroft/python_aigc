@@ -93,3 +93,8 @@ Route.register_blueprint(live2d.Route, url_prefix=live2d.folder_name)
 import app.v1.qwen.route as qwen
 
 Route.register_blueprint(qwen.Route, url_prefix=qwen.folder_name)
+
+# milvus
+import app.v1.milvus.route as milvus
+
+Route.register_blueprint(milvus.Route, url_prefix=milvus.folder_name)
