@@ -46,3 +46,5 @@ xformers
 peft
 PyYAML
 APScheduler
+pymilvus
+websocket-client

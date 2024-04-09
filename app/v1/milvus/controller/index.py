@@ -2,6 +2,7 @@ import os
 
 from flask import Blueprint
 from pymilvus import connections
+from pymilvus.orm import utility
 
 from tuuz.Ret import success
 from tuuz.input.post import Post
@@ -18,4 +19,8 @@ def slash():
 async def index():
     text = Post.Str("text")
     connections.connect(alias="default", host="10.0.0.174", port="19530")
-    return success()
+
+    # has = utility.has_collection("collection_5")
+    #
+    # print(f"Does collection collection_5 exist in Milvus: {has}")
+    return success(0, utility.list_usernames())
