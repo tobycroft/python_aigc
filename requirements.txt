@@ -28,7 +28,6 @@ scipy
 torchvision
 numba
 psutil
-packaging
 colorama
 fsspec
 torchaudio
