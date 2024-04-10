@@ -6,15 +6,16 @@
         <language minSize="143" name="Python" />
       </Languages>
     </inspection_tool>
-    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="ignoredPackages">
         <value>
-          <list size="5">
+          <list size="6">
             <item index="0" class="java.lang.String" itemvalue="pysilk" />
             <item index="1" class="java.lang.String" itemvalue="langchain_openai" />
             <item index="2" class="java.lang.String" itemvalue="browser_cookie3" />
             <item index="3" class="java.lang.String" itemvalue="flask_cors" />
             <item index="4" class="java.lang.String" itemvalue="gemini_webapi" />
+            <item index="5" class="java.lang.String" itemvalue="langchain_community" />
           </list>
         </value>
       </option>
