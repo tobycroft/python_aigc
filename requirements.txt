@@ -50,3 +50,4 @@ pymilvus
 websocket-client
 flask_cors
 gemini_webapi
+langchain_community
