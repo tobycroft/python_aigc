@@ -52,4 +52,4 @@ flask_cors
 gemini_webapi
 langchain_community
 langchain_text_splitters
-pysilk
+silk-python
