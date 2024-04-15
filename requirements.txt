@@ -1,4 +1,4 @@
-Flask
+Flask[async]
 re_edge_gpt
 ffmpeg
 requests
