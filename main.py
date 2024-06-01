@@ -34,4 +34,4 @@ if __name__ == "__main__":
     if not sch.running:
         sch.start()
     # app.run(host="0.0.0.0", port=84, debug=config.app.TestMode, threaded=True)
-    app.run(host='0.0.0.0', port=84, debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=84, debug=False, threaded=True)
